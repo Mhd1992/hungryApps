@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:hungry/core/constants/app_colors.dart';
+import 'package:hungry/features/auth/widgets/custom_auth_btn.dart';
 import 'package:hungry/shared/custom_text.dart';
 import 'package:hungry/shared/custom_text_form_field.dart';
 import 'package:hungry/shared/logo_image.dart';
@@ -47,55 +48,12 @@ class LoginView extends StatelessWidget {
                   ),
 
                   Gap(50),
-                  ElevatedButton(
+                  CustomAuthBtn(
+                    text: 'Login',
                     onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        ///this block will executed only if filling  all fields
-                      }
+                      if (formKey.currentState!.validate()) {}
                     },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(
-                        double.infinity,
-                        48,
-                      ), // Make the button full width
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      backgroundColor: Colors.white, // Background color
-                      elevation: 0, // No shadow
-                    ),
-                    child: Center(
-                      child: CustomText(
-                        text: 'Login',
-                        color: AppColors.primaryColor,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16,
-                      ),
-                    ),
                   ),
-
-                  /*
-                  above is equavelent to below
-                   GestureDetector(
-              child: Container(
-              height: 48,
-              width: double.infinity,
-              decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-              ),
-              child: Center(
-              child: CustomText(
-              text: 'Login',
-              color: AppColors.primaryColor,
-              fontWeight: FontWeight.w800,
-              fontSize: 16,
-              ),
-              ),
-              ),
-              ),
-                  *
-                  * */
                 ],
               ),
             ),
