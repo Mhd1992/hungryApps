@@ -61,7 +61,12 @@ class SignupView extends StatelessWidget {
                     isPassword: true,
                   ),
                   Gap(50),
-                  CustomAuthBtn(text: 'SignUp', onPressed: () {}),
+                  CustomAuthBtn(
+                    text: 'SignUp',
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {}
+                    },
+                  ),
                 ],
               ),
             ),
