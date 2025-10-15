@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:hungry/core/constants/app_colors.dart';
+import 'package:hungry/features/home/widgets/container_filter_choice.dart';
 import 'package:hungry/shared/custom_text.dart';
 import 'package:hungry/shared/logo_image.dart';
 
@@ -13,6 +14,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  int _selectedCategoryIndex = 0;
   List<String> categories = [
     'All',
     'Combo',
@@ -21,6 +23,7 @@ class _HomeViewState extends State<HomeView> {
     'chickenBurger',
   ];
   int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -112,6 +115,15 @@ class _HomeViewState extends State<HomeView> {
                     );
                   }),
                 ),
+              ),
+              ContainerFilterChoice(
+                categories: categories,
+                selectedIndex: _selectedCategoryIndex,
+                onChanged: (newIndex) {
+                  setState(() {
+                    _selectedCategoryIndex = newIndex;
+                  });
+                },
               ),
             ],
           ),
