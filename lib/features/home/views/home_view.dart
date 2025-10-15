@@ -17,11 +17,112 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  int _selectedCategoryIndex = 0;
+  List<String> categories = [
+    'All',
+    'Combo',
+    'Sliders',
+    'Juice',
+    'chickenBurger',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: PrimitiveGridView(),
+      child: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Gap(75),
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          LogoImage(
+                            color: ColorFilter.mode(
+                              AppColors.primaryColor,
+                              BlendMode.srcIn,
+                            ),
+                            height: 35,
+                          ),
+
+                          Gap(8),
+                          CustomText(
+                            text: 'Hello dear user',
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey.shade600,
+                          ),
+                        ],
+                      ),
+                      Spacer(),
+                      CircleAvatar(radius: 30),
+                    ],
+                  ),
+                  Gap(16),
+                  Material(
+                    elevation: 3,
+                    shadowColor: Colors.grey.shade700,
+                    borderRadius: BorderRadius.circular(16),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search...',
+                        fillColor: Colors.white,
+                        filled: true,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        prefixIcon: Icon(CupertinoIcons.search),
+                      ),
+                    ),
+                  ),
+                  Gap(16),
+
+                  CustomWrapFilterChoice(
+                    categories: categories,
+                    selectedIndex: _selectedCategoryIndex,
+                    onChanged: (newIndex) {
+                      setState(() {
+                        _selectedCategoryIndex = newIndex;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                childCount: 6,
+                (context, index) => CardItem(
+                  title: 'CheeseBurger',
+                  imageUrl: 'assets/images/test.png',
+                  description: 'Happy Burger',
+                  rate: '️3.8',
+                ),
+              ),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 2,
+                childAspectRatio: 0.75,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
