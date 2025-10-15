@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:hungry/core/constants/app_colors.dart';
 import 'package:hungry/features/home/widgets/container_filter_choice.dart';
+import 'package:hungry/features/home/widgets/custom_filter_wrap_choice.dart';
 import 'package:hungry/shared/custom_text.dart';
 import 'package:hungry/shared/logo_image.dart';
 
@@ -81,42 +82,8 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
               Gap(16),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Wrap(
-                  spacing: 16.0, // Space between chips
-                  children: List.generate(categories.length, (index) {
-                    return FilterChip(
-                      mouseCursor: MouseCursor.uncontrolled,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white, width: 2),
-                        borderRadius: BorderRadius.circular(50.0),
-                      ),
-                      label: Text(
-                        categories[index],
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: currentIndex == index
-                              ? Colors.white
-                              : Colors.grey.shade900,
-                        ),
-                      ),
-                      selected: currentIndex == index,
-                      selectedColor: AppColors.primaryColor,
-                      backgroundColor: Color(0xffF3F4F6),
 
-                      onSelected: (bool selected) {
-                        setState(() {
-                          currentIndex = index;
-
-                          /// Deselect if tapped again   currentIndex = selected ? index : -1;
-                        });
-                      },
-                    );
-                  }),
-                ),
-              ),
-              ContainerFilterChoice(
+              CustomWrapFilterChoice(
                 categories: categories,
                 selectedIndex: _selectedCategoryIndex,
                 onChanged: (newIndex) {
