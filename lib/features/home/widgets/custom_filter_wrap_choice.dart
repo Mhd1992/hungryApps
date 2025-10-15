@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hungry/core/constants/app_colors.dart';
 
 class CustomWrapFilterChoice extends StatelessWidget {
-  CustomWrapFilterChoice({
+  const CustomWrapFilterChoice({
     super.key,
     required this.categories,
     required this.selectedIndex,
@@ -10,7 +10,7 @@ class CustomWrapFilterChoice extends StatelessWidget {
   });
 
   final List<String> categories;
-  int selectedIndex = 0;
+  final int selectedIndex;
   final ValueChanged<int> onChanged;
 
   @override

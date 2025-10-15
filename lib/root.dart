@@ -32,6 +32,7 @@ class _RootState extends State<Root> {
     return Scaffold(
       body: PageView(
         controller: pageController,
+        physics: NeverScrollableScrollPhysics(),
         children: [screens[currentScreen]],
       ),
 
@@ -43,7 +44,7 @@ class _RootState extends State<Root> {
         padding: EdgeInsets.all(10),
         child: BottomNavigationBar(
           elevation: 0,
-          backgroundColor: Colors.transparent, // Set the background color
+          backgroundColor: Colors.transparent,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.grey.shade700,
