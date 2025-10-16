@@ -6,6 +6,7 @@ import 'package:hungry/features/home/widgets/filter_ships/custom_filter_wrap_cho
 import 'package:hungry/features/home/widgets/primitive_grid_view.dart';
 import 'package:hungry/features/home/widgets/search_field.dart';
 import 'package:hungry/features/home/widgets/user_header.dart';
+import 'package:hungry/features/product/view/product_detail_view.dart';
 import 'package:hungry/shared/custom_text.dart';
 import 'package:hungry/shared/logo_image.dart';
 
@@ -75,11 +76,20 @@ class _HomeViewState extends State<HomeView> {
             sliver: SliverGrid(
               delegate: SliverChildBuilderDelegate(
                 childCount: 6,
-                (context, index) => CardItem(
-                  title: 'CheeseBurger',
-                  imageUrl: 'assets/images/test.png',
-                  description: 'Happy Burger',
-                  rate: '️3.8',
+                (context, index) => GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProductDetailView(),
+                      ),
+                    );
+                  },
+                  child: CardItem(
+                    title: 'CheeseBurger',
+                    imageUrl: 'assets/images/test.png',
+                    description: 'Happy Burger',
+                    rate: '️3.8',
+                  ),
                 ),
               ),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
