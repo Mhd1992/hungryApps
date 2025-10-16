@@ -6,7 +6,7 @@ import 'package:hungry/shared/custom_text.dart';
 
 import '../../../shared/logo_image.dart';
 import 'card_item.dart';
-import 'custom_filter_wrap_choice.dart';
+import 'filter_ships/custom_filter_wrap_choice.dart';
 
 class PrimitiveGridView extends StatefulWidget {
   const PrimitiveGridView({super.key});

@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:hungry/core/constants/app_colors.dart';
-import 'package:hungry/features/home/widgets/custom_filter_wrap_choice.dart';
+import 'package:hungry/features/home/widgets/filter_ships/custom_filter_wrap_choice.dart';
 import 'package:hungry/features/home/widgets/primitive_grid_view.dart';
+import 'package:hungry/features/home/widgets/search_field.dart';
+import 'package:hungry/features/home/widgets/user_header.dart';
 import 'package:hungry/shared/custom_text.dart';
 import 'package:hungry/shared/logo_image.dart';
 
@@ -32,62 +34,27 @@ class _HomeViewState extends State<HomeView> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: CustomScrollView(
         slivers: [
+          ///Header of view
+          SliverAppBar(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            pinned: true,
+            floating: false,
+            scrolledUnderElevation: 0,
+            toolbarHeight: 200,
+            automaticallyImplyLeading: false,
+            flexibleSpace: Padding(
+              padding: EdgeInsets.only(top: 40, left: 16, right: 16),
+              child: Column(children: [UserHeader(), Gap(16), SearchField()]),
+            ),
+          ),
+
+          ///body of view
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             sliver: SliverToBoxAdapter(
               child: Column(
                 children: [
-                  Gap(75),
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          LogoImage(
-                            color: ColorFilter.mode(
-                              AppColors.primaryColor,
-                              BlendMode.srcIn,
-                            ),
-                            height: 35,
-                          ),
-
-                          Gap(8),
-                          CustomText(
-                            text: 'Hello dear user',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey.shade600,
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      CircleAvatar(radius: 30),
-                    ],
-                  ),
-                  Gap(16),
-                  Material(
-                    elevation: 3,
-                    shadowColor: Colors.grey.shade700,
-                    borderRadius: BorderRadius.circular(16),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search...',
-                        fillColor: Colors.white,
-                        filled: true,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        prefixIcon: Icon(CupertinoIcons.search),
-                      ),
-                    ),
-                  ),
-                  Gap(16),
-
                   CustomWrapFilterChoice(
                     categories: categories,
                     selectedIndex: _selectedCategoryIndex,
@@ -102,6 +69,7 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
 
+          ///footer of view
           SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverGrid(
