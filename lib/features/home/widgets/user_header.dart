@@ -16,7 +16,7 @@ class UserHeader extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Gap(20),
+            Gap(48),
             LogoImage(
               color: ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
               height: 35,
