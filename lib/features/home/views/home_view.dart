@@ -1,16 +1,12 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gap/flutter_gap.dart';
-import 'package:hungry/core/constants/app_colors.dart';
 import 'package:hungry/features/home/widgets/filter_ships/custom_filter_wrap_choice.dart';
-import 'package:hungry/features/home/widgets/primitive_grid_view.dart';
+
 import 'package:hungry/features/home/widgets/search_field.dart';
 import 'package:hungry/features/home/widgets/user_header.dart';
 import 'package:hungry/features/product/view/product_detail_view.dart';
-import 'package:hungry/shared/custom_text.dart';
-import 'package:hungry/shared/logo_image.dart';
 
 import '../widgets/card_item.dart';
+
+import 'package:hungry/core/utils/exported_file.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});

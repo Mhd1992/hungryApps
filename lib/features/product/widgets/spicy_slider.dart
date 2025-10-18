@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gap/flutter_gap.dart';
-import 'package:hungry/core/constants/app_colors.dart';
-import 'package:hungry/shared/custom_text.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class SpicySlider extends StatelessWidget {
   const SpicySlider({super.key, required this.value, required this.onChanged});
@@ -15,7 +12,7 @@ class SpicySlider extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomText(
-            text: 'Customize Your Burger to Your Tastes. Ultimate Experience',
+            text: ' Customize Your Burger to Your Tastes. Ultimate Experience',
             fontWeight: FontWeight.w500,
           ),
           Gap(16),

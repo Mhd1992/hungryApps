@@ -1,8 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gap/flutter_gap.dart';
-import 'package:hungry/core/constants/app_colors.dart';
-import 'package:hungry/shared/custom_text.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class CardItem extends StatelessWidget {
   const CardItem({

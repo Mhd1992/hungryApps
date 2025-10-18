@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gap/flutter_gap.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:hungry/core/constants/app_colors.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class SplashView extends StatelessWidget {
   const SplashView({super.key});

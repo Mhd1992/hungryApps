@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class CartView extends StatelessWidget {
   const CartView({super.key});
