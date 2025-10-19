@@ -62,7 +62,18 @@ class CartView extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  CustomButton(buttonText: 'CheckOut', onPressed: () {}),
+                  CustomButton(
+                    buttonText: 'Checkout',
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return CheckOutView();
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
