@@ -1,11 +1,3 @@
-import 'package:hungry/features/home/widgets/filter_ships/custom_filter_wrap_choice.dart';
-
-import 'package:hungry/features/home/widgets/search_field.dart';
-import 'package:hungry/features/home/widgets/user_header.dart';
-import 'package:hungry/features/product/view/product_detail_view.dart';
-
-import '../widgets/card_item.dart';
-
 import 'package:hungry/core/utils/exported_file.dart';
 
 class HomeView extends StatefulWidget {
