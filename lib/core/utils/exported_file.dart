@@ -14,16 +14,17 @@ export 'package:hungry/shared/custom_text.dart';
 export 'package:hungry/shared/custom_button.dart';
 export 'package:hungry/shared/logo_image.dart';
 
-///product features files
+///features/feat/widgets
 export 'package:hungry/features/product/widgets/spicy_slider.dart';
 export 'package:hungry/features/product/widgets/topping_card.dart';
-
 export 'package:hungry/features/home/widgets/card_item.dart';
 export 'package:hungry/features/home/widgets//filter_ships/custom_filter_wrap_choice.dart';
 export 'package:hungry/features/home/widgets/search_field.dart';
 export 'package:hungry/features/home/widgets/user_header.dart';
 export 'package:hungry/features/cart/widgets/cart_item.dart';
+export 'package:hungry/features/orderHistory/widgets/history_card.dart';
 
+///features/feat/views
 export 'package:hungry/features/auth/view/profile_view.dart';
 export 'package:hungry/features/home/views/home_view.dart';
 export 'package:hungry/features/cart/views/cart_view.dart';

@@ -29,6 +29,8 @@ class CartItem extends StatelessWidget {
       child: Column(
         children: [
           Card(
+            elevation: 3,
+            color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,

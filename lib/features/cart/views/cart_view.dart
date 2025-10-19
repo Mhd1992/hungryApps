@@ -6,12 +6,17 @@ class CartView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<ValueNotifier<int>> quantities = List.generate(
-      3,
+      6,
       (_) => ValueNotifier<int>(0),
     );
     final ValueNotifier<int> initialValue = ValueNotifier<int>(0);
 
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+        scrolledUnderElevation: 0,
+        backgroundColor: Colors.white,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -19,6 +24,7 @@ class CartView extends StatelessWidget {
             // Scrollable content
             Expanded(
               child: ListView.builder(
+                padding: EdgeInsets.only(bottom: 20, top: 20),
                 itemCount: quantities.length,
                 itemBuilder: (context, index) {
                   return ValueListenableBuilder<int>(
@@ -41,7 +47,7 @@ class CartView extends StatelessWidget {
 
             // Fixed bottom section
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8.0),
               child: Row(
                 children: [
                   Column(
@@ -56,7 +62,7 @@ class CartView extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  CustomButton(buttonText: 'BUY', onPressed: () {}),
+                  CustomButton(buttonText: 'CheckOut', onPressed: () {}),
                 ],
               ),
             ),
