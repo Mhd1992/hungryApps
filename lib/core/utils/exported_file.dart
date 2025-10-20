@@ -26,6 +26,7 @@ export 'package:hungry/features/orderHistory/widgets/history_card.dart';
 export 'package:hungry/features/checkout/widgets/order_detail.dart';
 export 'package:hungry/features/checkout/widgets/visa_list_tile.dart';
 export 'package:hungry/features/checkout/widgets/payment_list_tile.dart';
+export 'package:hungry/features/checkout/widgets/success_dialog.dart';
 
 ///features/feat/views
 export 'package:hungry/features/auth/view/profile_view.dart';

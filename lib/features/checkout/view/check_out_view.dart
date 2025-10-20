@@ -108,7 +108,15 @@ class CheckOutView extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                CustomButton(buttonText: 'Pay Now', onPressed: () {}),
+                CustomButton(
+                  buttonText: 'Pay Now',
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => SuccessDialog(),
+                    );
+                  },
+                ),
               ],
             ),
           ),
