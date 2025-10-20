@@ -11,12 +11,12 @@ class CheckOutView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ValueListenableBuilder<PaymentType?>(
-          valueListenable: paymentMethod,
-          builder: (context, selectedMethod, _) {
-            return Column(
+      body: ValueListenableBuilder(
+        valueListenable: paymentMethod,
+        builder: (context, selectedMethod, _) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const CustomText(
@@ -25,7 +25,7 @@ class CheckOutView extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
                 const OrderDetail(order: '9.4', taxes: '0.7', fees: '1.4'),
-                const Gap(40),
+                const Gap(80),
                 const CustomText(
                   text: 'Payment methods',
                   fontWeight: FontWeight.w600,
@@ -33,7 +33,6 @@ class CheckOutView extends StatelessWidget {
                 ),
                 const Gap(20),
 
-                // 💵 Cash
                 PaymentListTile(
                   paymentLogo: 'assets/icons/cash.png',
                   text: 'Cash on Delivery',
@@ -41,10 +40,8 @@ class CheckOutView extends StatelessWidget {
                   groupValue: selectedMethod,
                   onChanged: (newVal) => paymentMethod.value = PaymentType.cash,
                 ),
-
                 const Gap(20),
 
-                // 💳 Visa
                 VisaListTile(
                   paymentLogo: 'assets/icons/visaSvg.svg',
                   text: 'Debit Card',
@@ -53,7 +50,6 @@ class CheckOutView extends StatelessWidget {
                   groupValue: selectedMethod,
                   onChanged: (newVal) => paymentMethod.value = PaymentType.visa,
                 ),
-
                 const Gap(20),
 
                 Row(
@@ -71,33 +67,51 @@ class CheckOutView extends StatelessWidget {
                     ),
                   ],
                 ),
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 32.0,
-                  ),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          CustomText(
-                            text: 'Total Price:',
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          CustomText(text: '\$11.15', fontSize: 16),
-                        ],
-                      ),
-                      const Spacer(),
-                      CustomButton(buttonText: 'Pay Now', onPressed: () {}),
-                    ],
-                  ),
-                ),
               ],
-            );
-          },
+            ),
+          );
+        },
+      ),
+
+      // ✅ Bottom sheet automatically fits content
+      bottomSheet: IntrinsicHeight(
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade800,
+                blurRadius: 20,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min, // 👈 important!
+                  children: const [
+                    CustomText(
+                      text: 'Total Price:',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    CustomText(text: '\$11.15', fontSize: 16),
+                  ],
+                ),
+                const Spacer(),
+                CustomButton(buttonText: 'Pay Now', onPressed: () {}),
+              ],
+            ),
+          ),
         ),
       ),
     );
