@@ -19,12 +19,12 @@ class _SplashViewState extends State<SplashView> {
       setState(() => _opacity = 1.0);
     });
 
-    // Navigate to Root after 3 seconds
+    // Navigate to SignupView after 3 seconds
     Future.delayed(const Duration(seconds: 4), () {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const Root(),
+          pageBuilder: (_, __, ___) => const SignupView(),
           transitionDuration: const Duration(milliseconds: 500),
           transitionsBuilder: (_, animation, __, child) {
             return FadeTransition(opacity: animation, child: child);

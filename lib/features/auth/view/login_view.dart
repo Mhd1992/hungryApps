@@ -82,6 +82,20 @@ class LoginView extends StatelessWidget {
                               );
                             },
                           ),
+                          Gap(50),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context) => Root()),
+                              );
+                            },
+                            child: CustomText(
+                              text: 'Continue as Guest',
+                              color: Colors.orangeAccent,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ],
                       ),
                     ),

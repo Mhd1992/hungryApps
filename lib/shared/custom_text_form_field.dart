@@ -49,16 +49,17 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             ? GestureDetector(
                 onTap: _togglePassword,
                 child: _obscureText
-                    ? Icon(CupertinoIcons.eye, color: Colors.white)
-                    : Icon(CupertinoIcons.eye_slash, color: Colors.white),
+                    ? Icon(CupertinoIcons.eye, color: AppColors.primaryColor)
+                    : Icon(
+                        CupertinoIcons.eye_slash,
+                        color: AppColors.primaryColor,
+                      ),
               )
             : null,
       ),
       obscureText: _obscureText,
       validator: (val) {
         if (val == null || val.isEmpty) {
-          print('am in null block validators');
-
           return 'Please Enter ${widget.hintText}';
         }
         return null;
