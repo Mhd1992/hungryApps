@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:hungry/core/constants/app_colors.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class FilterShip extends StatefulWidget {
   const FilterShip({super.key, required this.categories});

@@ -1,10 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gap/flutter_gap.dart';
-import 'package:hungry/core/constants/app_colors.dart';
-import 'package:hungry/shared/custom_text.dart';
-import 'package:hungry/shared/logo_image.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class UserHeader extends StatelessWidget {
   const UserHeader({super.key});
@@ -16,7 +10,7 @@ class UserHeader extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Gap(20),
+            Gap(48),
             LogoImage(
               color: ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
               height: 35,

@@ -1,12 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gap/flutter_gap.dart';
-import 'package:hungry/core/constants/app_colors.dart';
-import 'package:hungry/shared/custom_text.dart';
-
-import '../../../shared/logo_image.dart';
-import 'card_item.dart';
-import 'filter_ships/custom_filter_wrap_choice.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class PrimitiveGridView extends StatefulWidget {
   const PrimitiveGridView({super.key});
