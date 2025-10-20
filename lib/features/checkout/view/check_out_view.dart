@@ -5,14 +5,15 @@ class CheckOutView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<String> paymentMethod = ValueNotifier<String>('cash');
+    final ValueNotifier<PaymentType?> paymentMethod =
+        ValueNotifier<PaymentType?>(PaymentType.cash);
     final ValueNotifier<bool> isChecked = ValueNotifier<bool>(false);
 
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ValueListenableBuilder(
+        child: ValueListenableBuilder<PaymentType?>(
           valueListenable: paymentMethod,
           builder: (context, selectedMethod, _) {
             return Column(
@@ -32,25 +33,25 @@ class CheckOutView extends StatelessWidget {
                 ),
                 const Gap(20),
 
-                // Cash Tile
+                // 💵 Cash
                 PaymentListTile(
                   paymentLogo: 'assets/icons/cash.png',
                   text: 'Cash on Delivery',
-                  value: 'cash',
+                  value: PaymentType.cash,
                   groupValue: selectedMethod,
-                  onChanged: (newVal) => paymentMethod.value = newVal,
+                  onChanged: (newVal) => paymentMethod.value = PaymentType.cash,
                 ),
 
                 const Gap(20),
 
-                // Visa Tile
+                // 💳 Visa
                 VisaListTile(
                   paymentLogo: 'assets/icons/visaSvg.svg',
                   text: 'Debit Card',
                   subTitleText: '3566 **** **** 0505',
-                  value: 'visa',
+                  value: PaymentType.visa,
                   groupValue: selectedMethod,
-                  onChanged: (newVal) => paymentMethod.value = newVal,
+                  onChanged: (newVal) => paymentMethod.value = PaymentType.visa,
                 ),
 
                 const Gap(20),
@@ -102,3 +103,5 @@ class CheckOutView extends StatelessWidget {
     );
   }
 }
+
+enum PaymentType { cash, visa }

@@ -14,8 +14,8 @@ class VisaListTile extends StatelessWidget {
   final String paymentLogo;
   final String text;
   final String subTitleText;
-  final String value;
-  final String groupValue;
+  final PaymentType value;
+  final PaymentType? groupValue;
   final ValueChanged<String> onChanged;
 
   @override
@@ -37,13 +37,13 @@ class VisaListTile extends StatelessWidget {
       ),
       trailing: Radio<String>(
         activeColor: Colors.white,
-        value: value,
-        groupValue: groupValue,
+        value: value.name,
+        groupValue: groupValue!.name,
         onChanged: (val) {
           if (val != null) onChanged(val);
         },
       ),
-      onTap: () => onChanged(value),
+      onTap: () => onChanged(value.name),
     );
   }
 }
