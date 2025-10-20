@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(scaffoldBackgroundColor: Colors.white),
       debugShowCheckedModeBanner: false,
       title: 'HungryApp',
-      home: SplashView(),
+      home: LoginView(),
     );
   }
 }

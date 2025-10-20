@@ -13,8 +13,10 @@ export 'package:hungry/core/constants/app_colors.dart';
 export 'package:hungry/shared/custom_text.dart';
 export 'package:hungry/shared/custom_button.dart';
 export 'package:hungry/shared/logo_image.dart';
+export 'package:hungry/shared/custom_text_form_field.dart';
 
 ///features/feat/widgets
+export 'package:hungry/features/auth/widgets/custom_auth_btn.dart';
 export 'package:hungry/features/product/widgets/spicy_slider.dart';
 export 'package:hungry/features/product/widgets/topping_card.dart';
 export 'package:hungry/features/home/widgets/card_item.dart';
@@ -30,6 +32,8 @@ export 'package:hungry/features/checkout/widgets/success_dialog.dart';
 
 ///features/feat/views
 export 'package:hungry/features/auth/view/profile_view.dart';
+export 'package:hungry/features/auth/view/login_view.dart';
+export 'package:hungry/features/auth/view/signup_view.dart';
 export 'package:hungry/features/home/views/home_view.dart';
 export 'package:hungry/features/cart/views/cart_view.dart';
 export 'package:hungry/features/orderHistory/views/order_history_view.dart';
