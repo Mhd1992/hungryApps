@@ -6,29 +6,44 @@ class VisaListTile extends StatelessWidget {
     required this.paymentLogo,
     required this.text,
     required this.subTitleText,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
   });
+
   final String paymentLogo;
-  final String text, subTitleText;
+  final String text;
+  final String subTitleText;
+  final String value;
+  final String groupValue;
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: EdgeInsets.all(8),
+      contentPadding: const EdgeInsets.all(8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      tileColor: Color(0xffF3F4F6),
-      title: CustomText(text: text, color: Colors.black),
+      tileColor: Colors.blue.shade900,
+      title: CustomText(text: text, color: Colors.white),
       subtitle: CustomText(
         text: subTitleText,
-        color: Colors.black,
+        color: Colors.white,
         fontWeight: FontWeight.w200,
       ),
-      leading: Image.asset(paymentLogo, width: 50),
-      trailing: Radio<String>(
-        activeColor: Colors.black,
-        value: 'visa',
-        groupValue: 'visa',
-        onChanged: (val) {},
+      leading: SvgPicture.asset(
+        paymentLogo,
+        width: 50,
+        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
       ),
+      trailing: Radio<String>(
+        activeColor: Colors.white,
+        value: value,
+        groupValue: groupValue,
+        onChanged: (val) {
+          if (val != null) onChanged(val);
+        },
+      ),
+      onTap: () => onChanged(value),
     );
   }
 }

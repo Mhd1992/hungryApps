@@ -5,24 +5,34 @@ class PaymentListTile extends StatelessWidget {
     super.key,
     required this.paymentLogo,
     required this.text,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
   });
+
   final String paymentLogo;
   final String text;
+  final String value;
+  final String groupValue;
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: EdgeInsets.all(16),
+      contentPadding: const EdgeInsets.all(16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      tileColor: Color(0xff3C2F2F),
+      tileColor: const Color(0xff3C2F2F),
       title: CustomText(text: text, color: Colors.white),
       leading: Image.asset(paymentLogo, width: 50),
       trailing: Radio<String>(
         activeColor: Colors.white,
-        value: 'Cash',
-        groupValue: 'Cash',
-        onChanged: (val) {},
+        value: value,
+        groupValue: groupValue,
+        onChanged: (val) {
+          if (val != null) onChanged(val);
+        },
       ),
+      onTap: () => onChanged(value),
     );
   }
 }

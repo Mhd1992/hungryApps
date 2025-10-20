@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:hungry/core/constants/app_colors.dart';
-import 'package:hungry/shared/custom_text.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -23,7 +21,7 @@ class CustomButton extends StatelessWidget {
           backgroundColor: color ?? AppColors.primaryColor,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
         onPressed: onPressed,
