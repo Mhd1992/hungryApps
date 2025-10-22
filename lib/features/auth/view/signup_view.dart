@@ -7,9 +7,14 @@ import 'package:hungry/shared/custom_text.dart';
 import 'package:hungry/shared/custom_text_form_field.dart';
 import 'package:hungry/shared/logo_image.dart';
 
-class SignupView extends StatelessWidget {
+class SignupView extends StatefulWidget {
   const SignupView({super.key});
 
+  @override
+  State<SignupView> createState() => _SignupViewState();
+}
+
+class _SignupViewState extends State<SignupView> {
   @override
   Widget build(BuildContext context) {
     TextEditingController nameController = TextEditingController();
@@ -18,7 +23,7 @@ class SignupView extends StatelessWidget {
     TextEditingController confirmPassController = TextEditingController();
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      // onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Center(

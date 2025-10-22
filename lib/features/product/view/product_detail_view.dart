@@ -71,23 +71,45 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                 ),
               ),
               Gap(20),
-              Row(
-                children: [
-                  Column(
-                    children: [
-                      CustomText(
-                        text: 'Total Price:',
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      CustomText(text: ' \$12.99', fontSize: 16),
-                    ],
-                  ),
-                  Spacer(),
-                  CustomButton(buttonText: 'Add To Cart', onPressed: () {}),
-                ],
+            ],
+          ),
+        ),
+      ),
+      bottomSheet: IntrinsicHeight(
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade900,
+                blurRadius: 20,
+                offset: const Offset(0, 1),
               ),
             ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              children: [
+                Column(
+                  children: [
+                    CustomText(
+                      text: 'Total Price:',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    CustomText(text: ' \$12.99', fontSize: 16),
+                  ],
+                ),
+                Spacer(),
+                CustomButton(buttonText: 'Add To Cart', onPressed: () {}),
+              ],
+            ),
           ),
         ),
       ),

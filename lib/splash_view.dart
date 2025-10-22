@@ -24,7 +24,7 @@ class _SplashViewState extends State<SplashView> {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const SignupView(),
+          pageBuilder: (_, __, ___) => SignupView(),
           transitionDuration: const Duration(milliseconds: 500),
           transitionsBuilder: (_, animation, __, child) {
             return FadeTransition(opacity: animation, child: child);
@@ -41,7 +41,6 @@ class _SplashViewState extends State<SplashView> {
       body: Column(
         children: [
           const Gap(250),
-
           // 👆 Fade-in logo
           AnimatedOpacity(
             opacity: _opacity,

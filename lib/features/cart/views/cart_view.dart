@@ -6,7 +6,7 @@ class CartView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<ValueNotifier<int>> quantities = List.generate(
-      6,
+      3,
       (_) => ValueNotifier<int>(0),
     );
     final ValueNotifier<int> initialValue = ValueNotifier<int>(0);
@@ -78,6 +78,54 @@ class CartView extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+      bottomSheet: IntrinsicHeight(
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade800,
+                blurRadius: 20,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min, // 👈 important!
+                  children: const [
+                    CustomText(
+                      text: 'Total Price:',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    CustomText(text: '\$11.15', fontSize: 16),
+                  ],
+                ),
+                const Spacer(),
+                CustomButton(
+                  buttonText: 'Pay Now',
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => SuccessDialog(),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
