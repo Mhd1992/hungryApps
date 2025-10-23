@@ -8,12 +8,17 @@ export 'package:flutter_svg/svg.dart';
 export 'package:hungry/root.dart';
 export 'package:hungry/splash_view.dart';
 
+/// flutter packages
+export 'package:dio/dio.dart';
+export 'package:shared_preferences/shared_preferences.dart';
+
 ///core and shared files
 export 'package:hungry/core/constants/app_colors.dart';
 export 'package:hungry/shared/custom_text.dart';
 export 'package:hungry/shared/custom_button.dart';
 export 'package:hungry/shared/logo_image.dart';
 export 'package:hungry/shared/custom_text_form_field.dart';
+export 'package:hungry/shared/custom_user_text_field.dart';
 
 ///features/feat/widgets
 export 'package:hungry/features/auth/widgets/custom_auth_btn.dart';
