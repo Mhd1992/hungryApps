@@ -1,6 +1,9 @@
+import 'package:flutter/services.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
 
@@ -10,10 +13,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        splashColor: Colors.transparent,
+      ),
       debugShowCheckedModeBanner: false,
       title: 'HungryApp',
-      home: Root(),
+      home: SplashView(),
     );
   }
 }

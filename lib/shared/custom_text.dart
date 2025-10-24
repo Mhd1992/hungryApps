@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class CustomText extends StatelessWidget {
   const CustomText({
@@ -18,9 +18,10 @@ class CustomText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
+      textScaler: TextScaler.linear(1.0),
       style: TextStyle(
         fontWeight: fontWeight,
-        fontSize: fontSize,
+        fontSize: fontSize ?? 16,
         color: color,
       ),
     );

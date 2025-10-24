@@ -1,14 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gap/flutter_gap.dart';
-import 'package:hungry/core/constants/app_colors.dart';
-import 'package:hungry/features/auth/widgets/custom_auth_btn.dart';
-import 'package:hungry/shared/custom_text.dart';
-import 'package:hungry/shared/custom_text_form_field.dart';
-import 'package:hungry/shared/logo_image.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
@@ -17,42 +16,95 @@ class LoginView extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.primaryColor,
+        backgroundColor: Colors.white,
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 0),
             child: Form(
               key: formKey,
               child: Column(
                 children: [
-                  Gap(200),
-                  LogoImage(),
+                  Gap(250),
+                  LogoImage(
+                    color: ColorFilter.mode(
+                      AppColors.primaryColor, // The color you want
+                      BlendMode.modulate, // The blending mode
+                    ),
+                  ),
                   Gap(10),
                   CustomText(
                     text: 'Welcome back discover fast food',
-                    color: Colors.white,
+                    color: Colors.grey.shade600,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
-                  Gap(50),
-                  CustomTextFormField(
-                    controller: emailController,
-                    hintText: 'Email Address',
-                    isPassword: false,
-                  ),
-                  Gap(20),
-                  CustomTextFormField(
-                    controller: passController,
-                    hintText: 'password',
-                    isPassword: true,
-                  ),
+                  Gap(75),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 30.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor,
 
-                  Gap(50),
-                  CustomAuthBtn(
-                    text: 'Login',
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {}
-                    },
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          topLeft: Radius.circular(20),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Gap(30),
+                          CustomTextFormField(
+                            controller: emailController,
+                            hintText: 'Email Address',
+                            isPassword: false,
+                          ),
+                          Gap(20),
+                          CustomTextFormField(
+                            controller: passController,
+                            hintText: 'password',
+                            isPassword: true,
+                          ),
+
+                          Gap(50),
+                          CustomAuthBtn(
+                            textColor: Colors.white,
+                            color: AppColors.primaryColor,
+                            text: 'Login',
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {}
+                            },
+                          ),
+                          Gap(16),
+                          CustomAuthBtn(
+                            text: 'SignUp',
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => SignupView(),
+                                ),
+                              );
+                            },
+                          ),
+                          Gap(50),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context) => Root()),
+                              );
+                            },
+                            child: CustomText(
+                              text: 'Continue as Guest',
+                              color: Colors.orangeAccent,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),

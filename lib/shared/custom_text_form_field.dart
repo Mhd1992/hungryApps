@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
-import '../core/constants/app_colors.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class CustomTextFormField extends StatefulWidget {
   const CustomTextFormField({
@@ -47,21 +44,22 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         ),
         fillColor: Colors.white,
         filled: true,
-        hint: Text(widget.hintText),
+        hint: CustomText(text: widget.hintText, color: Colors.black),
         suffixIcon: (widget.isPassword)
             ? GestureDetector(
                 onTap: _togglePassword,
                 child: _obscureText
-                    ? Icon(CupertinoIcons.eye)
-                    : Icon(CupertinoIcons.eye_slash),
+                    ? Icon(CupertinoIcons.eye, color: AppColors.primaryColor)
+                    : Icon(
+                        CupertinoIcons.eye_slash,
+                        color: AppColors.primaryColor,
+                      ),
               )
             : null,
       ),
       obscureText: _obscureText,
       validator: (val) {
         if (val == null || val.isEmpty) {
-          print('am in null block validators');
-
           return 'Please Enter ${widget.hintText}';
         }
         return null;
