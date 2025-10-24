@@ -11,40 +11,46 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   AuthRepo authRepo = AuthRepo();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passController = TextEditingController();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passController = TextEditingController();
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
     Future<void> login() async {
-      try {
-        final user = await authRepo.login(
-          emailController.text.trim(),
-          passController.text.trim(),
-        );
-        if (user != null) {
-          if (!context.mounted) return;
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => Root()));
-        }
-      } catch (e) {
-        String errorMessage = 'unknown Error';
-        if (e is ApiError) {
-          errorMessage = e.message;
-          if (!context.mounted) return;
+      if (formKey.currentState!.validate()) {
+        try {
+          setState(() => _isLoading = true);
 
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(errorMessage)));
+          final user = await authRepo.login(
+            emailController.text.trim(),
+            passController.text.trim(),
+          );
+          if (user != null) {
+            if (!context.mounted) return;
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (context) => Root()));
+          }
+        } catch (e) {
+          String errorMessage = 'unknown Error';
+          if (e is ApiError) {
+            errorMessage = e.message;
+            if (!context.mounted) return;
+
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(errorMessage)));
+          }
+        } finally {
+          setState(() => _isLoading = false);
         }
       }
     }
 
     return GestureDetector(
-      // onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -100,16 +106,16 @@ class _LoginViewState extends State<LoginView> {
                             ),
 
                             Gap(50),
-                            CustomAuthBtn(
-                              textColor: Colors.white,
-                              color: AppColors.primaryColor,
-                              text: 'Login',
-                              onPressed: () async {
-                                if (formKey.currentState!.validate()) {
-                                  login();
-                                }
-                              },
-                            ),
+                            _isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : CustomAuthBtn(
+                                    textColor: Colors.white,
+                                    color: AppColors.primaryColor,
+                                    text: 'Login',
+                                    onPressed: login,
+                                  ),
                             Gap(16),
                             CustomAuthBtn(
                               text: 'SignUp',
@@ -149,11 +155,5 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
-  }
-
-  void _showError(BuildContext context, String? message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message.toString())));
   }
 }

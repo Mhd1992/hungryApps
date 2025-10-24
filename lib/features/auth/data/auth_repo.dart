@@ -14,24 +14,17 @@ class AuthRepo {
         'email': email,
         'password': password,
       });
+
       if (response is ApiError) {
         throw response;
       }
-      if (response is Map<String, dynamic>) {
-        final message = response['message'];
-        final code = response['code'];
-        final data = response['data '];
-
-        if (code != 200 || data != null) {
-          throw ApiError(message: message);
-        }
+      if (response.data['code'] == 200) {
+        final data = response.data['data'] as Map<String, dynamic>;
         final user = UserModel.fromJson(data);
         if (user.token != null) {
           await PrefHelper.saveToken(user.token!);
         }
         return user;
-      } else {
-        throw ApiError(message: 'Unexpected error from server');
       }
     } on DioException catch (error) {
       throw ApiException.handleError(error);
