@@ -10,7 +10,7 @@ class ApiResponse<T> {
     T Function(dynamic) fromJsonT,
   ) {
     return ApiResponse<T>(
-      code: json['code'] ?? 0,
+      code: int.parse(json['code']) ?? 0,
       message: json['message'] ?? '',
       data: json['data'] != null ? fromJsonT(json['data']) : null,
     );

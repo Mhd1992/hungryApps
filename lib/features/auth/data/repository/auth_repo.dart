@@ -32,4 +32,35 @@ class AuthRepo {
       throw ApiError(message: error.toString());
     }
   }
+
+  Future<UserModel?> signUp(String name, String email, String password) async {
+    try {
+      final response = await apiServices.postData('/register', {
+        'name': name,
+        'email': email,
+        'password': password,
+      });
+
+      if (response is ApiError) {
+        throw response;
+      }
+
+      final apiResponse = ApiResponse<UserModel>.fromJson(
+        response.data,
+        (data) => UserModel.fromJson(data),
+      );
+
+      if (apiResponse.code == 200 || apiResponse.code == 201) {
+        final user = apiResponse.data!;
+        if (user.token != null) {
+          await PrefHelper.saveToken(user.token!);
+        }
+        return user;
+      }
+    } on DioException catch (error) {
+      throw ApiException.handleError(error);
+    } catch (error) {
+      throw ApiError(message: error.toString());
+    }
+  }
 }

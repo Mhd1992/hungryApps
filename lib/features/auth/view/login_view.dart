@@ -1,7 +1,5 @@
-import 'package:hungry/core/networks/api_error.dart';
 import 'package:hungry/core/utils/exported_file.dart';
-import 'package:hungry/features/auth/data/auth_repo.dart';
-import 'package:hungry/shared/custom_snack_bar.dart';
+import 'package:hungry/features/auth/data/repository/auth_repo.dart';
 import 'package:hungry/shared/extensions/context_extension.dart';
 
 class LoginView extends StatefulWidget {

@@ -1,4 +1,6 @@
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/auth/data/repository/auth_repo.dart';
+import 'package:hungry/shared/extensions/context_extension.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
@@ -13,8 +15,42 @@ class _SignupViewState extends State<SignupView> {
   TextEditingController passController = TextEditingController();
   TextEditingController confirmPassController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+  AuthRepo authRepo = AuthRepo();
+
   @override
   Widget build(BuildContext context) {
+    Future<void> signUp() async {
+      if (formKey.currentState!.validate()) {
+        try {
+          setState(() => _isLoading = true);
+
+          final user = await authRepo.signUp(
+            nameController.text.trim(),
+            emailController.text.trim(),
+            passController.text.trim(),
+          );
+          if (user != null) {
+            if (!context.mounted) return;
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (context) => Root()));
+          }
+        } catch (e) {
+          String errorMessage = 'unknown Error';
+          if (e is ApiError) {
+            errorMessage = e.message;
+            if (!context.mounted) return;
+            context.showSnackBar(errorMessage);
+
+            ///extensions method for context
+          }
+        } finally {
+          setState(() => _isLoading = false);
+        }
+      }
+    }
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -75,15 +111,14 @@ class _SignupViewState extends State<SignupView> {
                               isPassword: true,
                             ),
                             Gap(32),
-
-                            CustomAuthBtn(
-                              color: AppColors.primaryColor,
-                              textColor: Colors.white,
-                              text: 'SignUp',
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {}
-                              },
-                            ),
+                            _isLoading
+                                ? CircularProgressIndicator(color: Colors.white)
+                                : CustomAuthBtn(
+                                    color: AppColors.primaryColor,
+                                    textColor: Colors.white,
+                                    text: 'SignUp',
+                                    onPressed: signUp,
+                                  ),
                             Gap(16),
                             CustomAuthBtn(
                               text: 'Login',

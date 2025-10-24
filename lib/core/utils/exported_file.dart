@@ -50,8 +50,8 @@ export 'package:hungry/features/product/view/product_detail_view.dart';
 export 'package:hungry/features/checkout/view/check_out_view.dart';
 
 ///features/feat/data
-export 'package:hungry/features/auth/data/api_response_model.dart';
-export 'package:hungry/features/auth/data/user_model.dart';
+export 'package:hungry/features/auth/data/models/api_response_model.dart';
+export 'package:hungry/features/auth/data/models/user_model.dart';
 
 export 'package:hungry/core/networks/api_sevices.dart';
 export 'package:hungry/core/utils/pref_helpers.dart';
