@@ -3,6 +3,7 @@ import 'package:hungry/core/networks/api_error.dart';
 import 'package:hungry/core/networks/api_exceptions.dart';
 import 'package:hungry/core/networks/api_sevices.dart';
 import 'package:hungry/core/utils/pref_helpers.dart';
+import 'package:hungry/features/auth/data/api_response_model.dart';
 import 'package:hungry/features/auth/data/user_model.dart';
 
 class AuthRepo {
@@ -18,9 +19,14 @@ class AuthRepo {
       if (response is ApiError) {
         throw response;
       }
-      if (response.data['code'] == 200) {
-        final data = response.data['data'] as Map<String, dynamic>;
-        final user = UserModel.fromJson(data);
+
+      final apiResponse = ApiResponse<UserModel>.fromJson(
+        response.data,
+        (data) => UserModel.fromJson(data),
+      );
+
+      if (apiResponse.code == 200 && apiResponse.data != null) {
+        final user = apiResponse.data!;
         if (user.token != null) {
           await PrefHelper.saveToken(user.token!);
         }
