@@ -1,26 +1,22 @@
 import 'package:dio/dio.dart';
-import 'package:hungry/core/networks/api_errors.dart';
+import 'package:hungry/core/networks/api_error.dart';
 
 class ApiException implements Exception {
   static ApiError handleError(DioException error) {
+    final statusCode = error.response?.statusCode;
+    final data = error.response?.data;
+    if (data is Map<String, dynamic> && data['message'] != null) {
+      return ApiError(message: data['message'], statusCode: statusCode);
+    }
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
-        return ApiError(
-          message: 'Connection timeout. Please try again later.',
-          code: error.response?.statusCode ?? -1,
-        );
+        return ApiError(message: 'Bad Connection');
 
       case DioExceptionType.badResponse:
-        return ApiError(
-          message: 'Bad response from server. Please try again later.',
-          code: error.response?.statusCode ?? -1,
-        );
+        return ApiError(message: error.toString());
 
       default:
-        return ApiError(
-          message: 'An unknown error occurred.',
-          code: error.response?.statusCode ?? -1,
-        );
+        return ApiError(message: 'Something went wrong.');
     }
   }
 }

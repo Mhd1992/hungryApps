@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       title: 'HungryApp',
-      home: SplashView(),
+      home: LoginView(),
     );
   }
 }
