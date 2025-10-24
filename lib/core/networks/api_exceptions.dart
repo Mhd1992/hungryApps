@@ -6,6 +6,7 @@ class ApiException implements Exception {
     final statusCode = error.response?.statusCode;
     final data = error.response?.data;
     if (data is Map<String, dynamic> && data['message'] != null) {
+      print(data['message']);
       return ApiError(message: data['message'], statusCode: statusCode);
     }
     switch (error.type) {
