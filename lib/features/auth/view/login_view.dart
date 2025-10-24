@@ -1,4 +1,6 @@
+import 'package:hungry/core/networks/api_error.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/auth/data/auth_repo.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -8,13 +10,41 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  AuthRepo authRepo = AuthRepo();
+
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
     TextEditingController passController = TextEditingController();
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    Future<void> login() async {
+      try {
+        final user = await authRepo.login(
+          emailController.text.trim(),
+          passController.text.trim(),
+        );
+        if (user != null) {
+          if (!context.mounted) return;
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => Root()));
+        }
+      } catch (e) {
+        String errorMessage = 'unknown Error';
+        if (e is ApiError) {
+          errorMessage = e.message;
+          if (!context.mounted) return;
+
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(errorMessage)));
+        }
+      }
+    }
+
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      // onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -40,69 +70,75 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   Gap(75),
                   Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.0,
-                        vertical: 30.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor,
-
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          topLeft: Radius.circular(20),
+                    child: SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: 30.0,
                         ),
-                      ),
-                      child: Column(
-                        children: [
-                          Gap(30),
-                          CustomTextFormField(
-                            controller: emailController,
-                            hintText: 'Email Address',
-                            isPassword: false,
-                          ),
-                          Gap(20),
-                          CustomTextFormField(
-                            controller: passController,
-                            hintText: 'password',
-                            isPassword: true,
-                          ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
 
-                          Gap(50),
-                          CustomAuthBtn(
-                            textColor: Colors.white,
-                            color: AppColors.primaryColor,
-                            text: 'Login',
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {}
-                            },
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(20),
+                            topLeft: Radius.circular(20),
                           ),
-                          Gap(16),
-                          CustomAuthBtn(
-                            text: 'SignUp',
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => SignupView(),
-                                ),
-                              );
-                            },
-                          ),
-                          Gap(50),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) => Root()),
-                              );
-                            },
-                            child: CustomText(
-                              text: 'Continue as Guest',
-                              color: Colors.orangeAccent,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                        ),
+                        child: Column(
+                          children: [
+                            Gap(30),
+                            CustomTextFormField(
+                              controller: emailController,
+                              hintText: 'Email Address',
+                              isPassword: false,
                             ),
-                          ),
-                        ],
+                            Gap(20),
+                            CustomTextFormField(
+                              controller: passController,
+                              hintText: 'password',
+                              isPassword: true,
+                            ),
+
+                            Gap(50),
+                            CustomAuthBtn(
+                              textColor: Colors.white,
+                              color: AppColors.primaryColor,
+                              text: 'Login',
+                              onPressed: () async {
+                                if (formKey.currentState!.validate()) {
+                                  login();
+                                }
+                              },
+                            ),
+                            Gap(16),
+                            CustomAuthBtn(
+                              text: 'SignUp',
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => SignupView(),
+                                  ),
+                                );
+                              },
+                            ),
+                            Gap(50),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => Root(),
+                                  ),
+                                );
+                              },
+                              child: CustomText(
+                                text: 'Continue as Guest',
+                                color: Colors.orangeAccent,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -113,5 +149,11 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
+  }
+
+  void _showError(BuildContext context, String? message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message.toString())));
   }
 }

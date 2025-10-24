@@ -3,6 +3,8 @@ export 'package:flutter/material.dart';
 export 'package:flutter/cupertino.dart' hide RefreshCallback;
 export 'package:flutter_gap/flutter_gap.dart';
 export 'package:flutter_svg/svg.dart';
+export 'package:hungry/core/networks/api_exceptions.dart';
+export 'package:hungry/core/networks/dio_client.dart';
 
 /// root file
 export 'package:hungry/root.dart';
