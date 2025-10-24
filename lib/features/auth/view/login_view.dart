@@ -54,30 +54,30 @@ class _LoginViewState extends State<LoginView> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 0),
-            child: Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  Gap(250),
-                  LogoImage(
-                    color: ColorFilter.mode(
-                      AppColors.primaryColor, // The color you want
-                      BlendMode.modulate, // The blending mode
+        body: SingleChildScrollView(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    Gap(150),
+                    LogoImage(
+                      color: ColorFilter.mode(
+                        AppColors.primaryColor, // The color you want
+                        BlendMode.modulate, // The blending mode
+                      ),
                     ),
-                  ),
-                  Gap(10),
-                  CustomText(
-                    text: 'Welcome back discover fast food',
-                    color: Colors.grey.shade600,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  Gap(75),
-                  Expanded(
-                    child: SingleChildScrollView(
+                    Gap(10),
+                    CustomText(
+                      text: 'Welcome back discover fast food',
+                      color: Colors.grey.shade600,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    Gap(32),
+                    SingleChildScrollView(
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 20.0,
@@ -86,14 +86,12 @@ class _LoginViewState extends State<LoginView> {
                         decoration: BoxDecoration(
                           color: AppColors.primaryColor,
 
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            topLeft: Radius.circular(20),
-                          ),
+                          borderRadius: BorderRadius.circular(20),
                         ),
+
                         child: Column(
                           children: [
-                            Gap(30),
+                            Gap(16),
                             CustomTextFormField(
                               controller: emailController,
                               hintText: 'Email Address',
@@ -106,7 +104,7 @@ class _LoginViewState extends State<LoginView> {
                               isPassword: true,
                             ),
 
-                            Gap(50),
+                            Gap(32),
                             _isLoading
                                 ? const CircularProgressIndicator(
                                     color: Colors.white,
@@ -128,7 +126,7 @@ class _LoginViewState extends State<LoginView> {
                                 );
                               },
                             ),
-                            Gap(50),
+                            Gap(8),
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).push(
@@ -148,8 +146,8 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
