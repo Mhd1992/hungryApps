@@ -6,6 +6,8 @@ export 'package:flutter_svg/svg.dart';
 export 'package:hungry/core/networks/api_exceptions.dart';
 export 'package:hungry/core/networks/dio_client.dart';
 
+export 'package:hungry/core/networks/api_error.dart';
+
 /// root file
 export 'package:hungry/root.dart';
 export 'package:hungry/splash_view.dart';
@@ -46,3 +48,10 @@ export 'package:hungry/features/cart/views/cart_view.dart';
 export 'package:hungry/features/orderHistory/views/order_history_view.dart';
 export 'package:hungry/features/product/view/product_detail_view.dart';
 export 'package:hungry/features/checkout/view/check_out_view.dart';
+
+///features/feat/data
+export 'package:hungry/features/auth/data/api_response_model.dart';
+export 'package:hungry/features/auth/data/user_model.dart';
+
+export 'package:hungry/core/networks/api_sevices.dart';
+export 'package:hungry/core/utils/pref_helpers.dart';

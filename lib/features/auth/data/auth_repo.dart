@@ -1,10 +1,4 @@
-import 'package:dio/dio.dart';
-import 'package:hungry/core/networks/api_error.dart';
-import 'package:hungry/core/networks/api_exceptions.dart';
-import 'package:hungry/core/networks/api_sevices.dart';
-import 'package:hungry/core/utils/pref_helpers.dart';
-import 'package:hungry/features/auth/data/api_response_model.dart';
-import 'package:hungry/features/auth/data/user_model.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class AuthRepo {
   ApiServices apiServices = ApiServices();
@@ -25,7 +19,7 @@ class AuthRepo {
         (data) => UserModel.fromJson(data),
       );
 
-      if (apiResponse.code == 200 && apiResponse.data != null) {
+      if (apiResponse.code == 200) {
         final user = apiResponse.data!;
         if (user.token != null) {
           await PrefHelper.saveToken(user.token!);

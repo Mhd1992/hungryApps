@@ -5,8 +5,7 @@ class ApiException implements Exception {
   static ApiError handleError(DioException error) {
     final statusCode = error.response?.statusCode;
     final data = error.response?.data;
-    if (data is Map<String, dynamic> && data['message'] != null) {
-      print(data['message']);
+    if (data['message'] != null) {
       return ApiError(message: data['message'], statusCode: statusCode);
     }
     switch (error.type) {
@@ -15,6 +14,15 @@ class ApiException implements Exception {
 
       case DioExceptionType.badResponse:
         return ApiError(message: error.toString());
+
+      case DioExceptionType.connectionError:
+        return ApiError(message: 'Check you Connection');
+
+      case DioExceptionType.sendTimeout:
+        return ApiError(message: 'Request timed out while sending data');
+
+      case DioExceptionType.badCertificate:
+        return ApiError(message: 'Invalid or untrusted SSL certificate.');
 
       default:
         return ApiError(message: 'Something went wrong.');

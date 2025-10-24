@@ -1,6 +1,8 @@
 import 'package:hungry/core/networks/api_error.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/auth/data/auth_repo.dart';
+import 'package:hungry/shared/custom_snack_bar.dart';
+import 'package:hungry/shared/extensions/context_extension.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -38,10 +40,9 @@ class _LoginViewState extends State<LoginView> {
           if (e is ApiError) {
             errorMessage = e.message;
             if (!context.mounted) return;
+            context.showSnackBar(errorMessage);
 
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(errorMessage)));
+            ///extensions method for context
           }
         } finally {
           setState(() => _isLoading = false);
