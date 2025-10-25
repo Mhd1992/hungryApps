@@ -5,14 +5,17 @@ class CustomUserTextField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.filed,
+    this.type,
   });
   final TextEditingController controller;
   final String filed;
+  final TextInputType? type;
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
       cursorHeight: 20,
+      keyboardType: type ?? TextInputType.text,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white), //to make writing color white
       decoration: InputDecoration(
