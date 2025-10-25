@@ -1,5 +1,5 @@
 class ApiResponse<T> {
-  final int code;
+  final dynamic code;
   final String message;
   final T? data;
 
@@ -10,7 +10,7 @@ class ApiResponse<T> {
     T Function(dynamic) fromJsonT,
   ) {
     return ApiResponse<T>(
-      code: int.parse(json['code']) ?? 0,
+      code: json['code'],
       message: json['message'] ?? '',
       data: json['data'] != null ? fromJsonT(json['data']) : null,
     );

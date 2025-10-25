@@ -15,6 +15,13 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController passController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    emailController.text = 'Alhammali@gmail.com';
+    passController.text = '123456789';
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +45,8 @@ class _LoginViewState extends State<LoginView> {
           if (e is ApiError) {
             errorMessage = e.message;
             if (!context.mounted) return;
-            context.showSnackBar(errorMessage);
 
-            ///extensions method for context
+            context.showSnackBar(errorMessage);
           }
         } finally {
           setState(() => _isLoading = false);
