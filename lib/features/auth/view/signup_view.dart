@@ -123,7 +123,7 @@ class _SignupViewState extends State<SignupView> {
                             CustomAuthBtn(
                               text: 'Login',
                               onPressed: () {
-                                Navigator.of(context).push(
+                                Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder: (context) => LoginView(),
                                   ),
@@ -133,7 +133,7 @@ class _SignupViewState extends State<SignupView> {
                             Gap(8),
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).push(
+                                Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder: (context) => Root(),
                                   ),
