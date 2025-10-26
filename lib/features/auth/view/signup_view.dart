@@ -1,6 +1,4 @@
 import 'package:hungry/core/utils/exported_file.dart';
-import 'package:hungry/features/auth/data/repository/auth_repo.dart';
-import 'package:hungry/shared/extensions/context_extension.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
