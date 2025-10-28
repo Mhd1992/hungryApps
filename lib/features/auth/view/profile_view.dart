@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/auth/widgets/visa_card_widget.dart';
+import 'package:hungry/shared/custom_load_image_button.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -16,6 +21,8 @@ class _ProfileViewState extends State<ProfileView> {
   AuthRepo authRepo = AuthRepo();
   UserModel? userModel;
   bool showVisa = false;
+  bool isUpdating = false;
+  bool isLoggingOut = false;
 
   @override
   void initState() {
@@ -25,17 +32,15 @@ class _ProfileViewState extends State<ProfileView> {
     super.initState();
   }
 
-  Future<void> getProfileData() async {
+  Future<void> getProfileData({bool updatedData = false}) async {
     try {
-      print('getting profile data...');
-      final user = await authRepo.getProfile();
+      final user = await authRepo.getProfile(updatedData: updatedData);
       if (user != null) {
         setState(() {
           userModel = user;
           nameController.text = user.name;
           emailController.text = user.email;
           addressController.text = user.address ?? '';
-
           showVisa = user.visa != null;
         });
       }
@@ -47,6 +52,84 @@ class _ProfileViewState extends State<ProfileView> {
           context.showSnackBar(errorMessage);
         }
       }
+    }
+  }
+
+  String? selectedImage;
+
+  Future<void> uploadImage() async {
+    final pickedImage = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedImage != null) {
+      setState(() {
+        selectedImage = pickedImage.path;
+      });
+    }
+  }
+
+  Future<void> updateProfileData() async {
+    try {
+      setState(() {
+        isUpdating = true;
+      });
+
+      final user = await authRepo.updateUserData(
+        name: nameController.text,
+        email: emailController.text,
+        address: addressController.text,
+        visa: visaController.text,
+        image: selectedImage,
+      );
+      if (user != null) {
+        print('updated user: $user');
+        setState(() {
+          print('updated user and change loading state: $user');
+          userModel = user;
+          isUpdating = false;
+          context.showSnackBar('user updated successfully');
+        });
+      }
+    } catch (e) {
+      String errorMessage = 'unknown Error';
+      if (e is ApiError) {
+        errorMessage = e.message;
+        if (mounted) {
+          context.showSnackBar(errorMessage);
+        }
+      }
+    } finally {
+      setState(() {
+        isUpdating = false;
+        getProfileData(updatedData: true);
+      });
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      setState(() {
+        isLoggingOut = true;
+      });
+      await authRepo.logout();
+      if (mounted) {
+        print(' AM IN NAVIGATOR ');
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginView()),
+        );
+      }
+    } catch (e) {
+      String errorMessage = 'unknown Error';
+      if (e is ApiError) {
+        errorMessage = e.message;
+        if (mounted) {
+          context.showSnackBar(errorMessage);
+        }
+      }
+    } finally {
+      setState(() {
+        isLoggingOut = false;
+      });
     }
   }
 
@@ -93,20 +176,40 @@ class _ProfileViewState extends State<ProfileView> {
                             shape: BoxShape.circle,
                             color: Colors.grey,
                             border: Border.all(width: 2, color: Colors.white),
+                            image: selectedImage != null
+                                ? DecorationImage(
+                                    image: FileImage(File(selectedImage!)),
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
                           ),
+
                           clipBehavior: Clip.antiAlias,
                           child:
-                              (userModel?.image != null &&
-                                  userModel!.image!.isNotEmpty)
-                              ? FadeInImage.assetNetwork(
-                                  placeholder: 'assets/images/placeHolder.png',
-                                  image: userModel!.image!,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.asset(
-                                  'assets/images/placeHolder.png',
+                              (selectedImage == null || selectedImage!.isEmpty)
+                              ? (userModel?.image != null &&
+                                        userModel!.image!.isNotEmpty)
+                                    ? Image.network(
+                                        userModel!.image!,
+                                        errorBuilder:
+                                            (context, error, builder) =>
+                                                Icon(Icons.person),
+                                      )
+                                    : Image.asset(
+                                        'assets/images/placeHolder.png',
+                                        fit: BoxFit.cover,
+                                      )
+                              : Image.file(
+                                  File(selectedImage!),
+
                                   fit: BoxFit.cover,
                                 ),
+                        ),
+                        Gap(8),
+                        CustomLoadImageButton(
+                          buttonText: 'Load Image',
+                          color: Colors.white,
+                          onPressed: uploadImage,
                         ),
                         Gap(32),
                         CustomUserTextField(
@@ -126,19 +229,21 @@ class _ProfileViewState extends State<ProfileView> {
                         Gap(12),
                         Divider(),
                         Gap(12),
-                        CustomUserTextField(
-                          controller: visaController,
-                          filed: 'XXXX-XXXX-XXXX-0505',
-                          type: TextInputType.number,
-                        ),
-                        Gap(12),
                         (showVisa)
-                            ? DefaultVisa(
+                            ? VisaCardWidget(
+                                titleText: 'Debit Card',
+                                subTitleText: '•••• •••• •••• 2022',
+                              )
+                            /* DefaultVisa(
                                 titleText: 'Debit Card',
                                 subTitleText: '3566 **** **** 0505',
                                 imageUrl: 'assets/icons/visa.png',
-                              )
-                            : SizedBox(),
+                              )*/
+                            : CustomUserTextField(
+                                controller: visaController,
+                                filed: 'XXXX-XXXX-XXXX-0505',
+                                type: TextInputType.number,
+                              ),
                         Gap(32),
                       ],
                     ),
@@ -148,57 +253,74 @@ class _ProfileViewState extends State<ProfileView> {
             ),
           ),
         ),
-        bottomSheet: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.white,
-                    border: Border.all(color: AppColors.primaryColor, width: 2),
+        bottomSheet: IntrinsicHeight(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                    onTap: updateProfileData,
+                    child: (isUpdating)
+                        ? CircularProgressIndicator(
+                            color: AppColors.primaryColor,
+                          )
+                        : Container(
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white,
+                              border: Border.all(
+                                color: AppColors.primaryColor,
+                                width: 2,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  text: 'Edit Profile',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                Gap(8),
+                                SvgPicture.asset('assets/icons/edit.svg'),
+                              ],
+                            ),
+                          ),
                   ),
-                  child: Row(
-                    children: [
-                      CustomText(
-                        text: 'Edit Profile',
-                        fontWeight: FontWeight.bold,
-                      ),
-                      Gap(8),
-                      SvgPicture.asset('assets/icons/edit.svg'),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: AppColors.primaryColor,
-                      border: Border.all(color: Colors.grey.shade400, width: 2),
-                    ),
-                    child: Row(
-                      children: [
-                        CustomText(
-                          text: 'Logout',
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: logout,
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: AppColors.primaryColor,
+                        border: Border.all(
+                          color: Colors.grey.shade400,
+                          width: 2,
                         ),
-                        Gap(8),
-                        Icon(Icons.logout, color: Colors.white),
-                      ],
+                      ),
+                      child: Row(
+                        children: [
+                          (isLoggingOut)
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : CustomText(
+                                  text: 'Logout',
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          Gap(8),
+                          Icon(Icons.logout, color: Colors.white),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

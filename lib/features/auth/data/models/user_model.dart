@@ -36,4 +36,11 @@ class UserModel {
       'address': address,
     };
   }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return '$name------$visa';
+    return super.toString();
+  }
 }

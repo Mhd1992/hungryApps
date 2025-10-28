@@ -1,7 +1,7 @@
 import 'package:hungry/core/utils/exported_file.dart';
 
-class CustomButton extends StatelessWidget {
-  const CustomButton({
+class CustomLoadImageButton extends StatelessWidget {
+  const CustomLoadImageButton({
     super.key,
     required this.buttonText,
     required this.onPressed,
@@ -15,23 +15,9 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color ?? AppColors.primaryColor,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-        onPressed: onPressed,
-        child: CustomText(
-          text: buttonText,
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+    return IconButton(
+      onPressed: onPressed,
+      icon: Icon(Icons.camera_alt_outlined, color: Colors.white, size: 32),
     );
   }
 }

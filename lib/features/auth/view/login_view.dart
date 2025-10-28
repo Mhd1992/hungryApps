@@ -131,6 +131,7 @@ class _LoginViewState extends State<LoginView> {
                             Gap(8),
                             TextButton(
                               onPressed: () {
+                                authRepo.continueAsGuest();
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder: (context) => Root(),

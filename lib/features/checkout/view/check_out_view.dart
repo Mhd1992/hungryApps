@@ -73,7 +73,6 @@ class CheckOutView extends StatelessWidget {
         },
       ),
 
-      // ✅ Bottom sheet automatically fits content
       bottomSheet: IntrinsicHeight(
         child: Container(
           width: double.infinity,

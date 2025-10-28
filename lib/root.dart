@@ -31,42 +31,56 @@ class _RootState extends State<Root> {
           children: [screens[currentScreen]],
         ),
 
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            color: AppColors.primaryColor,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: EdgeInsets.all(10),
-          child: BottomNavigationBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.grey.shade700,
-            onTap: (index) => setState(() {
-              currentScreen = index;
-              pageController.jumpToPage(currentScreen);
-            }),
-            currentIndex: currentScreen,
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor.withValues(alpha: 1),
+              borderRadius: BorderRadius.circular(50),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryColor.withValues(alpha: 1),
+                  blurRadius: 20,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            /*BoxDecoration(
+              color: AppColors.primaryColor,
+              borderRadius: BorderRadius.circular(12),
+            ),*/
+            padding: EdgeInsets.all(10),
+            child: BottomNavigationBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.grey.shade700,
+              onTap: (index) => setState(() {
+                currentScreen = index;
+                pageController.jumpToPage(currentScreen);
+              }),
+              currentIndex: currentScreen,
 
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.cart),
-                label: 'Cart',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.local_restaurant_sharp),
-                label: 'Order History',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.profile_circled),
-                label: 'Profile',
-              ),
-            ],
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.cart),
+                  label: 'Cart',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.local_restaurant_sharp),
+                  label: 'Order History',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.profile_circled),
+                  label: 'Profile',
+                ),
+              ],
+            ),
           ),
         ),
       ),
