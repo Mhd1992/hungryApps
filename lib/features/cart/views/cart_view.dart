@@ -80,7 +80,7 @@ class CartView extends StatelessWidget {
           ],
         ),
       ),
-      bottomSheet: IntrinsicHeight(
+      /*    bottomSheet: IntrinsicHeight(
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -127,7 +127,7 @@ class CartView extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      ),*/
     );
   }
 }
