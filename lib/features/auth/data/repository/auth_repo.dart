@@ -185,5 +185,6 @@ class AuthRepo {
   }
 
   UserModel? get cachedUser => _cachedUser;
+  bool get isGuest => _isGuest;
   bool get isLoggedIn => !_isGuest && _cachedUser != null;
 }

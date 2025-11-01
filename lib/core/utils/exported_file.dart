@@ -24,6 +24,7 @@ export 'package:hungry/shared/custom_button.dart';
 export 'package:hungry/shared/logo_image.dart';
 export 'package:hungry/shared/custom_text_form_field.dart';
 export 'package:hungry/shared/custom_user_text_field.dart';
+export 'package:hungry/shared/guest_logo.dart';
 export 'package:hungry/shared/extensions/context_extension.dart';
 
 ///features/feat/widgets
