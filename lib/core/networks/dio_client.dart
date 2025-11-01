@@ -15,10 +15,10 @@ class DioClient {
   DioClient() {
     _dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (options, handler) {
+        onRequest: (options, handler) async {
           // You can add common headers or logging here
-          final token = 'your_auth_token';
-          if (token.isNotEmpty) {
+          final token = await PrefHelper.getToken();
+          if (token != null && token.isNotEmpty) {
             options.headers["Authorization"] = "Bearer $token";
           }
           return handler.next(options);

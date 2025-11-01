@@ -16,11 +16,11 @@ class CardItem extends StatelessWidget {
     return Card(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(imageUrl, fit: BoxFit.cover, width: 180),
+            Center(child: Image.asset(imageUrl, fit: BoxFit.cover, width: 150)),
             Gap(10),
             CustomText(text: title, fontWeight: FontWeight.bold),
             CustomText(text: description),
@@ -28,7 +28,7 @@ class CardItem extends StatelessWidget {
               children: [
                 CustomText(text: '⭐️$rate'),
                 Spacer(),
-                Icon(CupertinoIcons.heart_fill, color: AppColors.primaryColor),
+                Icon(CupertinoIcons.heart, color: AppColors.primaryColor),
               ],
             ),
           ],

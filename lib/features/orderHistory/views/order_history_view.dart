@@ -5,28 +5,33 @@ class OrderHistoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthRepo authRepo = AuthRepo();
+
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            // Scrollable content
-            Expanded(
-              child: ListView.builder(
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return HistoryCard(
-                    imageUrl: 'assets/images/test.png',
-                    title: 'Veggie Burger',
-                    quantity: 3,
-                  );
-                },
-              ),
-            ),
 
-            // Fixed bottom section
-          ],
-        ),
+        child: (authRepo.isGuest)
+            ? Center(child: GuestLogo())
+            : Column(
+                children: [
+                  // Scrollable content
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: 3,
+                      itemBuilder: (context, index) {
+                        return HistoryCard(
+                          imageUrl: 'assets/images/test.png',
+                          title: 'Veggie Burger',
+                          quantity: 3,
+                        );
+                      },
+                    ),
+                  ),
+
+                  // Fixed bottom section
+                ],
+              ),
       ),
     );
   }

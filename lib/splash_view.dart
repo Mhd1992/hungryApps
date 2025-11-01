@@ -9,29 +9,37 @@ class SplashView extends StatefulWidget {
 
 class _SplashViewState extends State<SplashView> {
   double _opacity = 0.0;
+  final AuthRepo authRepo = AuthRepo();
 
   @override
   void initState() {
     super.initState();
 
-    // Fade in animation after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() => _opacity = 1.0);
     });
 
-    // Navigate to SignupView after 3 seconds
-    Future.delayed(const Duration(seconds: 4), () {
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => SignupView(),
-          transitionDuration: const Duration(milliseconds: 500),
-          transitionsBuilder: (_, animation, __, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
-      );
-    });
+    _navigateAfterDelay();
+  }
+
+  Future<void> _navigateAfterDelay() async {
+    await Future.delayed(const Duration(seconds: 2)); // short delay for splash
+
+    // 🟢 Call autoLogin first
+    await authRepo.autoLogin();
+
+    if (!mounted) return;
+
+    // 🟢 Now decide which screen to go to
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => authRepo.isLoggedIn ? Root() : LoginView(),
+        transitionDuration: const Duration(milliseconds: 500),
+        transitionsBuilder: (_, animation, __, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    );
   }
 
   @override
@@ -41,17 +49,13 @@ class _SplashViewState extends State<SplashView> {
       body: Column(
         children: [
           const Gap(250),
-          // 👆 Fade-in logo
           AnimatedOpacity(
             opacity: _opacity,
             duration: const Duration(milliseconds: 800),
             curve: Curves.easeInOut,
             child: SvgPicture.asset('assets/logo/logo.svg'),
           ),
-
           const Spacer(),
-
-          // 👇 Fade-in bottom image
           AnimatedOpacity(
             opacity: _opacity,
             duration: const Duration(milliseconds: 1200),

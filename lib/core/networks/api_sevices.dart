@@ -1,5 +1,3 @@
-import 'package:hungry/core/networks/api_exceptions.dart';
-import 'package:hungry/core/networks/dio_client.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 
 class ApiServices {
@@ -16,9 +14,14 @@ class ApiServices {
   }
 
   /// post
-  Future<dynamic> postData(String endPoint, Map<String, dynamic> body) async {
+  Future<dynamic> postData(
+    String endPoint, {
+    Map<String, dynamic>? body,
+    FormData? formData,
+  }) async {
+    final dataToSend = formData ?? body;
     try {
-      final response = await dioClient.dio.post(endPoint, data: body);
+      final response = await dioClient.dio.post(endPoint, data: dataToSend);
       return response;
     } on DioException catch (e) {
       return ApiException.handleError(e);

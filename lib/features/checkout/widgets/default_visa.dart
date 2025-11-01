@@ -23,11 +23,14 @@ class DefaultVisa extends StatelessWidget {
         fontWeight: FontWeight.w200,
       ),
       leading: Image.asset(imageUrl, width: 50),
-      trailing: CustomText(
-        text: 'Default',
-        color: Colors.grey.shade900,
-        fontWeight: FontWeight.bold,
-        fontSize: 14,
+      trailing: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: CustomText(
+          text: 'Default',
+          color: Colors.grey.shade900,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
       ),
     );
   }

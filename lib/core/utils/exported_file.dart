@@ -2,7 +2,12 @@ export 'package:flutter/material.dart';
 // to exclude RefreshCallback in cupertino.dart
 export 'package:flutter/cupertino.dart' hide RefreshCallback;
 export 'package:flutter_gap/flutter_gap.dart';
+export 'package:skeletonizer/skeletonizer.dart';
 export 'package:flutter_svg/svg.dart';
+export 'package:hungry/core/networks/api_exceptions.dart';
+export 'package:hungry/core/networks/dio_client.dart';
+
+export 'package:hungry/core/networks/api_error.dart';
 
 /// root file
 export 'package:hungry/root.dart';
@@ -19,6 +24,8 @@ export 'package:hungry/shared/custom_button.dart';
 export 'package:hungry/shared/logo_image.dart';
 export 'package:hungry/shared/custom_text_form_field.dart';
 export 'package:hungry/shared/custom_user_text_field.dart';
+export 'package:hungry/shared/guest_logo.dart';
+export 'package:hungry/shared/extensions/context_extension.dart';
 
 ///features/feat/widgets
 export 'package:hungry/features/auth/widgets/custom_auth_btn.dart';
@@ -34,6 +41,7 @@ export 'package:hungry/features/checkout/widgets/order_detail.dart';
 export 'package:hungry/features/checkout/widgets/visa_list_tile.dart';
 export 'package:hungry/features/checkout/widgets/payment_list_tile.dart';
 export 'package:hungry/features/checkout/widgets/success_dialog.dart';
+export 'package:hungry/features/checkout/widgets/default_visa.dart';
 
 ///features/feat/views
 export 'package:hungry/features/auth/view/profile_view.dart';
@@ -44,3 +52,13 @@ export 'package:hungry/features/cart/views/cart_view.dart';
 export 'package:hungry/features/orderHistory/views/order_history_view.dart';
 export 'package:hungry/features/product/view/product_detail_view.dart';
 export 'package:hungry/features/checkout/view/check_out_view.dart';
+
+///features/feat/data
+export 'package:hungry/features/auth/data/models/api_response_model.dart';
+export 'package:hungry/features/auth/data/models/user_model.dart';
+
+export 'package:hungry/core/networks/api_sevices.dart';
+export 'package:hungry/core/utils/pref_helpers.dart';
+
+///features/feat/data/repository
+export 'package:hungry/features/auth/data/repository/auth_repo.dart';
