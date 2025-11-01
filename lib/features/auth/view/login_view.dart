@@ -1,5 +1,7 @@
 import 'package:hungry/core/utils/exported_file.dart';
 
+import '../data/repository/v1/auth_repo_v1.dart';
+
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -9,6 +11,7 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   AuthRepo authRepo = AuthRepo();
+  AuthRepoV1 authRepoV1 = AuthRepoV1();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -28,7 +31,7 @@ class _LoginViewState extends State<LoginView> {
         try {
           setState(() => _isLoading = true);
 
-          final user = await authRepo.login(
+          final user = await authRepoV1.login(
             emailController.text.trim(),
             passController.text.trim(),
           );

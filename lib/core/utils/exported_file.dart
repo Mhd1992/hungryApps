@@ -62,3 +62,7 @@ export 'package:hungry/core/utils/pref_helpers.dart';
 
 ///features/feat/data/repository
 export 'package:hungry/features/auth/data/repository/auth_repo.dart';
+
+// retrofit
+export 'package:hungry/core/networks/retrofit/api_service.dart';
+export 'package:hungry/core/networks/retrofit/model/base_response.dart';
