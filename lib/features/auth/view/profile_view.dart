@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
 import 'package:hungry/features/auth/widgets/visa_card_widget.dart';
 import 'package:hungry/shared/custom_load_image_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,6 +20,7 @@ class _ProfileViewState extends State<ProfileView> {
   TextEditingController visaController = TextEditingController();
 
   AuthRepo authRepo = AuthRepo();
+  AuthRepoV1 authRepoV1 = AuthRepoV1();
   UserModel? userModel;
   bool showVisa = false;
   bool isUpdating = false;
@@ -34,7 +36,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future<void> getProfileData({bool updatedData = false}) async {
     try {
-      final user = await authRepo.getProfile(updatedData: updatedData);
+      final user = await authRepoV1.profile(updatedData: updatedData);
       if (user != null) {
         setState(() {
           userModel = user;
@@ -74,17 +76,15 @@ class _ProfileViewState extends State<ProfileView> {
         isUpdating = true;
       });
 
-      final user = await authRepo.updateUserData(
+      final user = await authRepoV1.editProfile(
         name: nameController.text,
         email: emailController.text,
         address: addressController.text,
         visa: visaController.text,
-        image: selectedImage,
+        imagePath: selectedImage,
       );
       if (user != null) {
-        print('updated user: $user');
         setState(() {
-          print('updated user and change loading state: $user');
           userModel = user;
           isUpdating = false;
           context.showSnackBar('user updated successfully');

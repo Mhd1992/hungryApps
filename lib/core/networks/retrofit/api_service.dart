@@ -1,8 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:hungry/core/utils/exported_file.dart';
-import 'model/base_response.dart';
-
+import 'package:retrofit/retrofit.dart';
 part 'api_service.g.dart';
 
 @RestApi(baseUrl: "https://sonic-zdi0.onrender.com/api")
@@ -12,6 +10,12 @@ abstract class ApiService {
   // ✅ Login request
   @POST("/login")
   Future<BaseResponse<UserModel>> login(@Body() Map<String, dynamic> body);
+
+  @POST("/register")
+  Future<BaseResponse<UserModel>> register(@Body() Map<String, dynamic> body);
+
+  @GET("/{endPoint}")
+  Future<BaseResponse<UserModel>> profile(@Path("endPoint") String endPoint);
 
   // ✅ Get all users
   @GET("/users")
@@ -23,6 +27,9 @@ abstract class ApiService {
     @Path("endPoint") String endPoint,
     @Body() Map<String, dynamic> body,
   );
+
+  @POST("/update-profile")
+  Future<BaseResponse<UserModel>> updateUserData(@Body() FormData body);
 
   // ✅ DELETE request (generic)
   @DELETE("/{endPoint}")

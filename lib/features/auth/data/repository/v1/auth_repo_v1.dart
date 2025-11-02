@@ -20,7 +20,6 @@ class AuthRepoV1 {
         'password': password,
       });
 
-      print('I am in retrofit login response:)) $response');
       if (response is ApiError) {
         throw response;
       }
@@ -39,23 +38,25 @@ class AuthRepoV1 {
     throw ApiError(message: 'Unknown error occurred login failed.');
   }
 
-  Future<UserModel?> signUp(String name, String email, String password) async {
+  Future<UserModel?> register(
+    String name,
+    String email,
+    String password,
+  ) async {
     try {
-      final response = await apiServices.postData(
-        '/register',
-        body: {'name': name, 'email': email, 'password': password},
-      );
+      final response = await _apiService.register({
+        'name': name,
+        'email': email,
+        'password': password,
+      });
 
       if (response is ApiError) {
         throw response;
       }
 
-      final apiResponse = ApiResponse<UserModel>.fromJson(
-        response.data,
-        (data) => UserModel.fromJson(data),
-      );
+      final apiResponse = response;
 
-      if (apiResponse.code == 200 || apiResponse.code == 201) {
+      if (apiResponse.code == '200' || apiResponse.code == '201') {
         final user = apiResponse.data!;
         if (user.token != null) {
           await PrefHelper.saveToken(user.token!);
@@ -67,29 +68,26 @@ class AuthRepoV1 {
     } catch (error) {
       throw ApiError(message: error.toString());
     }
-    throw ApiError(message: 'Unknown error occurred signup failed.');
+    throw ApiError(message: 'Unknown error occurred register failed.');
   }
 
-  Future<UserModel?> getProfile({bool updatedData = false}) async {
+  Future<UserModel?> profile({bool updatedData = false}) async {
     final token = await PrefHelper.getToken();
     if (token == 'guest') {
-      print('AM GUEST');
+      print('---------AM GUEST-----------');
       return null;
     }
     try {
       if (_cachedUser != null && !updatedData) {
         return _cachedUser;
       }
-      final response = await apiServices.getData('/profile');
+      final response = await _apiService.profile('profile');
 
       if (response is ApiError) {
         throw response;
       }
 
-      final apiResponse = ApiResponse<UserModel>.fromJson(
-        response.data,
-        (data) => UserModel.fromJson(data),
-      );
+      final apiResponse = response;
 
       if (apiResponse.code == 200) {
         final user = apiResponse.data!;
@@ -104,50 +102,38 @@ class AuthRepoV1 {
     throw ApiError(message: 'Unknown error occurred getProfile data failed.');
   }
 
-  Future<UserModel?> updateUserData({
+  Future<UserModel?> editProfile({
     required String name,
     required String email,
     required String address,
-    String? image,
+    String? imagePath,
     String? visa,
   }) async {
+    MultipartFile? imageFile;
+    if (imagePath != null && imagePath.isNotEmpty) {
+      imageFile = await MultipartFile.fromFile(
+        imagePath,
+        filename: 'upload.jpg',
+      );
+    }
+
     final formData = FormData.fromMap({
       'name': name,
       'email': email,
       'address': address,
-      if (image != null && image.isNotEmpty)
-        'image': await MultipartFile.fromFile(image, filename: 'upload.jpg'),
       if (visa != null && visa.isNotEmpty) 'Visa': visa,
+      if (imageFile != null) 'image': imageFile,
     });
 
-    try {
-      final response = await apiServices.postData(
-        '/update-profile',
-        formData: formData,
-      );
+    final response = await _apiService.updateUserData(formData);
 
-      if (response is ApiError) {
-        throw response;
-      }
-
-      final apiResponse = ApiResponse<UserModel>.fromJson(
-        response.data,
-        (data) => UserModel.fromJson(data),
-      );
-
-      if (apiResponse.code == 200) {
-        final user = apiResponse.data!;
-        if (user.token != null) {
-          await PrefHelper.saveToken(user.token!);
-        }
-        return user;
-      }
-    } on DioException catch (error) {
-      throw ApiException.handleError(error);
-    } catch (error) {
-      throw ApiError(message: error.toString());
+    if (response.code == 200 && response.data != null) {
+      final user = response.data!;
+      if (user.token != null) await PrefHelper.saveToken(user.token!);
+      return user;
+    } else {
+      throw Exception(response.message);
     }
-    throw ApiError(message: 'Unknown error occurred update profile failed.');
   }
 
   Future<void> logout() async {
@@ -166,7 +152,7 @@ class AuthRepoV1 {
     if (token == 'guest') return null;
     _isGuest = false;
     try {
-      _cachedUser = await getProfile();
+      _cachedUser = await profile();
       return _cachedUser;
     } catch (_) {
       await PrefHelper.clearToken();
