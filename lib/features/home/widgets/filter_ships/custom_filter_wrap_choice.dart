@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hungry/core/constants/app_colors.dart';
+import 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
 
 class CustomWrapFilterChoice extends StatelessWidget {
   const CustomWrapFilterChoice({
@@ -9,7 +10,9 @@ class CustomWrapFilterChoice extends StatelessWidget {
     required this.onChanged,
   });
 
-  final List<String> categories;
+  // final List<String> categories;
+  final List<CategoryModel> categories;
+
   final int selectedIndex;
   final ValueChanged<int> onChanged;
 
@@ -27,7 +30,7 @@ class CustomWrapFilterChoice extends StatelessWidget {
               borderRadius: BorderRadius.circular(50.0),
             ),
             label: Text(
-              categories[index],
+              categories[index].name,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 color: selectedIndex == index

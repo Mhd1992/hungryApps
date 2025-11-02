@@ -1,3 +1,4 @@
+import 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:retrofit/retrofit.dart';
@@ -23,6 +24,9 @@ abstract class ApiService {
   // ✅ Get all users
   @GET("/users")
   Future<BaseResponse<List<UserModel>>> getUsers();
+
+  @GET("/categories")
+  Future<BaseResponse<List<CategoryModel>>> getCategories();
 
   // ✅ PUT request (generic)
   @PUT("/{endPoint}")

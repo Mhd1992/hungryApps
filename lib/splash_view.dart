@@ -1,5 +1,7 @@
 import 'package:hungry/core/utils/exported_file.dart';
 
+import 'features/auth/data/repository/v1/auth_repo_v1.dart';
+
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
@@ -10,6 +12,7 @@ class SplashView extends StatefulWidget {
 class _SplashViewState extends State<SplashView> {
   double _opacity = 0.0;
   final AuthRepo authRepo = AuthRepo();
+  final AuthRepoV1 authRepoV1 = AuthRepoV1();
 
   @override
   void initState() {
@@ -26,14 +29,17 @@ class _SplashViewState extends State<SplashView> {
     await Future.delayed(const Duration(seconds: 2)); // short delay for splash
 
     // 🟢 Call autoLogin first
-    await authRepo.autoLogin();
+    // await authRepo.autoLogin();//with out retrofit
+    await authRepoV1.autoLogin();
 
     if (!mounted) return;
 
     // 🟢 Now decide which screen to go to
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => authRepo.isLoggedIn ? Root() : LoginView(),
+        // pageBuilder: (_, __, ___) => authRepo.isLoggedIn ? Root() : LoginView(),without Retrofit
+        pageBuilder: (_, __, ___) =>
+            authRepoV1.isLoggedIn ? Root() : LoginView(),
         transitionDuration: const Duration(milliseconds: 500),
         transitionsBuilder: (_, animation, __, child) {
           return FadeTransition(opacity: animation, child: child);

@@ -1,4 +1,6 @@
+import 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/home/data/repository/home_repo.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -8,6 +10,40 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  HomeRepo homeRepo = HomeRepo();
+  bool _isLoading = false;
+
+  List<CategoryModel> categoriesModels = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    getCategories();
+    super.initState();
+  }
+
+  Future<void> getCategories() async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      final categories = await homeRepo.loadCategories();
+      if (categories != null || categories.isNotEmpty) {
+        categoriesModels = categories;
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      String errorMessage = 'unknown Error';
+      if (e is ApiError) {
+        errorMessage = e.message;
+        if (mounted) {
+          context.showSnackBar(errorMessage);
+        }
+      }
+    }
+  }
+
   int _selectedCategoryIndex = 0;
   List<String> categories = [
     'All',
@@ -40,19 +76,21 @@ class _HomeViewState extends State<HomeView> {
 
           ///body of view
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2),
             sliver: SliverToBoxAdapter(
               child: Column(
                 children: [
-                  CustomWrapFilterChoice(
-                    categories: categories,
-                    selectedIndex: _selectedCategoryIndex,
-                    onChanged: (newIndex) {
-                      setState(() {
-                        _selectedCategoryIndex = newIndex;
-                      });
-                    },
-                  ),
+                  _isLoading
+                      ? CircularProgressIndicator(color: AppColors.primaryColor)
+                      : CustomWrapFilterChoice(
+                          categories: categoriesModels,
+                          selectedIndex: _selectedCategoryIndex,
+                          onChanged: (newIndex) {
+                            setState(() {
+                              _selectedCategoryIndex = newIndex;
+                            });
+                          },
+                        ),
                 ],
               ),
             ),

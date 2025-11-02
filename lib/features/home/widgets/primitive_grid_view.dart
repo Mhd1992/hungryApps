@@ -77,7 +77,7 @@ class _PrimitiveGridViewState extends State<PrimitiveGridView> {
               Gap(16),
 
               CustomWrapFilterChoice(
-                categories: categories,
+                categories: [], //to change it to list<categoryModel>
                 selectedIndex: _selectedCategoryIndex,
                 onChanged: (newIndex) {
                   setState(() {
