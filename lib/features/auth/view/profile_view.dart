@@ -111,9 +111,10 @@ class _ProfileViewState extends State<ProfileView> {
       setState(() {
         isLoggingOut = true;
       });
-      await authRepo.logout();
+      // await authRepo.logout();
+      await authRepoV1.logout();
+
       if (mounted) {
-        print(' AM IN NAVIGATOR ');
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginView()),
         );

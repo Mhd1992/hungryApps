@@ -38,7 +38,7 @@ class CustomWrapFilterChoice extends StatelessWidget {
             selected: selectedIndex == index,
             selectedColor: AppColors.primaryColor,
             backgroundColor: Color(0xffF3F4F6),
-
+            checkmarkColor: Colors.white,
             onSelected: (bool selected) {
               onChanged(index);
             },

@@ -11,6 +11,9 @@ abstract class ApiService {
   @POST("/login")
   Future<BaseResponse<UserModel>> login(@Body() Map<String, dynamic> body);
 
+  @POST("/logout")
+  Future<BaseResponse<dynamic>> logout();
+
   @POST("/register")
   Future<BaseResponse<UserModel>> register(@Body() Map<String, dynamic> body);
 

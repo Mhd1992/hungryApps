@@ -137,9 +137,11 @@ class AuthRepoV1 {
   }
 
   Future<void> logout() async {
-    final response = await apiServices.postData('/logout', body: {});
+    print('AM using retorfit');
 
-    final apiResponse = ApiResponse<void>.fromJson(response.data, (data) {});
+    final response = await _apiService.logout();
+
+    final apiResponse = response;
     if (apiResponse.code == 200) {
       await PrefHelper.clearToken();
       _cachedUser = null;
