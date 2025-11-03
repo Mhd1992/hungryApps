@@ -1,7 +1,4 @@
-import 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
-import 'package:hungry/core/networks/retrofit/model/products/product_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
-import 'package:hungry/features/home/data/repository/home_repo.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});

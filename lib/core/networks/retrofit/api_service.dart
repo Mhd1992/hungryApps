@@ -1,9 +1,6 @@
-import 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
-import 'package:hungry/core/networks/retrofit/model/products/product_model.dart';
-import 'package:hungry/core/networks/retrofit/model/side_option/side_option_model.dart';
-import 'package:hungry/core/networks/retrofit/model/topping/topping_model.dart';
-import 'package:retrofit/retrofit.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:retrofit/retrofit.dart';
+
 part 'api_service.g.dart';
 
 @RestApi(baseUrl: "https://sonic-zdi0.onrender.com/api")

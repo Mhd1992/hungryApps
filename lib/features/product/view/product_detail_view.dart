@@ -1,7 +1,4 @@
-import 'package:hungry/core/networks/retrofit/model/side_option/side_option_model.dart';
-import 'package:hungry/core/networks/retrofit/model/topping/topping_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
-import 'package:hungry/features/product/data/repository/product_option_repo.dart';
 
 class ProductDetailView extends StatefulWidget {
   const ProductDetailView({super.key});
