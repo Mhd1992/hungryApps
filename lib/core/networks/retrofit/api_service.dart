@@ -4,7 +4,6 @@ import 'package:hungry/core/networks/retrofit/model/side_option/side_option_mode
 import 'package:hungry/core/networks/retrofit/model/topping/topping_model.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:hungry/core/utils/exported_file.dart';
-import 'package:retrofit/retrofit.dart';
 part 'api_service.g.dart';
 
 @RestApi(baseUrl: "https://sonic-zdi0.onrender.com/api")
@@ -36,6 +35,9 @@ abstract class ApiService {
 
   @GET("/toppings")
   Future<BaseResponse<List<ToppingModel>>> getToppings();
+
+  @GET("/toppings/{id}")
+  Future<BaseResponse<ToppingModel>> loadToppings(@Path("id") int id);
 
   @GET("/side-options")
   Future<BaseResponse<List<SideOptionModel>>> getSideOptions();

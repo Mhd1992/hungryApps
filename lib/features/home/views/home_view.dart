@@ -12,30 +12,30 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   HomeRepo homeRepo = HomeRepo();
-  bool _isCategoryLoading = false;
-  bool _isProductLoading = false;
-
+  bool _isAllLoading = false;
+  int _selectedCategoryIndex = 0;
   List<CategoryModel> categoriesModels = [];
   List<ProductModel> productModels = [];
   @override
   void initState() {
     // TODO: implement initState
-    getCategories();
-    getProducts();
+    _loadAllData();
     super.initState();
   }
 
-  Future<void> getCategories() async {
+  Future<void> _loadAllData() async {
+    setState(() => _isAllLoading = true);
+
+    await Future.wait([_loadCategories(), _loadProducts()]);
+
+    setState(() => _isAllLoading = false);
+  }
+
+  Future<void> _loadCategories() async {
     try {
-      setState(() {
-        _isCategoryLoading = true;
-      });
       final categories = await homeRepo.loadCategories();
       if (categories != null || categories.isNotEmpty) {
         categoriesModels = categories;
-        setState(() {
-          _isCategoryLoading = false;
-        });
       }
     } catch (e) {
       String errorMessage = 'unknown Error';
@@ -48,17 +48,11 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  Future<void> getProducts() async {
+  Future<void> _loadProducts() async {
     try {
-      setState(() {
-        _isProductLoading = true;
-      });
       final products = await homeRepo.loadProducts();
       if (products != null || products.isNotEmpty) {
         productModels = products;
-        setState(() {
-          _isProductLoading = false;
-        });
       }
     } catch (e) {
       String errorMessage = 'unknown Error';
@@ -71,14 +65,13 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  int _selectedCategoryIndex = 0;
-  List<String> categories = [
+  /* List<String> categories = [
     'All',
     'Combo',
     'Sliders',
     'Juice',
     'chickenBurger',
-  ];
+  ];*/
 
   @override
   Widget build(BuildContext context) {
@@ -101,66 +94,68 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
 
-          ///body of view
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2),
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  _isCategoryLoading
-                      ? CircularProgressIndicator(color: AppColors.primaryColor)
-                      : CustomWrapFilterChoice(
-                          categories: categoriesModels,
-                          selectedIndex: _selectedCategoryIndex,
-                          onChanged: (newIndex) {
-                            setState(() {
-                              _selectedCategoryIndex = newIndex;
-                            });
-                          },
-                        ),
-                ],
+          /// Show one loading spinner if both APIs not ready
+          if (_isAllLoading)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: CircularProgressIndicator(color: AppColors.primaryColor),
+              ),
+            )
+          else ...[
+            ///body of view
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 2,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    CustomWrapFilterChoice(
+                      categories: categoriesModels,
+                      selectedIndex: _selectedCategoryIndex,
+                      onChanged: (newIndex) {
+                        setState(() {
+                          _selectedCategoryIndex = newIndex;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          ///footer of view
-          _isProductLoading
-              ? SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
-                )
-              : SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  sliver: SliverGrid(
-                    delegate: SliverChildBuilderDelegate(
-                      childCount: productModels.length,
-                      (context, index) => GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => ProductDetailView(),
-                            ),
-                          );
-                        },
-                        child: CardItem(
-                          title: productModels[index].name,
-                          imageUrl: productModels[index].imageUrl,
-                          description: productModels[index].description,
-                          rate: productModels[index].rating,
+            ///footer of view
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverGrid(
+                delegate: SliverChildBuilderDelegate(
+                  childCount: productModels.length,
+                  (context, index) => GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailView(),
                         ),
-                      ),
-                    ),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 2,
-                      childAspectRatio: 0.75,
+                      );
+                    },
+                    child: CardItem(
+                      title: productModels[index].name,
+                      imageUrl: productModels[index].imageUrl,
+                      description: productModels[index].description,
+                      rate: productModels[index].rating,
                     ),
                   ),
                 ),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 2,
+                  childAspectRatio: 0.75,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

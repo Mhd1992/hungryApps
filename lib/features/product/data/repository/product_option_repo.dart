@@ -32,6 +32,25 @@ class ProductOptionRepo {
     throw ApiError(message: 'Unknown error occurred loadCategory failed.');
   }
 
+  Future<ToppingModel> loadToId(int id) async {
+    try {
+      if (_cachedToppings != null && _cachedToppings!.isNotEmpty) {
+        //  return _cachedToppings!;
+      }
+      final response = await _apiService.getToppings();
+      if (response is ApiError) {
+        throw response;
+      }
+      if (response.code == 200) {
+        _cachedToppings = response.data ?? [];
+        //  return response.data ?? [];
+      }
+    } catch (error) {
+      throw ApiError(message: error.toString());
+    }
+    throw ApiError(message: 'Unknown error occurred loadCategory failed.');
+  }
+
   Future<List<SideOptionModel>> loadSideOptions() async {
     try {
       if (_cachedSideOptions != null && _cachedSideOptions!.isNotEmpty) {
