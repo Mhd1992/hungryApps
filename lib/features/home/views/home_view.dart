@@ -1,4 +1,5 @@
 import 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
+import 'package:hungry/core/networks/retrofit/model/products/product_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/home/data/repository/home_repo.dart';
 
@@ -11,26 +12,52 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   HomeRepo homeRepo = HomeRepo();
-  bool _isLoading = false;
+  bool _isCategoryLoading = false;
+  bool _isProductLoading = false;
 
   List<CategoryModel> categoriesModels = [];
+  List<ProductModel> productModels = [];
   @override
   void initState() {
     // TODO: implement initState
     getCategories();
+    getProducts();
     super.initState();
   }
 
   Future<void> getCategories() async {
     try {
       setState(() {
-        _isLoading = true;
+        _isCategoryLoading = true;
       });
       final categories = await homeRepo.loadCategories();
       if (categories != null || categories.isNotEmpty) {
         categoriesModels = categories;
         setState(() {
-          _isLoading = false;
+          _isCategoryLoading = false;
+        });
+      }
+    } catch (e) {
+      String errorMessage = 'unknown Error';
+      if (e is ApiError) {
+        errorMessage = e.message;
+        if (mounted) {
+          context.showSnackBar(errorMessage);
+        }
+      }
+    }
+  }
+
+  Future<void> getProducts() async {
+    try {
+      setState(() {
+        _isProductLoading = true;
+      });
+      final products = await homeRepo.loadProducts();
+      if (products != null || products.isNotEmpty) {
+        productModels = products;
+        setState(() {
+          _isProductLoading = false;
         });
       }
     } catch (e) {
@@ -80,7 +107,7 @@ class _HomeViewState extends State<HomeView> {
             sliver: SliverToBoxAdapter(
               child: Column(
                 children: [
-                  _isLoading
+                  _isCategoryLoading
                       ? CircularProgressIndicator(color: AppColors.primaryColor)
                       : CustomWrapFilterChoice(
                           categories: categoriesModels,
@@ -97,34 +124,43 @@ class _HomeViewState extends State<HomeView> {
           ),
 
           ///footer of view
-          SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                childCount: 6,
-                (context, index) => GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailView(),
+          _isProductLoading
+              ? SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
+                )
+              : SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate(
+                      childCount: productModels.length,
+                      (context, index) => GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ProductDetailView(),
+                            ),
+                          );
+                        },
+                        child: CardItem(
+                          title: productModels[index].name,
+                          imageUrl: productModels[index].imageUrl,
+                          description: productModels[index].description,
+                          rate: productModels[index].rating,
+                        ),
                       ),
-                    );
-                  },
-                  child: CardItem(
-                    title: 'CheeseBurger',
-                    imageUrl: 'assets/images/test.png',
-                    description: 'Happy Burger',
-                    rate: '️3.8',
+                    ),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 2,
+                      childAspectRatio: 0.75,
+                    ),
                   ),
                 ),
-              ),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 2,
-                childAspectRatio: 0.75,
-              ),
-            ),
-          ),
         ],
       ),
     );

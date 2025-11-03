@@ -25,7 +25,7 @@ class ToppingCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            child: Image.asset(imageUrl, height: 80, fit: BoxFit.cover),
+            child: Image.network(imageUrl, height: 80, fit: BoxFit.cover),
           ),
           Container(
             decoration: const BoxDecoration(

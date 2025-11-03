@@ -1,6 +1,5 @@
-import 'package:hungry/core/networks/dio_client.dart';
-import 'package:hungry/core/networks/retrofit/api_service.dart';
 import 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
+import 'package:hungry/core/networks/retrofit/model/products/product_model.dart';
 
 import '../../../../core/utils/exported_file.dart';
 
@@ -13,6 +12,7 @@ class HomeRepo {
 
   final ApiService _apiService = ApiService(DioClient().dio);
   List<CategoryModel>? _cachedCategories;
+  List<ProductModel>? _cachedProducts;
   Future<List<CategoryModel>> loadCategories() async {
     try {
       if (_cachedCategories != null && _cachedCategories!.isNotEmpty) {
@@ -26,6 +26,25 @@ class HomeRepo {
         _cachedCategories = response.data ?? [];
         return response.data ?? [];
         // return categories!;
+      }
+    } catch (error) {
+      throw ApiError(message: error.toString());
+    }
+    throw ApiError(message: 'Unknown error occurred loadCategory failed.');
+  }
+
+  Future<List<ProductModel>> loadProducts() async {
+    try {
+      if (_cachedProducts != null && _cachedProducts!.isNotEmpty) {
+        return _cachedProducts!;
+      }
+      final response = await _apiService.getProducts();
+      if (response is ApiError) {
+        throw response;
+      }
+      if (response.code == 200) {
+        _cachedProducts = response.data ?? [];
+        return response.data ?? [];
       }
     } catch (error) {
       throw ApiError(message: error.toString());

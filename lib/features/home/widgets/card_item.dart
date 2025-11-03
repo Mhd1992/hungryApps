@@ -20,10 +20,12 @@ class CardItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: Image.asset(imageUrl, fit: BoxFit.cover, width: 150)),
+            Center(
+              child: Image.network(imageUrl, fit: BoxFit.cover, width: 150),
+            ),
             Gap(10),
             CustomText(text: title, fontWeight: FontWeight.bold),
-            CustomText(text: description),
+            CustomText(text: description, overflow: TextOverflow.ellipsis),
             Row(
               children: [
                 CustomText(text: '⭐️$rate'),

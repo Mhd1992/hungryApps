@@ -1,4 +1,7 @@
+import 'package:hungry/core/networks/retrofit/model/side_option/side_option_model.dart';
+import 'package:hungry/core/networks/retrofit/model/topping/topping_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/product/data/repository/product_option_repo.dart';
 
 class ProductDetailView extends StatefulWidget {
   const ProductDetailView({super.key});
@@ -8,7 +11,73 @@ class ProductDetailView extends StatefulWidget {
 }
 
 class _ProductDetailViewState extends State<ProductDetailView> {
+  List<ToppingModel> toppings = [];
+  List<SideOptionModel> options = [];
+  bool _isToppingLoading = false;
+  bool _isSideOptionLoading = false;
   double spicyLevel = 0.5;
+  ProductOptionRepo productOptionRepo = ProductOptionRepo();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    loadToppings();
+    loadSideOptions();
+
+    super.initState();
+  }
+
+  Future<void> loadSideOptions() async {
+    try {
+      setState(() {
+        _isSideOptionLoading = true;
+      });
+      final loadedOptions = await productOptionRepo.loadSideOptions();
+      if (loadedOptions.isNotEmpty) {
+        setState(() {
+          options = loadedOptions;
+        });
+      }
+    } catch (e) {
+      String errorMessage = 'unknown Error';
+      if (e is ApiError) {
+        errorMessage = e.message;
+        if (mounted) {
+          context.showSnackBar(errorMessage);
+        }
+      }
+    } finally {
+      setState(() {
+        _isSideOptionLoading = false;
+      });
+    }
+  }
+
+  Future<void> loadToppings() async {
+    try {
+      setState(() {
+        _isToppingLoading = true;
+      });
+      final loadedToppings = await productOptionRepo.loadToppings();
+      if (loadedToppings != null || loadedToppings.isNotEmpty) {
+        setState(() {
+          toppings = loadedToppings;
+        });
+      }
+    } catch (e) {
+      String errorMessage = 'unknown Error';
+      if (e is ApiError) {
+        errorMessage = e.message;
+        if (mounted) {
+          context.showSnackBar(errorMessage);
+        }
+      }
+    } finally {
+      setState(() {
+        _isToppingLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,22 +104,32 @@ class _ProductDetailViewState extends State<ProductDetailView> {
               Gap(16),
               CustomText(text: 'Toppings', fontSize: 32),
               Gap(16),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(
-                    4,
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
-                      child: ToppingCard(
-                        imageUrl: 'assets/images/tomato.png',
-                        title: 'Tomato',
-                        onAdd: () {},
+
+              _isToppingLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: List.generate(
+                          toppings!.length,
+                          (index) => Padding(
+                            padding: const EdgeInsets.only(
+                              right: 16.0,
+                              bottom: 16.0,
+                            ),
+                            child: ToppingCard(
+                              imageUrl: toppings![index].imageUrl,
+                              title: toppings![index].name,
+                              onAdd: () {},
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
               Gap(16),
               CustomText(text: 'Side Options', fontSize: 32),
               Gap(16),
@@ -58,12 +137,14 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: List.generate(
-                    4,
+                    options.length,
                     (index) => Padding(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
                       child: ToppingCard(
-                        imageUrl: 'assets/images/tomato.png',
-                        title: 'Tomato',
+                        imageUrl:
+                            options![index].imageUrl ??
+                            'https://via.placeholder.com/150',
+                        title: options![index].name,
                         onAdd: () {},
                       ),
                     ),

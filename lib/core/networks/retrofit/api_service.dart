@@ -1,4 +1,7 @@
 import 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
+import 'package:hungry/core/networks/retrofit/model/products/product_model.dart';
+import 'package:hungry/core/networks/retrofit/model/side_option/side_option_model.dart';
+import 'package:hungry/core/networks/retrofit/model/topping/topping_model.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:retrofit/retrofit.dart';
@@ -28,6 +31,14 @@ abstract class ApiService {
   @GET("/categories")
   Future<BaseResponse<List<CategoryModel>>> getCategories();
 
+  @GET("/products")
+  Future<BaseResponse<List<ProductModel>>> getProducts();
+
+  @GET("/toppings")
+  Future<BaseResponse<List<ToppingModel>>> getToppings();
+
+  @GET("/side-options")
+  Future<BaseResponse<List<SideOptionModel>>> getSideOptions();
   // ✅ PUT request (generic)
   @PUT("/{endPoint}")
   Future<BaseResponse<dynamic>> putData(
