@@ -175,7 +175,9 @@ class _HomeViewState extends State<HomeView> {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => ProductDetailView(),
+                          builder: (context) => ProductDetailView(
+                            productId: productModels[index].id,
+                          ),
                         ),
                       );
                     },

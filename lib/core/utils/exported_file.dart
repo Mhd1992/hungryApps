@@ -74,3 +74,5 @@ export 'package:hungry/features/product/data/repository/product_option_repo.dart
 export 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
 export 'package:hungry/core/networks/retrofit/model/products/product_model.dart';
 export 'package:hungry/features/home/data/repository/home_repo.dart';
+
+export 'package:hungry/core/networks/retrofit/model/cart/cart_model.dart';

@@ -1,5 +1,8 @@
+import 'package:hungry/core/networks/retrofit/model/cart/cart_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:retrofit/retrofit.dart';
+
+import 'model/cart/items/item_model.dart';
 
 part 'api_service.g.dart';
 
@@ -44,6 +47,9 @@ abstract class ApiService {
     @Path("endPoint") String endPoint,
     @Body() Map<String, dynamic> body,
   );
+
+  @POST("/cart/add")
+  Future<BaseResponse<dynamic>> addToCaret(@Body() CartRequest caretModel);
 
   @POST("/update-profile")
   Future<BaseResponse<UserModel>> updateUserData(@Body() FormData body);

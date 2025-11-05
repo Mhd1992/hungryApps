@@ -5,11 +5,13 @@ class ToppingCard extends StatelessWidget {
     super.key,
     required this.imageUrl,
     required this.title,
+    required this.isSelected,
     required this.onAdd,
   });
 
   final String imageUrl;
   final String title;
+  final bool isSelected;
   final VoidCallback onAdd;
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,9 @@ class ToppingCard extends StatelessWidget {
                   backgroundColor: Colors.red,
                   child: GestureDetector(
                     onTap: onAdd,
-                    child: Icon(Icons.add, size: 16, color: Colors.white),
+                    child: (isSelected)
+                        ? Icon(Icons.remove, size: 16, color: Colors.white)
+                        : Icon(Icons.add, size: 16, color: Colors.white),
                   ),
                 ),
               ],

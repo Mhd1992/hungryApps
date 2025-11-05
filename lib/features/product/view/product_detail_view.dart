@@ -1,7 +1,11 @@
+import 'package:hungry/core/networks/retrofit/model/cart/items/item_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/cart/data/repository/cart_repository.dart';
 
 class ProductDetailView extends StatefulWidget {
-  const ProductDetailView({super.key});
+  const ProductDetailView({super.key, required this.productId});
+
+  final int productId;
 
   @override
   State<ProductDetailView> createState() => _ProductDetailViewState();
@@ -10,9 +14,14 @@ class ProductDetailView extends StatefulWidget {
 class _ProductDetailViewState extends State<ProductDetailView> {
   List<ToppingModel> toppings = [];
   List<SideOptionModel> options = [];
+  Set<int> selectedToppings = {};
+  Set<int> selectedOptions = {};
   double spicyLevel = 0.5;
   ProductOptionRepo productOptionRepo = ProductOptionRepo();
   bool _isAllLoading = false;
+  CartRepo cartRepo = CartRepo();
+  List<CartModel> cartModel = [];
+  bool _isAdded = false;
 
   @override
   void initState() {
@@ -136,6 +145,84 @@ class _ProductDetailViewState extends State<ProductDetailView> {
   }
 */
 
+  Future<void> addToCart() async {
+    try {
+      setState(() {
+        _isAdded = true;
+      });
+      cartModel.add(
+        CartModel(
+          widget.productId,
+          1,
+          spicyLevel,
+          selectedToppings.toList(),
+          selectedOptions.toList(),
+        ),
+      );
+      final response = await cartRepo.addToCart(CartRequest(cartModel));
+      if (response.isNotEmpty) {
+        if (!mounted) return;
+        context.showSnackBar(response);
+      }
+    } catch (e) {
+      String errorMessage = 'unknown Error';
+      if (e is ApiError) {
+        errorMessage = e.message;
+        if (mounted) {
+          context.showSnackBar(errorMessage);
+        }
+      }
+    } finally {
+      setState(() {
+        _isAdded = false;
+      });
+    }
+  }
+
+  Future<void> addCartX() async {
+    cartModel.add(
+      CartModel(
+        widget.productId,
+        1,
+        spicyLevel,
+        selectedToppings.toList(),
+        selectedOptions.toList(),
+      ),
+    );
+    await _addToCaretX<String, CartRequest>(
+      apiCall: cartRepo.addToCart,
+      param: CartRequest(cartModel),
+      onSuccess: (data) => data,
+    );
+  }
+
+  Future<void> _addToCaretX<T, P>({
+    required Future<T> Function(P param) apiCall,
+    required P param,
+    required void Function(T) onSuccess,
+  }) async {
+    try {
+      setState(() {
+        _isAdded = true;
+      });
+      final result = await apiCall(param);
+      if (result != null) {
+        setState(() {
+          onSuccess(result);
+          print('------------\n$result\n--------------');
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        context.showSnackBar(e.toString());
+      }
+    } finally {
+      setState(() {
+        _isAdded = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -181,7 +268,24 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                               child: ToppingCard(
                                 imageUrl: toppings[index].imageUrl,
                                 title: toppings[index].name,
-                                onAdd: () {},
+                                isSelected: selectedToppings.contains(
+                                  toppings[index].id,
+                                ),
+                                onAdd: () {
+                                  setState(() {
+                                    if (selectedToppings.contains(
+                                      toppings[index].id,
+                                    )) {
+                                      selectedToppings.remove(
+                                        toppings[index].id,
+                                      ); // remove if exists
+                                    } else {
+                                      selectedToppings.add(
+                                        toppings[index].id,
+                                      ); // add if not
+                                    }
+                                  });
+                                },
                               ),
                             ),
                           ),
@@ -203,7 +307,24 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                               child: ToppingCard(
                                 imageUrl: options[index].imageUrl,
                                 title: options[index].name,
-                                onAdd: () {},
+                                isSelected: selectedOptions.contains(
+                                  options[index].id,
+                                ),
+                                onAdd: () {
+                                  setState(() {
+                                    if (selectedOptions.contains(
+                                      options[index].id,
+                                    )) {
+                                      selectedOptions.remove(
+                                        options[index].id,
+                                      ); // remove if exists
+                                    } else {
+                                      selectedOptions.add(
+                                        options[index].id,
+                                      ); // add if not
+                                    }
+                                  });
+                                },
                               ),
                             ),
                           ),
@@ -214,44 +335,52 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   ),
                 ),
               ),
-        bottomSheet: IntrinsicHeight(
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade900,
-                  blurRadius: 20,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                children: [
-                  Column(
-                    children: [
-                      CustomText(
-                        text: 'Total Price:',
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
+        bottomSheet: _isAdded
+            ? CircularProgressIndicator(color: AppColors.primaryColor)
+            : IntrinsicHeight(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.shade900,
+                        blurRadius: 20,
+                        offset: const Offset(0, 1),
                       ),
-                      CustomText(text: ' \$12.99', fontSize: 16),
                     ],
                   ),
-                  Spacer(),
-                  CustomButton(buttonText: 'Add To Cart', onPressed: () {}),
-                ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Row(
+                      children: [
+                        Column(
+                          children: [
+                            CustomText(
+                              text: 'Total Price:',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            CustomText(text: ' \$12.99', fontSize: 16),
+                          ],
+                        ),
+                        Spacer(),
+                        CustomButton(
+                          buttonText: 'Add To Cart',
+                          onPressed: () {
+                            // addToCart();
+                            addCartX();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }
