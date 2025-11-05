@@ -13,6 +13,7 @@ class _HomeViewState extends State<HomeView> {
   int _selectedCategoryIndex = 0;
   List<CategoryModel> categoriesModels = [];
   List<ProductModel> productModels = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -28,6 +29,27 @@ class _HomeViewState extends State<HomeView> {
     setState(() => _isAllLoading = false);
   }
 
+  Future<void> _loadCategories() async {
+    await _loadProductCategory<CategoryModel>(
+      apiCall: homeRepo.loadCategories,
+      onSuccess: (data) {
+        categoriesModels = data;
+      },
+    );
+  }
+
+  Future<void> _loadProducts() async {
+    await _loadProductCategory<ProductModel>(
+      apiCall: homeRepo.loadProducts,
+      onSuccess: (data) {
+        productModels = data;
+      },
+    );
+  }
+
+  /*
+ before Enhanced generic method to load categories or products
+ code above  equal to the following two methods:
   Future<void> _loadCategories() async {
     try {
       final categories = await homeRepo.loadCategories();
@@ -50,6 +72,26 @@ class _HomeViewState extends State<HomeView> {
       final products = await homeRepo.loadProducts();
       if (products != null || products.isNotEmpty) {
         productModels = products;
+      }
+    } catch (e) {
+      String errorMessage = 'unknown Error';
+      if (e is ApiError) {
+        errorMessage = e.message;
+        if (mounted) {
+          context.showSnackBar(errorMessage);
+        }
+      }
+    }
+  }*/
+
+  Future<void> _loadProductCategory<T>({
+    required Future<List<T>> Function() apiCall,
+    required void Function(List<T>) onSuccess,
+  }) async {
+    try {
+      final data = await apiCall();
+      if (data.isNotEmpty) {
+        onSuccess(data);
       }
     } catch (e) {
       String errorMessage = 'unknown Error';
