@@ -58,6 +58,9 @@ abstract class ApiService {
   @POST("/update-profile")
   Future<BaseResponse<UserModel>> updateUserData(@Body() FormData body);
 
+  @DELETE("/cart/remove/{id}")
+  Future<BaseResponse> removeFromCart(@Path("id") int id);
+
   // ✅ DELETE request (generic)
   @DELETE("/{endPoint}")
   Future<BaseResponse<dynamic>> deleteData(

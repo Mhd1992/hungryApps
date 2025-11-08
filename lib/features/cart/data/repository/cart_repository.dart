@@ -49,4 +49,21 @@ class CartRepo {
     }
     throw ApiError(message: 'Unknown error occurred getCartItem.');
   }
+
+  Future<String> removeFromCart(int cartId) async {
+    try {
+      final response = await _apiService.removeFromCart(cartId);
+      if (response is ApiError) {
+        throw response;
+      }
+      if (response.code == 200) {
+        return response.message;
+      }
+    } on DioException catch (error) {
+      throw ApiException.handleError(error);
+    } catch (error) {
+      throw ApiError(message: error.toString());
+    }
+    throw ApiError(message: 'Unknown error occurred getCartItem.');
+  }
 }
