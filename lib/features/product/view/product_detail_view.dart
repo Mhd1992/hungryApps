@@ -209,7 +209,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
       if (result != null) {
         setState(() {
           onSuccess(result);
-          print('------------\n$result\n--------------');
+          context.showSnackBar(result.toString());
         });
       }
     } catch (e) {
@@ -226,7 +226,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      // canPop: false,
       child: Scaffold(
         appBar: AppBar(backgroundColor: Colors.white),
         body: _isAllLoading

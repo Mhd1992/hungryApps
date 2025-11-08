@@ -1,4 +1,5 @@
 import 'package:hungry/core/networks/retrofit/model/cart/items/item_model.dart';
+import 'package:hungry/core/networks/retrofit/model/cart/request_cart/cart_item_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 
 class CartRepo {
@@ -7,7 +8,7 @@ class CartRepo {
   factory CartRepo() => _instance;
 
   final ApiService _apiService = ApiService(DioClient().dio);
-
+  CartItemModel? _cachedCartItem;
   Future<String> addToCart(CartRequest cartModel) async {
     try {
       final response = await _apiService.addToCaret(cartModel);
@@ -24,5 +25,28 @@ class CartRepo {
       throw ApiError(message: error.toString());
     }
     throw ApiError(message: 'Unknown error occurred addToCart.');
+  }
+
+  Future<CartItemModel?> getCartItem() async {
+    try {
+      if (_cachedCartItem != null) {
+        return _cachedCartItem;
+      }
+      final response = await _apiService.getCartItem();
+
+      if (response is ApiError) {
+        throw response;
+      }
+      if (response.code == 200) {
+        final cartItem = response.data;
+        _cachedCartItem = cartItem;
+        return cartItem;
+      }
+    } on DioException catch (error) {
+      throw ApiException.handleError(error);
+    } catch (error) {
+      throw ApiError(message: error.toString());
+    }
+    throw ApiError(message: 'Unknown error occurred getCartItem.');
   }
 }
