@@ -1,6 +1,7 @@
 import 'package:hungry/core/networks/retrofit/model/cart/request_cart/cart_item_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/cart/data/repository/cart_repository.dart';
+import 'package:hungry/gen/assets.gen.dart';
 
 class CartView extends StatelessWidget {
   const CartView({super.key});
@@ -244,8 +245,7 @@ class CartView extends StatelessWidget {
                                     ],
                                   )
                                 : Center(
-                                    child: Image.asset(
-                                      'assets/icons/emptyIcon.png',
+                                    child: Assets.icons.emptyIcon.image(
                                       width: 200,
                                       height: 200,
                                     ),
