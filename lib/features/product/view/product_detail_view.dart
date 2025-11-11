@@ -3,9 +3,14 @@ import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/cart/data/repository/cart_repository.dart';
 
 class ProductDetailView extends StatefulWidget {
-  const ProductDetailView({super.key, required this.productId});
+  const ProductDetailView({
+    super.key,
+    required this.productId,
+    required this.price,
+  });
 
   final int productId;
+  final String price;
 
   @override
   State<ProductDetailView> createState() => _ProductDetailViewState();
@@ -365,7 +370,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                               fontSize: 20,
                               fontWeight: FontWeight.w500,
                             ),
-                            CustomText(text: ' \$12.99', fontSize: 16),
+                            CustomText(text: '\$${widget.price}', fontSize: 16),
                           ],
                         ),
                         Spacer(),
@@ -373,6 +378,13 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                           buttonText: 'Add To Cart',
                           onPressed: () {
                             // addToCart();
+                            CartRepo cartRepo = CartRepo();
+
+                            ///to reset cached
+                            cartRepo.resetItem();
+                            //  cartRepo.
+                            //   if (cartRepo.cachedCartItem != null) {}
+
                             addCartX();
                           },
                         ),

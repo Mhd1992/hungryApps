@@ -6,9 +6,9 @@ class CartModel {
   @JsonKey(name: "product_id")
   final int productId;
   @JsonKey(name: "quantity")
-  final int quantity;
+  final dynamic quantity;
   @JsonKey(name: "spicy")
-  final double spicyLevel;
+  final dynamic spicyLevel;
   @JsonKey(name: "toppings")
   final List<int> toppingIds;
   @JsonKey(name: "side_options")

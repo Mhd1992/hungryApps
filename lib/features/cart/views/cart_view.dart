@@ -16,6 +16,8 @@ class CartView extends StatelessWidget {
     final ValueNotifier<CartItemModel?> cartItemsNotifier =
         ValueNotifier<CartItemModel?>(null);
 
+    int totalQty = 1;
+
     void setLoadingState(bool value) {
       isLoading.value = value;
     }
@@ -29,10 +31,10 @@ class CartView extends StatelessWidget {
       required void Function(T) onSuccess,
     }) async {
       try {
-        setLoadingState(true);
+        //  setLoadingState(true);
         final result = await apiCall();
         if (result != null) {
-          cartItems = result as CartItemModel;
+          //  cartItems = result as CartItemModel;
           onSuccess(result);
           setLoadingState(false);
         }
@@ -42,7 +44,7 @@ class CartView extends StatelessWidget {
           errorMessage = e.message;
         }
       } finally {
-        setLoadingState(false);
+        //  setLoadingState(false);
       }
     }
 
@@ -50,6 +52,7 @@ class CartView extends StatelessWidget {
       await _loadCartItems(
         apiCall: cartRepo.getCartItem,
         onSuccess: (data) {
+          print(data);
           cartItems = data;
           cartItemsNotifier.value = data;
           quantities = cartItems!.items
@@ -130,90 +133,123 @@ class CartView extends StatelessWidget {
                         builder: (context, cartData, child) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                // Scrollable content
-                                Expanded(
-                                  child: ListView.builder(
-                                    padding: EdgeInsets.only(
-                                      bottom: 20,
-                                      top: 20,
-                                    ),
-                                    itemCount: cartData?.items.length,
-                                    itemBuilder: (context, index) {
-                                      return ValueListenableBuilder<int>(
-                                        valueListenable: (quantities.isNotEmpty)
-                                            ? quantities[index]
-                                            : initialValue,
-                                        builder: (context, value, _) {
-                                          return CartItem(
-                                            title: cartItems?.items[index].name,
-                                            imageUrl: cartItems
-                                                ?.items[index]
-                                                .imageUrl,
-                                            desc: '',
-                                            quantity: value,
-                                            onChanged: (newValue) {
-                                              quantities[index].value =
-                                                  newValue;
-                                            },
-                                            onRemove: () {
-                                              removeItem(
-                                                cartData?.items[index].itemId ??
-                                                    0,
-                                              );
-                                              cartData?.items.remove(
-                                                cartData.items[index],
-                                              );
-                                            },
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ),
-
-                                // Fixed bottom section
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 8.0,
-                                  ),
-                                  child: Row(
+                            child:
+                                (cartData != null && cartData.items.isNotEmpty)
+                                ? Column(
                                     children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: const [
-                                          CustomText(
-                                            text: 'Total Price:',
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w500,
+                                      // Scrollable content
+                                      Expanded(
+                                        child: ListView.builder(
+                                          padding: EdgeInsets.only(
+                                            bottom: 20,
+                                            top: 20,
                                           ),
-                                          CustomText(
-                                            text: '\$12.99',
-                                            fontSize: 16,
-                                          ),
-                                        ],
+                                          itemCount: cartData?.items.length,
+                                          itemBuilder: (context, index) {
+                                            return ValueListenableBuilder<int>(
+                                              valueListenable:
+                                                  (quantities.isNotEmpty)
+                                                  ? quantities[index]
+                                                  : initialValue,
+                                              builder: (context, value, _) {
+                                                return CartItem(
+                                                  title: cartItems
+                                                      ?.items[index]
+                                                      .name,
+                                                  imageUrl: cartItems
+                                                      ?.items[index]
+                                                      .imageUrl,
+                                                  desc: '',
+                                                  quantity: value,
+                                                  onChanged: (newValue) {
+                                                    quantities[index].value =
+                                                        newValue;
+                                                    cartItems?.items[index] =
+                                                        cartItems!.items[index]
+                                                            .copyWith(
+                                                              quantity:
+                                                                  quantities[index]
+                                                                      .value,
+                                                            );
+                                                    //  cartItems?.items[index].quantity = quantities[index].value;
+                                                  },
+                                                  onRemove: () {
+                                                    removeItem(
+                                                      cartData
+                                                              ?.items[index]
+                                                              .itemId ??
+                                                          0,
+                                                    );
+                                                    cartData?.items.remove(
+                                                      cartData.items[index],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
-                                      const Spacer(),
-                                      CustomButton(
-                                        buttonText: 'Checkout',
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) {
-                                                return CheckOutView();
+
+                                      // Fixed bottom section
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 8.0,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                CustomText(
+                                                  text: 'Total Price:',
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                CustomText(
+                                                  text:
+                                                      (cartData != null &&
+                                                          cartData
+                                                              .items
+                                                              .isNotEmpty)
+                                                      ? '\$${cartData?.totalPrice}'
+                                                      : '\$0.0',
+                                                  fontSize: 16,
+                                                ),
+                                              ],
+                                            ),
+                                            const Spacer(),
+                                            CustomButton(
+                                              buttonText: 'Checkout',
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return CheckOutView(
+                                                        cartItemModel:
+                                                            cartData!,
+                                                        totalPrice: cartData
+                                                            ?.totalPrice,
+                                                      );
+                                                    },
+                                                  ),
+                                                );
                                               },
                                             ),
-                                          );
-                                        },
+                                          ],
+                                        ),
                                       ),
                                     ],
+                                  )
+                                : Center(
+                                    child: CustomText(
+                                      text: 'No data.',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
                           );
                         },
                       );

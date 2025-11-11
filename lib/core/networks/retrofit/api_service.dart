@@ -52,6 +52,9 @@ abstract class ApiService {
   @POST("/cart/add")
   Future<BaseResponse<dynamic>> addToCaret(@Body() CartRequest caretModel);
 
+  @POST("/orders")
+  Future<BaseResponse<dynamic>> checkOut(@Body() CartRequest caretModel);
+
   @GET("/cart")
   Future<BaseResponse<CartItemModel>> getCartItem();
 

@@ -1,13 +1,54 @@
+import 'package:hungry/core/networks/retrofit/model/cart/items/item_model.dart';
+import 'package:hungry/core/networks/retrofit/model/cart/request_cart/cart_item_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
+import 'package:hungry/features/checkout/data/repositorty/check_out_repo.dart';
 
 class CheckOutView extends StatelessWidget {
-  const CheckOutView({super.key});
+  CheckOutView({
+    super.key,
+    required this.totalPrice,
+    required this.cartItemModel,
+  });
+
+  final String totalPrice;
+  final CartItemModel cartItemModel;
+
+  final AuthRepoV1 authRepo = AuthRepoV1();
+  final List<CartModel> orders = [];
+
+  final CheckoutRepo checkoutRepo = CheckoutRepo();
+
+  Future<void> _checkout<T, P>({
+    required Future<T> Function(P param) apiCall,
+    required P param,
+    required void Function(T) onSuccess,
+  }) async {
+    try {
+      final result = await apiCall(param);
+      if (result != null) {}
+    } catch (e) {
+      //if (contmounted) {
+      //context.showSnackBar(e.toString());
+      // }
+    } finally {}
+  }
+
+  Future<void> checkout(List<CartModel> cartModel) async {
+    await _checkout<String, CartRequest>(
+      apiCall: checkoutRepo.checkout,
+      param: CartRequest(cartModel),
+      onSuccess: (data) => data,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    // List<CartModel> orders = [];
     final ValueNotifier<PaymentType?> paymentMethod =
         ValueNotifier<PaymentType?>(PaymentType.cash);
     final ValueNotifier<bool> isChecked = ValueNotifier<bool>(false);
+    double total = double.parse(totalPrice) + 0.7 + 1.4;
 
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white),
@@ -24,7 +65,11 @@ class CheckOutView extends StatelessWidget {
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
-                const OrderDetail(order: '9.4', taxes: '0.7', fees: '1.4'),
+                OrderDetail(
+                  order: double.parse(totalPrice),
+                  taxes: 0.7,
+                  fees: 1.4,
+                ),
                 const Gap(80),
                 const CustomText(
                   text: 'Payment methods',
@@ -41,15 +86,17 @@ class CheckOutView extends StatelessWidget {
                   onChanged: (newVal) => paymentMethod.value = PaymentType.cash,
                 ),
                 const Gap(20),
-
-                VisaListTile(
-                  paymentLogo: 'assets/icons/visaSvg.svg',
-                  text: 'Debit Card',
-                  subTitleText: '3566 **** **** 0505',
-                  value: PaymentType.visa,
-                  groupValue: selectedMethod,
-                  onChanged: (newVal) => paymentMethod.value = PaymentType.visa,
-                ),
+                (authRepo.cachedUser?.visa == null)
+                    ? SizedBox.shrink()
+                    : VisaListTile(
+                        paymentLogo: 'assets/icons/visaSvg.svg',
+                        text: 'Debit Card',
+                        subTitleText: '3566 **** **** 0505',
+                        value: PaymentType.visa,
+                        groupValue: selectedMethod,
+                        onChanged: (newVal) =>
+                            paymentMethod.value = PaymentType.visa,
+                      ),
                 const Gap(20),
 
                 Row(
@@ -97,23 +144,43 @@ class CheckOutView extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min, // 👈 important!
-                  children: const [
+                  children: [
                     CustomText(
                       text: 'Total Price:',
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
                     ),
-                    CustomText(text: '\$11.15', fontSize: 16),
+                    CustomText(
+                      text: '\$${total.toStringAsFixed(3)}',
+                      fontSize: 16,
+                    ),
                   ],
                 ),
                 const Spacer(),
                 CustomButton(
                   buttonText: 'Pay Now',
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => SuccessDialog(),
-                    );
+                    for (var e in cartItemModel.items) {
+                      orders.add(
+                        CartModel(
+                          e.productId,
+                          e.quantity,
+                          e.spicy,
+                          e.toppingIds.map((t) => t.id).toList(),
+                          e.optionIds.map((o) => o.id).toList(),
+                        ),
+                      );
+                    }
+                    final currentContext = context;
+
+                    checkout(orders).then((val) {
+                      if (currentContext.mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => SuccessDialog(),
+                        );
+                      }
+                    });
                   },
                 ),
               ],

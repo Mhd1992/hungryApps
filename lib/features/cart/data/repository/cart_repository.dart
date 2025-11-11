@@ -6,9 +6,10 @@ class CartRepo {
   CartRepo._internal();
   static final CartRepo _instance = CartRepo._internal();
   factory CartRepo() => _instance;
-
+  CartItemModel? get cachedCartItem => _cachedCartItem;
   final ApiService _apiService = ApiService(DioClient().dio);
   CartItemModel? _cachedCartItem;
+
   Future<String> addToCart(CartRequest cartModel) async {
     try {
       final response = await _apiService.addToCaret(cartModel);
@@ -25,6 +26,10 @@ class CartRepo {
       throw ApiError(message: error.toString());
     }
     throw ApiError(message: 'Unknown error occurred addToCart.');
+  }
+
+  Future<void> resetItem() async {
+    _cachedCartItem = null;
   }
 
   Future<CartItemModel?> getCartItem() async {

@@ -177,6 +177,7 @@ class _HomeViewState extends State<HomeView> {
                         MaterialPageRoute(
                           builder: (context) => ProductDetailView(
                             productId: productModels[index].id,
+                            price: productModels[index].price,
                           ),
                         ),
                       );
