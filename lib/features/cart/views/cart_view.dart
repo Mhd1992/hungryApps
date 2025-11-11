@@ -244,10 +244,10 @@ class CartView extends StatelessWidget {
                                     ],
                                   )
                                 : Center(
-                                    child: CustomText(
-                                      text: 'No data.',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
+                                    child: Image.asset(
+                                      'assets/icons/emptyIcon.png',
+                                      width: 200,
+                                      height: 200,
                                     ),
                                   ),
                           );
