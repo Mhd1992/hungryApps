@@ -3,11 +3,26 @@ import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/cart/provider/cartProvider.dart';
 import 'package:hungry/gen/assets.gen.dart';
 
-class CartView extends ConsumerWidget {
+class CartView extends ConsumerStatefulWidget {
   const CartView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CartView> createState() => _CartViewState();
+}
+
+class _CartViewState extends ConsumerState<CartView> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return; // ✅ double safety
+      ref.read(cartControllerProvider.notifier).loadCartItems();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final cartState = ref.watch(cartControllerProvider);
     final cartController = ref.read(cartControllerProvider.notifier);
 
@@ -19,9 +34,7 @@ class CartView extends ConsumerWidget {
       ),
       body: cartState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-
-        error: (error, _) => Center(child: Text("Something went wrong")),
-
+        error: (error, _) => const Center(child: Text("Something went wrong")),
         data: (cartData) {
           if (cartData == null || cartData.items.isEmpty) {
             return Center(
@@ -45,14 +58,19 @@ class CartView extends ConsumerWidget {
                       onChanged: (newQty) {
                         cartData.items[index] = item.copyWith(quantity: newQty);
                       },
-                      onRemove: () {
-                        cartController.removeCartItem(item.itemId);
+                      onRemove: () async {
+                        await cartController.removeCartItem(item.itemId).then((
+                          val,
+                        ) {
+                          cartData.items.remove(item);
+                          if (!context.mounted) return;
+                          context.showSnackBar(val.toString());
+                        });
                       },
                     );
                   },
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

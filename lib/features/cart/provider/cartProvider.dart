@@ -25,13 +25,15 @@ class CartController extends StateNotifier<AsyncValue<CartItemModel?>> {
     }
   }
 
-  Future<void> removeCartItem(int cartId) async {
+  Future<String?> removeCartItem(int cartId) async {
     state = const AsyncLoading();
     try {
-      await _repo.removeFromCart(cartId);
-      loadCartItems();
+      final result = await _repo.removeFromCart(cartId); // result is String ✅
+      await loadCartItems(); // refresh cart
+      return result;
     } catch (e, st) {
       state = AsyncError(e, st);
+      return null;
     }
   }
 }
