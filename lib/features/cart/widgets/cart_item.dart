@@ -61,6 +61,8 @@ class CartItem extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () {
+                              // onChanged?.call(quantity + 1);
+
                               onChanged?.call(quantity + 1);
                             },
                             child: Container(

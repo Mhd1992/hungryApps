@@ -1,5 +1,7 @@
 import 'package:hungry/core/utils/exported_file.dart';
 
+import 'features/cart/views/riverpod/cart_view.dart';
+
 class Root extends StatefulWidget {
   const Root({super.key});
 
@@ -15,8 +17,9 @@ class _RootState extends State<Root> {
   @override
   void initState() {
     // TODO: implement initState
+    ///OrderHistoryView() instead of NewCartView()
     pageController = PageController(initialPage: currentScreen);
-    screens = [HomeView(), CartView(), OrderHistoryView(), ProfileView()];
+    screens = [HomeView(), CartView(), NewCartView(), ProfileView()];
     super.initState();
   }
 
