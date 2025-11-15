@@ -43,7 +43,8 @@ dependencies:
   retrofit: ^4.0.3
   json_annotation: ^4.9.0
   riverpod:
-  flutter_riverpod: 
+  flutter_riverpod:
+  flutter_gen_runner:
   #permission_handler: ^12.0.1
 
 dev_dependencies:
@@ -63,7 +64,9 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
+flutter_gen:
+  assets:
+    enabled: true
 # The following section is specific to Flutter packages.
 flutter:
 

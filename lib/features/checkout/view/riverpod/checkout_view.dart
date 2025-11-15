@@ -1,13 +1,14 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/networks/retrofit/model/cart/items/item_model.dart';
 import 'package:hungry/core/networks/retrofit/model/cart/request_cart/cart_item_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
+import 'package:hungry/features/checkout/data/provuder/check_view_provider.dart';
 import 'package:hungry/features/checkout/data/repositorty/check_out_repo.dart';
+import 'package:hungry/features/checkout/view/enum/payment_type.dart';
 
-import 'enum/payment_type.dart';
-
-class CheckOutView extends StatelessWidget {
-  CheckOutView({
+class CheckOutViewV1 extends ConsumerWidget {
+  CheckOutViewV1({
     super.key,
     required this.totalPrice,
     required this.cartItemModel,
@@ -19,33 +20,8 @@ class CheckOutView extends StatelessWidget {
   final AuthRepoV1 authRepo = AuthRepoV1();
   final List<CartModel> orders = [];
 
-  final CheckoutRepo checkoutRepo = CheckoutRepo();
-
-  Future<void> _checkout<T, P>({
-    required Future<T> Function(P param) apiCall,
-    required P param,
-    required void Function(T) onSuccess,
-  }) async {
-    try {
-      final result = await apiCall(param);
-      if (result != null) {}
-    } catch (e) {
-      //if (contmounted) {
-      //context.showSnackBar(e.toString());
-      // }
-    } finally {}
-  }
-
-  Future<void> checkout(List<CartModel> cartModel) async {
-    await _checkout<String, CartRequest>(
-      apiCall: checkoutRepo.checkout,
-      param: CartRequest(cartModel),
-      onSuccess: (data) => data,
-    );
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // List<CartModel> orders = [];
     final ValueNotifier<PaymentType?> paymentMethod =
         ValueNotifier<PaymentType?>(PaymentType.cash);
@@ -174,8 +150,7 @@ class CheckOutView extends StatelessWidget {
                       );
                     }
                     final currentContext = context;
-
-                    checkout(orders).then((val) {
+                    checkoutV1(CartRequest(orders), ref: ref).then((val) {
                       if (currentContext.mounted) {
                         showDialog(
                           context: context,
@@ -183,6 +158,15 @@ class CheckOutView extends StatelessWidget {
                         );
                       }
                     });
+
+                    /*   checkout(orders).then((val) {
+                      if (currentContext.mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => SuccessDialog(),
+                        );
+                      }
+                    });*/
                   },
                 ),
               ],

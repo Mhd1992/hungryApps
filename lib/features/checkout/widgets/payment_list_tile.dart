@@ -1,4 +1,5 @@
-import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/core/utils/exported_file.dart' hide PaymentType;
+import 'package:hungry/features/checkout/view/enum/payment_type.dart';
 
 class PaymentListTile extends StatelessWidget {
   const PaymentListTile({
