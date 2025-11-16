@@ -17,7 +17,7 @@ class VisaListTile extends StatelessWidget {
   final String subTitleText;
   final PaymentType value;
   final PaymentType? groupValue;
-  final ValueChanged<String> onChanged;
+  final ValueChanged<PaymentType> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +41,10 @@ class VisaListTile extends StatelessWidget {
         value: value.name,
         groupValue: groupValue!.name,
         onChanged: (val) {
-          if (val != null) onChanged(val);
+          if (val != null) onChanged(value);
         },
       ),
-      onTap: () => onChanged(value.name),
+      onTap: () => onChanged(value),
     );
   }
 }

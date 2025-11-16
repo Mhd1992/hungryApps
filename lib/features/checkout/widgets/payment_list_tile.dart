@@ -15,7 +15,7 @@ class PaymentListTile extends StatelessWidget {
   final String text;
   final PaymentType value;
   final PaymentType? groupValue;
-  final ValueChanged<String> onChanged;
+  final ValueChanged<PaymentType> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +30,10 @@ class PaymentListTile extends StatelessWidget {
         value: value.name,
         groupValue: groupValue!.name,
         onChanged: (val) {
-          if (val != null) onChanged(val);
+          if (val != null) onChanged(value);
         },
       ),
-      onTap: () => onChanged(value.name),
+      onTap: () => onChanged(value),
     );
   }
 }
