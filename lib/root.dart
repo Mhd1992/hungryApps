@@ -1,4 +1,5 @@
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/auth/view/riverpod/profile_view_v1.dart';
 
 import 'features/cart/views/riverpod/cart_view.dart';
 
@@ -19,7 +20,8 @@ class _RootState extends State<Root> {
     // TODO: implement initState
     ///OrderHistoryView() instead of NewCartView()
     pageController = PageController(initialPage: currentScreen);
-    screens = [HomeView(), CartView(), NewCartView(), ProfileView()];
+    screens = [HomeView(), NewCartView(), ProfileView(), ProfileViewV1()];
+    //  screens = [HomeView(), CartView(), NewCartView(), ProfileView()];
     super.initState();
   }
 
