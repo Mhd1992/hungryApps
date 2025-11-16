@@ -161,105 +161,20 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
               ),
               body: user.when(
                 data: (userData) {
-                  return SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 110,
-                                width: 110,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey,
-                                  border: Border.all(
-                                    width: 2,
-                                    color: Colors.white,
-                                  ),
-                                  image: selectedImage != null
-                                      ? DecorationImage(
-                                          image: FileImage(
-                                            File(selectedImage!),
-                                          ),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : null,
-                                ),
-
-                                clipBehavior: Clip.antiAlias,
-                                child:
-                                    (selectedImage == null ||
-                                        selectedImage!.isEmpty)
-                                    ? (userData?.image != null &&
-                                              userData!.image!.isNotEmpty)
-                                          ? Image.network(
-                                              userData.image!,
-                                              errorBuilder:
-                                                  (context, error, builder) =>
-                                                      Icon(Icons.person),
-                                            )
-                                          : Image.asset(
-                                              'assets/images/placeHolder.png',
-                                              fit: BoxFit.cover,
-                                            )
-                                    : Image.file(
-                                        File(selectedImage!),
-
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                              Gap(8),
-                              CustomLoadImageButton(
-                                buttonText: 'Load Image',
-                                color: Colors.white,
-                                onPressed: uploadImage,
-                              ),
-                              Gap(32),
-                              CustomUserTextField(
-                                controller: nameController,
-                                filed: 'Name',
-                              ),
-                              Gap(16),
-                              CustomUserTextField(
-                                controller: emailController,
-                                filed: 'Email',
-                              ),
-                              Gap(16),
-                              CustomUserTextField(
-                                controller: addressController,
-                                filed: 'Address',
-                              ),
-                              Gap(12),
-                              Divider(),
-                              Gap(12),
-                              (showVisa)
-                                  ? VisaCardWidget(
-                                      titleText: 'Debit Card',
-                                      subTitleText: '•••• •••• •••• 2022',
-                                    )
-                                  /* DefaultVisa(
-                                titleText: 'Debit Card',
-                                subTitleText: '3566 **** **** 0505',
-                                imageUrl: 'assets/icons/visa.png',
-                              )*/
-                                  : CustomUserTextField(
-                                      controller: visaController,
-                                      filed: 'XXXX-XXXX-XXXX-0505',
-                                      type: TextInputType.number,
-                                    ),
-                              Gap(32),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                  return Skeletonizer(
+                    enabled: false, // no skeleton when data is ready
+                    child: buildProfileBody(userData),
                   );
                 },
-                loading: () => buildProfileSkeleton(),
-                error: (e, _) => Center(child: Text('Error: $e')),
+                loading: () {
+                  return Skeletonizer(
+                    enabled: true,
+                    child: buildProfileBody(
+                      null,
+                    ), // all empty values become skeleton
+                  );
+                },
+                error: (e, _) => Center(child: Text("Error: $e")),
               ),
               bottomSheet: IntrinsicHeight(
                 child: Container(
@@ -337,103 +252,82 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
             ),
     );
   }
-}
 
-Widget buildProfileSkeleton() {
-  return SingleChildScrollView(
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+  Widget buildProfileBody(UserModel? userData) {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       child: Column(
         children: [
-          const Gap(16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              children: [
+                Container(
+                  height: 110,
+                  width: 110,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey,
+                    border: Border.all(width: 2, color: Colors.white),
+                    image: selectedImage != null
+                        ? DecorationImage(
+                            image: FileImage(File(selectedImage!)),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
 
-          // Profile image skeleton
-          Skeletonizer(
-            enabled: true,
-            child: Container(
-              height: 110,
-              width: 110,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey.shade300,
-              ),
+                  clipBehavior: Clip.antiAlias,
+                  child: (selectedImage == null || selectedImage!.isEmpty)
+                      ? (userData?.image != null && userData!.image!.isNotEmpty)
+                            ? Image.network(
+                                userData.image!,
+                                errorBuilder: (context, error, builder) =>
+                                    Icon(Icons.person),
+                              )
+                            : Image.asset(
+                                'assets/images/placeHolder.png',
+                                fit: BoxFit.cover,
+                              )
+                      : Image.file(File(selectedImage!), fit: BoxFit.cover),
+                ),
+                Gap(8),
+                CustomLoadImageButton(
+                  buttonText: 'Load Image',
+                  color: Colors.white,
+                  onPressed: uploadImage,
+                ),
+                Gap(32),
+                CustomUserTextField(controller: nameController, filed: 'Name'),
+                Gap(16),
+                CustomUserTextField(
+                  controller: emailController,
+                  filed: 'Email',
+                ),
+                Gap(16),
+                CustomUserTextField(
+                  controller: addressController,
+                  filed: 'Address',
+                ),
+                Gap(12),
+                Divider(),
+                Gap(12),
+                (showVisa)
+                    ? VisaCardWidget(
+                        titleText: 'Debit Card',
+                        subTitleText: '•••• •••• •••• 2022',
+                      )
+                    : CustomUserTextField(
+                        controller: visaController,
+                        filed: 'XXXX-XXXX-XXXX-0505',
+                        type: TextInputType.number,
+                      ),
+                Gap(32),
+              ],
             ),
           ),
-
-          const Gap(16),
-
-          // Load Image button skeleton
-          Skeletonizer(
-            enabled: true,
-            child: Container(
-              height: 40,
-              width: 140,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-
-          const Gap(32),
-
-          // Name field skeleton
-          Skeletonizer(
-            enabled: true,
-            child: Container(
-              height: 55,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-
-          const Gap(16),
-
-          Skeletonizer(
-            enabled: true,
-            child: Container(
-              height: 55,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-
-          const Gap(16),
-
-          Skeletonizer(
-            enabled: true,
-            child: Container(
-              height: 55,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-
-          const Gap(24),
-          const Divider(),
-          const Gap(24),
-
-          Skeletonizer(
-            enabled: true,
-            child: Container(
-              height: 55,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-
-          const Gap(32),
         ],
       ),
-    ),
-  );
+    );
+  }
 }
