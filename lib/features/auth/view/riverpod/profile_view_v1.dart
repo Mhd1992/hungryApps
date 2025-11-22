@@ -68,42 +68,6 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
     }
   }
 
-  Future<void> updateProfileData() async {
-    try {
-      setState(() {
-        isUpdating = true;
-      });
-
-      final user = await authRepoV1.editProfile(
-        name: nameController.text,
-        email: emailController.text,
-        address: addressController.text,
-        visa: visaController.text,
-        imagePath: selectedImage,
-      );
-      if (user != null) {
-        setState(() {
-          userModel = user;
-          isUpdating = false;
-          context.showSnackBar('user updated successfully');
-        });
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    } finally {
-      setState(() {
-        isUpdating = false;
-        getProfileData(ref, updatedData: true);
-      });
-    }
-  }
-
   Future<void> logout() async {
     try {
       setState(() {
@@ -135,6 +99,7 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider);
+    final loading = ref.watch(loadingState);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: (authRepoV1.isGuest)
@@ -188,8 +153,24 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         GestureDetector(
-                          onTap: updateProfileData,
-                          child: (isUpdating)
+                          onTap: () async {
+                            updateProfileData(
+                              ref,
+                              name: nameController.text,
+                              email: emailController.text,
+                              address: addressController.text,
+                              visa: visaController.text,
+                              imagePath: selectedImage,
+                            ).then((_) {
+                              refreshUserProvider(ref);
+
+                              if (!mounted) return;
+                              context.showSnackBar(
+                                "Profile Updated Successfully",
+                              );
+                            });
+                          },
+                          child: (loading)
                               ? CircularProgressIndicator(
                                   color: AppColors.primaryColor,
                                 )
