@@ -76,3 +76,15 @@ export 'package:hungry/core/networks/retrofit/model/products/product_model.dart'
 export 'package:hungry/features/home/data/repository/home_repo.dart';
 
 export 'package:hungry/core/networks/retrofit/model/cart/cart_model.dart';
+
+///----rearranging exports based on file structure---///
+export 'dart:io';
+export 'package:flutter_riverpod/flutter_riverpod.dart';
+
+export 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
+export 'package:hungry/features/auth/provider/auth_provider.dart';
+export 'package:hungry/features/auth/widgets/visa_card_widget.dart';
+export 'package:hungry/shared/custom_load_image_button.dart';
+export 'package:image_picker/image_picker.dart';
+
+export 'package:flutter_riverpod/legacy.dart';

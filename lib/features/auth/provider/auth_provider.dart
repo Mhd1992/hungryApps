@@ -1,6 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
-import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 
 final userProvider = StateProvider.autoDispose<AsyncValue<UserModel?>>(
@@ -8,6 +5,8 @@ final userProvider = StateProvider.autoDispose<AsyncValue<UserModel?>>(
 );
 
 final loadingState = StateProvider.autoDispose((ref) => false);
+final logoutLoading = StateProvider.autoDispose((ref) => false);
+final selectedImageProvider = StateProvider.autoDispose<String?>((ref) => null);
 
 Future<void> getProfileData(WidgetRef ref, {bool updatedData = false}) async {
   AuthRepoV1 authRepo = AuthRepoV1();
@@ -61,5 +60,38 @@ Future<void> updateProfileData(
     );
   } finally {
     ref.read(loadingState.notifier).state = false;
+  }
+}
+
+Future<void> logout(WidgetRef ref) async {
+  try {
+    AuthRepoV1 authRepo = AuthRepoV1();
+    ref.read(logoutLoading.notifier).state = true;
+    await authRepo.logout();
+
+    if (ref.context.mounted) {
+      Navigator.of(ref.context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const LoginView()),
+      );
+    }
+  } catch (e) {
+    String errorMessage = 'unknown Error';
+    if (e is ApiError) {
+      errorMessage = e.message;
+      if (ref.context.mounted) {
+        ref.context.showSnackBar(errorMessage);
+      }
+    }
+  } finally {
+    ref.read(logoutLoading.notifier).state = false;
+  }
+}
+
+Future<void> uploadImage(WidgetRef ref) async {
+  final pickedImage = await ImagePicker().pickImage(
+    source: ImageSource.gallery,
+  );
+  if (pickedImage != null) {
+    ref.read(selectedImageProvider.notifier).state = pickedImage.path;
   }
 }

@@ -1,12 +1,6 @@
-import 'dart:io';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
-import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
-import 'package:hungry/features/auth/provider/auth_provider.dart';
-import 'package:hungry/features/auth/widgets/visa_card_widget.dart';
-import 'package:hungry/shared/custom_load_image_button.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:hungry/gen/assets.gen.dart';
+import 'package:hungry/shared/app_assets/app_assets.dart';
 
 class ProfileViewV1 extends ConsumerStatefulWidget {
   const ProfileViewV1({super.key});
@@ -24,8 +18,6 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
   AuthRepoV1 authRepoV1 = AuthRepoV1();
   UserModel? userModel;
   bool showVisa = false;
-  bool isUpdating = false;
-  bool isLoggingOut = false;
 
   @override
   void initState() {
@@ -55,51 +47,12 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
     super.dispose();
   }
 
-  String? selectedImage;
-
-  Future<void> uploadImage() async {
-    final pickedImage = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedImage != null) {
-      setState(() {
-        selectedImage = pickedImage.path;
-      });
-    }
-  }
-
-  Future<void> logout() async {
-    try {
-      setState(() {
-        isLoggingOut = true;
-      });
-      // await authRepo.logout();
-      await authRepoV1.logout();
-
-      if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const LoginView()),
-        );
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    } finally {
-      setState(() {
-        isLoggingOut = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider);
     final loading = ref.watch(loadingState);
+    final logOutLoading = ref.watch(logoutLoading);
+    final selectedImage = ref.watch(selectedImageProvider);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: (authRepoV1.isGuest)
@@ -113,13 +66,12 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                 iconTheme: const IconThemeData(color: Colors.white),
                 actions: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: SvgPicture.asset(
-                      'assets/icons/settings.svg',
-                      colorFilter: ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.modulate,
-                      ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: AppAsset(
+                      path: Assets.icons.settings,
+                      width: 24,
+                      height: 24,
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -197,7 +149,7 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                                 ),
                         ),
                         GestureDetector(
-                          onTap: logout,
+                          onTap: () => logout(ref),
                           child: Container(
                             padding: EdgeInsets.all(20),
                             decoration: BoxDecoration(
@@ -210,7 +162,7 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                             ),
                             child: Row(
                               children: [
-                                (isLoggingOut)
+                                (logOutLoading)
                                     ? CircularProgressIndicator(
                                         color: Colors.white,
                                       )
@@ -250,16 +202,26 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                     shape: BoxShape.circle,
                     color: Colors.grey,
                     border: Border.all(width: 2, color: Colors.white),
-                    image: selectedImage != null
+                    image:
+                        ref.read(selectedImageProvider.notifier).state != null
                         ? DecorationImage(
-                            image: FileImage(File(selectedImage!)),
+                            image: FileImage(
+                              File(
+                                ref.read(selectedImageProvider.notifier).state!,
+                              ),
+                            ),
                             fit: BoxFit.cover,
                           )
                         : null,
                   ),
 
                   clipBehavior: Clip.antiAlias,
-                  child: (selectedImage == null || selectedImage!.isEmpty)
+                  child:
+                      (ref.read(selectedImageProvider.notifier).state == null ||
+                          ref
+                              .read(selectedImageProvider.notifier)
+                              .state!
+                              .isEmpty)
                       ? (userData?.image != null && userData!.image!.isNotEmpty)
                             ? Image.network(
                                 userData.image!,
@@ -270,13 +232,16 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                                 'assets/images/placeHolder.png',
                                 fit: BoxFit.cover,
                               )
-                      : Image.file(File(selectedImage!), fit: BoxFit.cover),
+                      : Image.file(
+                          File(ref.read(selectedImageProvider.notifier).state!),
+                          fit: BoxFit.cover,
+                        ),
                 ),
                 Gap(8),
                 CustomLoadImageButton(
                   buttonText: 'Load Image',
                   color: Colors.white,
-                  onPressed: uploadImage,
+                  onPressed: () => uploadImage(ref),
                 ),
                 Gap(32),
                 CustomUserTextField(controller: nameController, filed: 'Name'),
