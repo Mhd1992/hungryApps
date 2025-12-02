@@ -489,13 +489,13 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<BaseResponse<dynamic>> checkOut(CartRequest caretModel) async {
+  Future<BaseResponse<OrderModel>> checkOut(CartRequest caretModel) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(caretModel.toJson());
-    final _options = _setStreamType<BaseResponse<dynamic>>(Options(
+    final _options = _setStreamType<BaseResponse<OrderModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -512,11 +512,11 @@ class _ApiService implements ApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponse<dynamic> _value;
+    late BaseResponse<OrderModel> _value;
     try {
-      _value = BaseResponse<dynamic>.fromJson(
+      _value = BaseResponse<OrderModel>.fromJson(
         _result.data!,
-        (json) => json as dynamic,
+        (json) => OrderModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -598,12 +598,12 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<BaseResponse<dynamic>> removeFromCart(int id) async {
+  Future<BaseResponse<String>> removeFromCart(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<BaseResponse<dynamic>>(Options(
+    final _options = _setStreamType<BaseResponse<String>>(Options(
       method: 'DELETE',
       headers: _headers,
       extra: _extra,
@@ -620,11 +620,11 @@ class _ApiService implements ApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponse<dynamic> _value;
+    late BaseResponse<String> _value;
     try {
-      _value = BaseResponse<dynamic>.fromJson(
+      _value = BaseResponse<String>.fromJson(
         _result.data!,
-        (json) => json as dynamic,
+        (json) => json as String,
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

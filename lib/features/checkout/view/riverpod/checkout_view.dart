@@ -6,6 +6,8 @@ import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
 import 'package:hungry/features/checkout/data/provider/check_view_provider.dart';
 import 'package:hungry/features/checkout/view/enum/payment_type.dart';
 
+import '../../../../core/data/repositories/check_out/checkout_provider.dart';
+
 class CheckOutViewV1 extends ConsumerWidget {
   CheckOutViewV1({
     super.key,
@@ -137,7 +139,19 @@ class CheckOutViewV1 extends ConsumerWidget {
                       );
                     }
                     final currentContext = context;
-                    checkoutV1(CartRequest(orders), ref: ref).then((val) {
+                    final checkoutProvider = ref.read(checkoutRepoProvider);
+                    checkoutProvider
+                        .checkout(CartRequest(orders), ref: ref)
+                        .then((val) {
+                          if (currentContext.mounted) {
+                            showDialog(
+                              context: context,
+                              builder: (context) => SuccessDialog(),
+                            );
+                          }
+                        });
+
+                    /*    checkoutV1(CartRequest(orders), ref: ref).then((val) {
                       if (currentContext.mounted) {
                         showDialog(
                           context: context,
@@ -145,7 +159,7 @@ class CheckOutViewV1 extends ConsumerWidget {
                         );
                       }
                     });
-
+*/
                     /*   checkout(orders).then((val) {
                       if (currentContext.mounted) {
                         showDialog(

@@ -74,7 +74,6 @@ Future<String?> removeItem({
     }
 
     message = result;
-    //message = "Item removed successfully ✅";
   } catch (e, st) {
     ref.read(cartProvider.notifier).state = AsyncValue.error(e.toString(), st);
     message = "Failed to remove item";

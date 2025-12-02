@@ -25,7 +25,7 @@ class CartItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 0),
       child: Column(
         children: [
           Card(
@@ -49,12 +49,14 @@ class CartItem extends StatelessWidget {
                         CustomText(
                           text: title.toString(),
                           fontWeight: FontWeight.bold,
+                          maxLine: 2,
                         ),
 
-                        CustomText(text: desc.toString()),
+                        CustomText(text: desc.toString(), maxLine: 2),
                       ],
                     ),
                   ),
+
                   Column(
                     children: [
                       Row(
@@ -105,7 +107,7 @@ class CartItem extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Gap(20),
+                      Gap(16),
                       GestureDetector(
                         onTap: onRemove,
                         child: Container(

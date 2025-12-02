@@ -4,6 +4,7 @@ import 'package:hungry/core/utils/exported_file.dart';
 import 'package:retrofit/retrofit.dart';
 
 import 'model/cart/items/item_model.dart';
+import 'model/orders/order_model.dart';
 
 part 'api_service.g.dart';
 
@@ -53,7 +54,7 @@ abstract class ApiService {
   Future<BaseResponse<dynamic>> addToCaret(@Body() CartRequest caretModel);
 
   @POST("/orders")
-  Future<BaseResponse<dynamic>> checkOut(@Body() CartRequest caretModel);
+  Future<BaseResponse<OrderModel>> checkOut(@Body() CartRequest caretModel);
 
   @GET("/cart")
   Future<BaseResponse<CartItemModel>> getCartItem();
@@ -62,7 +63,7 @@ abstract class ApiService {
   Future<BaseResponse<UserModel>> updateUserData(@Body() FormData body);
 
   @DELETE("/cart/remove/{id}")
-  Future<BaseResponse> removeFromCart(@Path("id") int id);
+  Future<BaseResponse<String>> removeFromCart(@Path("id") int id);
 
   // ✅ DELETE request (generic)
   @DELETE("/{endPoint}")

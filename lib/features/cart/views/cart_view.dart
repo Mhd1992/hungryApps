@@ -52,7 +52,6 @@ class CartView extends StatelessWidget {
       await _loadCartItems(
         apiCall: cartRepo.getCartItem,
         onSuccess: (data) {
-          print(data);
           cartItems = data;
           cartItemsNotifier.value = data;
           quantities = cartItems!.items
