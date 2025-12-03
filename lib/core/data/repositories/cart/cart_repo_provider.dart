@@ -30,11 +30,12 @@ class CartRepoProvider extends BaseRepo<CartItemModel> {
   }
 
   Future<void> removeCartItem(int cartId, {required WidgetRef ref}) async {
-    await handleRequestWithParam<String, int>(
+    await handleRequestWithParam<BaseResponse<String>, int>(
       apiCall: _apiService.removeFromCart,
       param: cartId,
       onSuccess: (data) async {
-        ref.context.showSnackBar(data);
+        final msg = data.copyWith(msg: data.message);
+        ref.context.showSnackBar(msg.message);
         await fetchCartItem(ref: ref);
       },
     );

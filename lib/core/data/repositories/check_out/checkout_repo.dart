@@ -14,10 +14,12 @@ class CheckOutRepo extends BaseRepo<String> {
   final ApiService _apiService = ApiService(DioClient().dio);
 
   Future<void> checkout(CartRequest cartModel, {required WidgetRef ref}) async {
-    await handleRequestWithParam<OrderModel, CartRequest>(
+    await handleRequestWithParam<BaseResponse<OrderModel>, CartRequest>(
       apiCall: _apiService.checkOut,
       param: cartModel,
-      onSuccess: (data) async {},
+      onSuccess: (data) async {
+        data.data!.id;
+      },
     );
   }
 

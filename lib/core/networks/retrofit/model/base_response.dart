@@ -10,6 +10,14 @@ class BaseResponse<T> {
 
   BaseResponse({required this.code, required this.message, this.data});
 
+  BaseResponse copyWith({dynamic code, String? msg, T? newData}) {
+    return BaseResponse(
+      code: code ?? this.code,
+      message: msg ?? this.message,
+      data: newData ?? data,
+    );
+  }
+
   // Generic fromJson factory
   factory BaseResponse.fromJson(
     Map<String, dynamic> json,

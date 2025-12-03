@@ -1,205 +1,148 @@
+import 'package:hungry/core/data/repositories/home/products/products_state.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import '../../../core/data/repositories/home/categories/categories_provider.dart';
+import '../../../core/data/repositories/home/categories/categories_state.dart';
+import '../../../core/data/repositories/home/products/products_provider.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  ConsumerState<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
-  HomeRepo homeRepo = HomeRepo();
-  bool _isAllLoading = false;
+class _HomeViewState extends ConsumerState<HomeView> {
   int _selectedCategoryIndex = 0;
-  List<CategoryModel> categoriesModels = [];
-  List<ProductModel> productModels = [];
 
   @override
   void initState() {
-    // TODO: implement initState
-    _loadAllData();
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      ref.read(productProvider).fetchProducts(ref: ref);
+      ref.read(categoriesProvider).fetchCategories(ref: ref);
+    });
   }
-
-  Future<void> _loadAllData() async {
-    setState(() => _isAllLoading = true);
-
-    await Future.wait([_loadCategories(), _loadProducts()]);
-
-    setState(() => _isAllLoading = false);
-  }
-
-  Future<void> _loadCategories() async {
-    await _loadProductCategory<CategoryModel>(
-      apiCall: homeRepo.loadCategories,
-      onSuccess: (data) {
-        categoriesModels = data;
-      },
-    );
-  }
-
-  Future<void> _loadProducts() async {
-    await _loadProductCategory<ProductModel>(
-      apiCall: homeRepo.loadProducts,
-      onSuccess: (data) {
-        productModels = data;
-      },
-    );
-  }
-
-  /*
- before Enhanced generic method to load categories or products
- code above  equal to the following two methods:
-  Future<void> _loadCategories() async {
-    try {
-      final categories = await homeRepo.loadCategories();
-      if (categories != null || categories.isNotEmpty) {
-        categoriesModels = categories;
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    }
-  }
-
-  Future<void> _loadProducts() async {
-    try {
-      final products = await homeRepo.loadProducts();
-      if (products != null || products.isNotEmpty) {
-        productModels = products;
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    }
-  }*/
-
-  Future<void> _loadProductCategory<T>({
-    required Future<List<T>> Function() apiCall,
-    required void Function(List<T>) onSuccess,
-  }) async {
-    try {
-      final data = await apiCall();
-      if (data.isNotEmpty) {
-        onSuccess(data);
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    }
-  }
-
-  /* List<String> categories = [
-    'All',
-    'Combo',
-    'Sliders',
-    'Juice',
-    'chickenBurger',
-  ];*/
 
   @override
   Widget build(BuildContext context) {
+    final productState = ref.watch(productStateProvider);
+    final categoryState = ref.watch(categoriesStateProvider);
+
+    final isLoading = productState.isLoading || categoryState.isLoading;
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: CustomScrollView(
         slivers: [
-          ///Header of view
-          SliverAppBar(
-            elevation: 0,
-            backgroundColor: Colors.white,
-            pinned: true,
-            floating: false,
-            scrolledUnderElevation: 0,
-            toolbarHeight: 200,
-            automaticallyImplyLeading: false,
-            flexibleSpace: Padding(
-              padding: EdgeInsets.only(top: 40, left: 16, right: 16),
-              child: Column(children: [UserHeader(), Gap(16), SearchField()]),
-            ),
-          ),
-
-          /// Show one loading spinner if both APIs not ready
-          if (_isAllLoading)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: CircularProgressIndicator(color: AppColors.primaryColor),
-              ),
-            )
+          _buildHeader(),
+          if (isLoading)
+            _buildLoading()
           else ...[
-            ///body of view
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 2,
-              ),
-              sliver: SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    CustomWrapFilterChoice(
-                      categories: categoriesModels,
-                      selectedIndex: _selectedCategoryIndex,
-                      onChanged: (newIndex) {
-                        setState(() {
-                          _selectedCategoryIndex = newIndex;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            /// Categories section
+            _buildCategorySection(categoryState),
 
-            ///footer of view
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverGrid(
-                delegate: SliverChildBuilderDelegate(
-                  childCount: productModels.length,
-                  (context, index) => GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ProductDetailView(
-                            productId: productModels[index].id,
-                            price: productModels[index].price,
-                          ),
-                        ),
-                      );
-                    },
-                    child: CardItem(
-                      title: productModels[index].name,
-                      imageUrl: productModels[index].imageUrl,
-                      description: productModels[index].description,
-                      rate: productModels[index].rating,
-                    ),
-                  ),
-                ),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 2,
-                  childAspectRatio: 0.75,
-                ),
-              ),
-            ),
+            /// Products section
+            _buildProductSection(productState),
           ],
         ],
       ),
+    );
+  }
+
+  SliverAppBar _buildHeader() {
+    return SliverAppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      pinned: true,
+      toolbarHeight: 200,
+      automaticallyImplyLeading: false,
+      flexibleSpace: Padding(
+        padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
+        child: Column(children: const [UserHeader(), Gap(16), SearchField()]),
+      ),
+    );
+  }
+
+  SliverFillRemaining _buildLoading() {
+    return SliverFillRemaining(
+      hasScrollBody: false,
+      child: Center(
+        child: CircularProgressIndicator(color: AppColors.primaryColor),
+      ),
+    );
+  }
+
+  SliverPadding _buildCategorySection(
+    AsyncValue<List<CategoryModel>> categoryState,
+  ) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      sliver: SliverToBoxAdapter(
+        child: categoryState.when(
+          data: (categories) => CustomWrapFilterChoice(
+            categories: categories,
+            selectedIndex: _selectedCategoryIndex,
+            onChanged: (newIndex) {
+              setState(() => _selectedCategoryIndex = newIndex);
+            },
+          ),
+          loading: () => Center(
+            child: CircularProgressIndicator(color: AppColors.primaryColor),
+          ),
+          error: (e, _) => Text("Error: $e"),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProductSection(AsyncValue<List<ProductModel>> productState) {
+    return productState.when(
+      data: (products) => SliverPadding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        sliver: SliverGrid(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 0.75,
+          ),
+          delegate: SliverChildBuilderDelegate(childCount: products.length, (
+            context,
+            index,
+          ) {
+            final product = products[index];
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ProductDetailView(
+                      productId: product.id,
+                      price: product.price,
+                    ),
+                  ),
+                );
+              },
+              child: CardItem(
+                title: product.name,
+                imageUrl: product.imageUrl,
+                description: product.description,
+                rate: product.rating,
+              ),
+            );
+          }),
+        ),
+      ),
+      loading: () => SliverToBoxAdapter(
+        child: Center(
+          child: CircularProgressIndicator(color: AppColors.primaryColor),
+        ),
+      ),
+      error: (e, _) =>
+          SliverToBoxAdapter(child: Center(child: Text("Error: $e"))),
     );
   }
 }

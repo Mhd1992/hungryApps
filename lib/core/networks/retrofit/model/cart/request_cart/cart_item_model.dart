@@ -12,6 +12,18 @@ class CartItemModel {
 
   CartItemModel(this.items, this.id, this.totalPrice);
 
+  CartItemModel copyWith({
+    int? id,
+    List<CartItems>? items,
+    dynamic totalPrice,
+  }) {
+    return CartItemModel(
+      items ?? this.items,
+      id ?? this.id,
+      totalPrice ?? this.totalPrice,
+    );
+  }
+
   factory CartItemModel.fromJson(Map<String, dynamic> json) =>
       _$CartItemModelFromJson(json);
 

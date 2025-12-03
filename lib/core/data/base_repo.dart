@@ -2,9 +2,9 @@ import 'package:hungry/core/controller/repo_state_controller.dart';
 
 import '../utils/exported_file.dart';
 
-Provider<BaseRepo<T>> createRepoProvider<T>(BaseRepo<T> Function(Ref) create) {
+/*Provider<BaseRepo<T>> createRepoProvider<T>(BaseRepo<T> Function(Ref) create) {
   return Provider<BaseRepo<T>>((ref) => create(ref));
-}
+}*/
 
 abstract class BaseRepo<T> {
   late RepoStateController<T> controller;
@@ -20,7 +20,7 @@ abstract class BaseRepo<T> {
   }
 
   Future<void> handleRequestWithParam<R, P>({
-    required Future<BaseResponse<R>> Function(P param) apiCall,
+    required Future<R> Function(P param) apiCall,
     required P param,
     required void Function(R result) onSuccess,
   }) async {
@@ -29,13 +29,9 @@ abstract class BaseRepo<T> {
       final result = await apiCall(param);
       if (result != null) {
         final data = result as R;
-
         onSuccess(data);
-      } else {
-        if (result.message != null && result.message!.isNotEmpty) {
-          onSuccess(result.message as R);
-        } else {
-          onSuccess(null as R);
+        if (data is T) {
+          controller.setData(data as T);
         }
       }
     } catch (e, st) {
