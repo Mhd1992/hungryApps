@@ -1,7 +1,8 @@
+import 'package:hungry/core/data/base_controller.dart';
 import 'package:hungry/core/data/repositories/auth/auth_provider.dart';
 import 'package:hungry/core/data/repositories/auth/auth_repo.dart';
 import 'package:hungry/core/data/repositories/auth/auth_state.dart';
-import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/core/utils/exported_file.dart' hide AuthRepo;
 import 'package:hungry/gen/assets.gen.dart';
 import 'package:hungry/shared/app_assets/app_assets.dart';
 
@@ -23,17 +24,20 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
   bool showVisa = false;
 
   late final ProviderSubscription<AsyncValue<UserModel?>> _listener;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      ref.read(authProvider).profile(ref: ref);
-
+      //ref.read(authProvider).profile(ref: ref);
+      final userController = ref.read(authControllerProvider.notifier);
+      userController.profile(() => ref.read(authProvider).profile(ref: ref));
       // getProfileData(ref);
     });
-
+    final authRepo = ref.read(authProvider);
+    final profileController = BaseController<UserModel>(authRepo);
     //ListenManual because inside initSate can used only ref.listenManual
     _listener = ref.listenManual<AsyncValue<UserModel?>>(authState, (
       prev,
@@ -78,6 +82,9 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
   Widget build(BuildContext context) {
     //final user = ref.watch(userProvider);
 
+    final userState = ref.watch(authControllerProvider);
+    final userController = ref.read(authControllerProvider.notifier);
+
     final user = ref.watch(authState);
 
     final loading = ref.watch(loadingState);
@@ -106,7 +113,7 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                   ),
                 ],
               ),
-              body: user.when(
+              body: userState.when(
                 data: (userData) {
                   return Skeletonizer(
                     enabled: false, // no skeleton when data is ready
@@ -136,7 +143,22 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            ref
+                            ref.read(authControllerProvider.notifier);
+                            userController.updateData(
+                              () => ref
+                                  .read(authProvider)
+                                  .updateProfileInfo(
+                                    updateRequest: UserModel(
+                                      name: nameController.text,
+                                      email: emailController.text,
+                                      address: addressController.text,
+                                      visa: visaController.text,
+                                      image: selectedImage,
+                                    ),
+                                    ref: ref,
+                                  ),
+                            );
+                            /*       ref
                                 .read(authProvider)
                                 .updateProfileInfo(
                                   updateRequest: UserModel(
@@ -148,7 +170,7 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                                   ),
 
                                   ref: ref,
-                                );
+                                );*/
                           },
                           child: (loading)
                               ? CircularProgressIndicator(
