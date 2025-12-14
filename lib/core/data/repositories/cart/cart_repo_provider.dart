@@ -1,4 +1,5 @@
 import 'package:hungry/core/data/base_repo.dart';
+import 'package:hungry/core/networks/retrofit/model/cart/items/item_model.dart';
 import 'package:hungry/core/networks/retrofit/model/cart/request_cart/cart_item_model.dart';
 
 import '../../../utils/exported_file.dart';
@@ -9,6 +10,13 @@ final cartProviderV1 = StateProvider<AsyncValue<CartItemModel?>>(
 
 final quantitiesProviderV1 = StateProvider<List<int>>((ref) => []);
 
+final selectedOptionProvider = StateProvider.autoDispose<Set<int>>((ref) => {});
+final selectedToppingProvider = StateProvider.autoDispose<Set<int>>(
+  (ref) => {},
+);
+
+final loading = StateProvider((ref) => false);
+
 class CartRepoProvider extends BaseRepo<CartItemModel> {
   CartRepoProvider._internal(super.ref);
 
@@ -17,6 +25,18 @@ class CartRepoProvider extends BaseRepo<CartItemModel> {
   }
 
   final ApiService _apiService = ApiService(DioClient().dio);
+
+  Future<void> addToCart(CartRequest request, {required WidgetRef ref}) async {
+    ref.read(loading.notifier).state = true;
+    await handleRequestWithParam<BaseResponse<dynamic>, CartRequest>(
+      apiCall: _apiService.addToCaret,
+      param: request,
+      onSuccess: (success) {
+        ref.read(loading.notifier).state = false;
+        ref.context.showSnackBar(success.message);
+      },
+    );
+  }
 
   Future<void> fetchCartItem({required WidgetRef ref}) async {
     await handleRequest<CartItemModel>(
@@ -39,10 +59,5 @@ class CartRepoProvider extends BaseRepo<CartItemModel> {
         await fetchCartItem(ref: ref);
       },
     );
-  }
-
-  @override
-  void setLoadingState(bool value) {
-    // add your loading logic
   }
 }

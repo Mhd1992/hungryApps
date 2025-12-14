@@ -25,6 +25,9 @@ abstract class ApiService {
   @GET("/{endPoint}")
   Future<BaseResponse<UserModel>> profile(@Path("endPoint") String endPoint);
 
+  @GET("/profile")
+  Future<BaseResponse<UserModel>> getProfile();
+
   // ✅ Get all users
   @GET("/users")
   Future<BaseResponse<List<UserModel>>> getUsers();

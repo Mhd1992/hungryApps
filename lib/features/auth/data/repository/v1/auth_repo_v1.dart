@@ -74,7 +74,6 @@ class AuthRepoV1 {
   Future<UserModel?> profile({bool updatedData = false}) async {
     final token = await PrefHelper.getToken();
     if (token == 'guest') {
-      print('---------AM GUEST-----------');
       return null;
     }
     try {

@@ -1,3 +1,6 @@
+import 'package:hungry/core/data/repositories/auth/auth_provider.dart';
+import 'package:hungry/core/data/repositories/auth/auth_repo.dart';
+import 'package:hungry/core/data/repositories/auth/auth_state.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/gen/assets.gen.dart';
 import 'package:hungry/shared/app_assets/app_assets.dart';
@@ -19,43 +22,70 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
   UserModel? userModel;
   bool showVisa = false;
 
+  late final ProviderSubscription<AsyncValue<UserModel?>> _listener;
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getProfileData(ref);
+      if (!mounted) return;
+
+      ref.read(authProvider).profile(ref: ref);
+
+      // getProfileData(ref);
     });
 
-    ref.listenManual<AsyncValue<UserModel?>>(userProvider, (prev, next) {
-      next.whenData((user) {
-        if (user != null) {
+    //ListenManual because inside initSate can used only ref.listenManual
+    _listener = ref.listenManual<AsyncValue<UserModel?>>(authState, (
+      prev,
+      next,
+    ) {
+      next.whenOrNull(
+        data: (user) {
+          if (user == null) return;
+
           nameController.text = user.name;
           emailController.text = user.email;
           addressController.text = user.address ?? '';
           visaController.text = user.visa ?? '';
+
           showVisa = user.visa != null;
-          setState(() {}); // update the UI
-        }
-      });
+
+          if (!mounted) return;
+          if (ref.read(updateProfile)) {
+            context.showSnackBar("Profile updated");
+            ref.read(updateProfile.notifier).state = false;
+          }
+
+          setState(() {});
+        },
+        error: (e, _) {
+          if (mounted) {
+            context.showSnackBar(e.toString());
+          }
+        },
+      );
     });
   }
 
   @override
   void dispose() {
     removeListener?.call(); // cleanup listener
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider);
+    //final user = ref.watch(userProvider);
+
+    final user = ref.watch(authState);
+
     final loading = ref.watch(loadingState);
     final logOutLoading = ref.watch(logoutLoading);
     final selectedImage = ref.watch(selectedImageProvider);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: (authRepoV1.isGuest)
+      child: (ref.read(authProvider).isGuest(ref))
           ? GuestLogo()
           : Scaffold(
               resizeToAvoidBottomInset: true,
@@ -106,21 +136,19 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            updateProfileData(
-                              ref,
-                              name: nameController.text,
-                              email: emailController.text,
-                              address: addressController.text,
-                              visa: visaController.text,
-                              imagePath: selectedImage,
-                            ).then((_) {
-                              refreshUserProvider(ref);
+                            ref
+                                .read(authProvider)
+                                .updateProfileInfo(
+                                  updateRequest: UserModel(
+                                    name: nameController.text,
+                                    email: emailController.text,
+                                    address: addressController.text,
+                                    visa: visaController.text,
+                                    image: selectedImage,
+                                  ),
 
-                              if (!mounted) return;
-                              context.showSnackBar(
-                                "Profile Updated Successfully",
-                              );
-                            });
+                                  ref: ref,
+                                );
                           },
                           child: (loading)
                               ? CircularProgressIndicator(
@@ -149,7 +177,7 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                                 ),
                         ),
                         GestureDetector(
-                          onTap: () => logout(ref),
+                          onTap: () => ref.read(authProvider).logout(ref: ref),
                           child: Container(
                             padding: EdgeInsets.all(20),
                             decoration: BoxDecoration(

@@ -1,3 +1,5 @@
+import 'package:hungry/core/utils/exported_file.dart';
+
 class UserModel {
   final String name;
   final String email;
@@ -35,6 +37,28 @@ class UserModel {
       'visa': visa,
       'address': address,
     };
+  }
+
+  Future<FormData> toFormData() async {
+    final data = <String, dynamic>{
+      'name': name,
+      'email': email,
+      'address': address,
+    };
+
+    if (visa != null && visa!.isNotEmpty) {
+      data['Visa'] = visa;
+    }
+
+    // ✅ Image is optional — handled safely here
+    if (image != null && image!.isNotEmpty) {
+      data['image'] = await MultipartFile.fromFile(
+        image!,
+        filename: 'upload.jpg',
+      );
+    }
+
+    return FormData.fromMap(data);
   }
 
   @override

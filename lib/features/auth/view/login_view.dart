@@ -1,21 +1,23 @@
+import 'package:hungry/core/data/repositories/auth/auth_provider.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 
 import '../data/repository/v1/auth_repo_v1.dart';
 
-class LoginView extends StatefulWidget {
+class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  ConsumerState<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginViewState extends ConsumerState<LoginView> {
   AuthRepo authRepo = AuthRepo();
   AuthRepoV1 authRepoV1 = AuthRepoV1();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -30,8 +32,22 @@ class _LoginViewState extends State<LoginView> {
       if (formKey.currentState!.validate()) {
         try {
           setState(() => _isLoading = true);
-
-          final user = await authRepoV1.login(
+          ref
+              .read(authProvider)
+              .loginUser({
+                'email': emailController.text.trim(),
+                'password': passController.text.trim(),
+              }, ref: ref)
+              .then((val) {
+                print('login user: $val');
+                if (val != null) {
+                  if (!context.mounted) return;
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (context) => Root()));
+                }
+              });
+          /*  final user = await authRepoV1.login(
             emailController.text.trim(),
             passController.text.trim(),
           );
@@ -40,7 +56,7 @@ class _LoginViewState extends State<LoginView> {
             Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (context) => Root()));
-          }
+          }*/
         } catch (e) {
           String errorMessage = 'unknown Error';
           if (e is ApiError) {
@@ -134,7 +150,10 @@ class _LoginViewState extends State<LoginView> {
                             Gap(8),
                             TextButton(
                               onPressed: () {
-                                authRepo.continueAsGuest();
+                                ref
+                                    .read(authProvider)
+                                    .continueAsGuest(ref: ref);
+                                // authRepo.continueAsGuest();
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder: (context) => Root(),
