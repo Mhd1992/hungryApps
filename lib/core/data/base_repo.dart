@@ -14,8 +14,6 @@ abstract class BaseRepo<T> {
     required P param,
     required void Function(R result) onSuccess,
   }) async {
-    print('R----------\n ${R}\n-----------');
-    print('T----------\n ${T}\n-----------');
     try {
       controller.setLoading();
       final result = await apiCall(param);
@@ -40,7 +38,9 @@ abstract class BaseRepo<T> {
       final result = await apiCall();
       final data = result.data as R;
       onSuccess(data);
-      controller.setData(data as T);
+
+      /// TODO remove controller.setData(data as T);  and use handleData to control state UI
+      // controller.setData(data as T);
     } catch (e, st) {
       controller.setError(e, st);
     }

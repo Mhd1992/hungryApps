@@ -21,15 +21,22 @@ class _HomeViewState extends ConsumerState<HomeView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      ref.read(productProvider).fetchProducts(ref: ref);
-      ref.read(categoriesProvider).fetchCategories(ref: ref);
+      final productController = ref.read(productControllerProvider.notifier);
+      productController.handleData(
+        () => ref.read(productProvider).fetchProducts(ref: ref),
+      );
+
+      final categoryController = ref.read(categoryControllerProvider.notifier);
+      categoryController.handleData(
+        () => ref.read(categoriesProvider).fetchCategories(ref: ref),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final productState = ref.watch(productStateProvider);
-    final categoryState = ref.watch(categoriesStateProvider);
+    final productState = ref.watch(productControllerProvider);
+    final categoryState = ref.watch(categoryControllerProvider);
 
     final isLoading = productState.isLoading || categoryState.isLoading;
 
@@ -76,14 +83,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
   }
 
   SliverPadding _buildCategorySection(
-    AsyncValue<List<CategoryModel>> categoryState,
+    AsyncValue<List<CategoryModel>?> categoryState,
   ) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       sliver: SliverToBoxAdapter(
         child: categoryState.when(
           data: (categories) => CustomWrapFilterChoice(
-            categories: categories,
+            categories: categories!,
             selectedIndex: _selectedCategoryIndex,
             onChanged: (newIndex) {
               setState(() => _selectedCategoryIndex = newIndex);
@@ -98,7 +105,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
     );
   }
 
-  Widget _buildProductSection(AsyncValue<List<ProductModel>> productState) {
+  Widget _buildProductSection(AsyncValue<List<ProductModel>?> productState) {
     return productState.when(
       data: (products) => SliverPadding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -109,7 +116,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
             mainAxisSpacing: 12,
             childAspectRatio: 0.75,
           ),
-          delegate: SliverChildBuilderDelegate(childCount: products.length, (
+          delegate: SliverChildBuilderDelegate(childCount: products!.length, (
             context,
             index,
           ) {

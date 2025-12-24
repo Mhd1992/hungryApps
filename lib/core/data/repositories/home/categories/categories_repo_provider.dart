@@ -15,12 +15,11 @@ class CategoriesRepoProvider extends BaseRepo<List<CategoryModel>> {
   final ApiService _apiService = ApiService(DioClient().dio);
 
   List<CategoryModel>? cachedData;
-  Future<void> fetchCategories({required WidgetRef ref}) async {
+  Future<List<CategoryModel>> fetchCategories({required WidgetRef ref}) async {
     if (cachedData != null && cachedData!.isNotEmpty) {
       ref.read(categoriesProvider.notifier).state = AsyncValue.data(
         cachedData!,
       );
-      return;
     }
     await handleRequest<List<CategoryModel>>(
       apiCall: _apiService.getCategories,
@@ -29,5 +28,6 @@ class CategoriesRepoProvider extends BaseRepo<List<CategoryModel>> {
         ref.read(categoriesProvider.notifier).state = AsyncValue.data(result);
       },
     );
+    return cachedData ?? [];
   }
 }

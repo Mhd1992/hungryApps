@@ -84,7 +84,7 @@ class _ProductDetailViewState extends ConsumerState<ProductDetailView> {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: List.generate(
-                              toppings.length,
+                              toppings!.length,
                               (index) => Padding(
                                 padding: const EdgeInsets.only(
                                   right: 16.0,
@@ -131,7 +131,7 @@ class _ProductDetailViewState extends ConsumerState<ProductDetailView> {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: List.generate(
-                              options.length,
+                              options!.length,
                               (index) => Padding(
                                 padding: const EdgeInsets.only(
                                   right: 16.0,

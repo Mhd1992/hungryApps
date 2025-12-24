@@ -21,14 +21,16 @@ class _CartViewState extends ConsumerState<NewCartView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final provider = ref.read(cartRepoProvider);
-      provider.fetchCartItem(ref: ref);
+      //provider.fetchCartItem(ref: ref);
+      final cartProvider = ref.read(cartControllerProvider.notifier);
+      cartProvider.handleData(() => provider.fetchCartItem(ref: ref));
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final quantityItem = ref.watch(quantitiesProviderV1);
-    final cartState = ref.watch(cartStateProvider);
+    final cartState = ref.watch(cartControllerProvider);
     return Scaffold(
       body: cartState.when(
         data: (cart) {

@@ -65,7 +65,6 @@ class AuthRepo extends BaseRepo<UserModel> {
           PrefHelper.saveToken(user!.token!);
         }
         ref.read(updateProfile.notifier).state = true;
-        //ref.read(authState.notifier).setData(user!);
       },
     );
     return user;

@@ -7,8 +7,8 @@ import 'auth_provider.dart';
 
 final authState =
     StateNotifierProvider<
-      RepoStateController<UserModel>,
-      AsyncValue<UserModel>
+      RepoStateController<UserModel?>,
+      AsyncValue<UserModel?>
     >((ref) {
       final repo = ref.watch(authProvider);
       return repo.controller;

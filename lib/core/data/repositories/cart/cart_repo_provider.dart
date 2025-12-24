@@ -38,15 +38,20 @@ class CartRepoProvider extends BaseRepo<CartItemModel> {
     );
   }
 
-  Future<void> fetchCartItem({required WidgetRef ref}) async {
+  Future<CartItemModel?> fetchCartItem({required WidgetRef ref}) async {
+    //Future<void> fetchCartItem({required WidgetRef ref}) async {
+    CartItemModel? cartItemModel;
+
     await handleRequest<CartItemModel>(
       apiCall: _apiService.getCartItem,
       onSuccess: (result) {
         ref.read(cartProviderV1.notifier).state = AsyncValue.data(result);
+        cartItemModel = result;
         final initialQuantity = List<int>.filled(result.items.length, 1);
         ref.read(quantitiesProviderV1.notifier).state = initialQuantity;
       },
     );
+    return cartItemModel;
   }
 
   Future<void> removeCartItem(int cartId, {required WidgetRef ref}) async {

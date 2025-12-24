@@ -14,10 +14,9 @@ class ProductsRepoProvider extends BaseRepo<List<ProductModel>> {
   }
   final ApiService _apiService = ApiService(DioClient().dio);
   List<ProductModel>? cachedData;
-  Future<void> fetchProducts({required WidgetRef ref}) async {
+  Future<List<ProductModel>> fetchProducts({required WidgetRef ref}) async {
     if (cachedData != null && cachedData!.isNotEmpty) {
       ref.read(_productsProvider.notifier).state = AsyncValue.data(cachedData!);
-      return;
     }
     await handleRequest<List<ProductModel>>(
       apiCall: _apiService.getProducts,
@@ -26,5 +25,6 @@ class ProductsRepoProvider extends BaseRepo<List<ProductModel>> {
         //ref.read(_productsProvider.notifier).state = AsyncValue.data(result);
       },
     );
+    return cachedData!;
   }
 }

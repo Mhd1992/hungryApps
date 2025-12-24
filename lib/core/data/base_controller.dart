@@ -6,7 +6,6 @@ class BaseController<T> extends StateNotifier<AsyncValue<T>> {
   final BaseRepo<T> repo;
 
   BaseController(this.repo) : super(const AsyncLoading()) {
-    // Listen to repo changes
     repo.controller.addListener((repoState) {
       repoState.when(
         data: (data) => state = AsyncData(data),
@@ -15,8 +14,7 @@ class BaseController<T> extends StateNotifier<AsyncValue<T>> {
       );
     });
   }
-
-  Future<void> updateData(Future<T?> Function() action) async {
+  Future<void> handleData(Future<T?> Function() action) async {
     try {
       state = const AsyncLoading();
       final result = await action();
@@ -26,11 +24,10 @@ class BaseController<T> extends StateNotifier<AsyncValue<T>> {
     }
   }
 
-  Future<void> profile(Future<T?> Function() action) async {
+  Future<void> handleAction(Future<void> Function() action) async {
     try {
       state = const AsyncLoading();
-      final result = await action();
-      if (result != null) state = AsyncData(result);
+      await action();
     } catch (e, st) {
       state = AsyncError(e, st);
     }

@@ -24,21 +24,16 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
   bool showVisa = false;
 
   late final ProviderSubscription<AsyncValue<UserModel?>> _listener;
-
+  late final BaseController<UserModel> userController;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-
-      //ref.read(authProvider).profile(ref: ref);
-      final userController = ref.read(authControllerProvider.notifier);
-      userController.profile(() => ref.read(authProvider).profile(ref: ref));
-      // getProfileData(ref);
+      userController = ref.read(authControllerProvider.notifier);
+      userController.handleData(() => ref.read(authProvider).profile(ref: ref));
     });
-    final authRepo = ref.read(authProvider);
-    final profileController = BaseController<UserModel>(authRepo);
-    //ListenManual because inside initSate can used only ref.listenManual
+
     _listener = ref.listenManual<AsyncValue<UserModel?>>(authState, (
       prev,
       next,
@@ -46,21 +41,11 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
       next.whenOrNull(
         data: (user) {
           if (user == null) return;
-
           nameController.text = user.name;
           emailController.text = user.email;
           addressController.text = user.address ?? '';
           visaController.text = user.visa ?? '';
-
           showVisa = user.visa != null;
-
-          if (!mounted) return;
-          if (ref.read(updateProfile)) {
-            context.showSnackBar("Profile updated");
-            ref.read(updateProfile.notifier).state = false;
-          }
-
-          setState(() {});
         },
         error: (e, _) {
           if (mounted) {
@@ -80,12 +65,8 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
 
   @override
   Widget build(BuildContext context) {
-    //final user = ref.watch(userProvider);
-
     final userState = ref.watch(authControllerProvider);
-    final userController = ref.read(authControllerProvider.notifier);
-
-    final user = ref.watch(authState);
+    final userController = ref.watch(authControllerProvider.notifier);
 
     final loading = ref.watch(loadingState);
     final logOutLoading = ref.watch(logoutLoading);
@@ -144,7 +125,7 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                         GestureDetector(
                           onTap: () async {
                             ref.read(authControllerProvider.notifier);
-                            userController.updateData(
+                            userController.handleData(
                               () => ref
                                   .read(authProvider)
                                   .updateProfileInfo(
@@ -158,19 +139,6 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                                     ref: ref,
                                   ),
                             );
-                            /*       ref
-                                .read(authProvider)
-                                .updateProfileInfo(
-                                  updateRequest: UserModel(
-                                    name: nameController.text,
-                                    email: emailController.text,
-                                    address: addressController.text,
-                                    visa: visaController.text,
-                                    image: selectedImage,
-                                  ),
-
-                                  ref: ref,
-                                );*/
                           },
                           child: (loading)
                               ? CircularProgressIndicator(
@@ -199,7 +167,9 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                                 ),
                         ),
                         GestureDetector(
-                          onTap: () => ref.read(authProvider).logout(ref: ref),
+                          onTap: () => userController.handleAction(
+                            () => ref.read(authProvider).logout(ref: ref),
+                          ),
                           child: Container(
                             padding: EdgeInsets.all(20),
                             decoration: BoxDecoration(
