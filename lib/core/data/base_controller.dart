@@ -15,6 +15,13 @@ class BaseController<T> extends StateNotifier<AsyncValue<T>> {
     });
   }
   Future<void> handleData(Future<T?> Function() action) async {
+    final cached = repo.cachedData;
+
+    if (cached != null) {
+      state = AsyncData(cached);
+      return;
+    }
+
     try {
       state = const AsyncLoading();
       final result = await action();

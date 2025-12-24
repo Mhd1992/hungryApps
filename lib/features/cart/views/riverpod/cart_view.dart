@@ -1,5 +1,4 @@
 import 'package:hungry/core/data/repositories/cart/cart_repo_provider.dart';
-import 'package:hungry/core/data/repositories/cart/cart_state.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/features/checkout/view/riverpod/checkout_view.dart';

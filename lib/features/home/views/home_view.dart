@@ -1,7 +1,5 @@
-import 'package:hungry/core/data/repositories/home/products/products_state.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import '../../../core/data/repositories/home/categories/categories_provider.dart';
-import '../../../core/data/repositories/home/categories/categories_state.dart';
 import '../../../core/data/repositories/home/products/products_provider.dart';
 
 class HomeView extends ConsumerStatefulWidget {

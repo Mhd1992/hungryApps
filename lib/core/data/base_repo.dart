@@ -4,7 +4,7 @@ import '../utils/exported_file.dart';
 
 abstract class BaseRepo<T> {
   late RepoStateController<T> controller;
-
+  T? cachedData;
   BaseRepo(Ref ref) {
     controller = RepoStateController<T>();
   }

@@ -1,9 +1,7 @@
 import 'package:hungry/core/data/repositories/cart/cart_provider.dart';
 import 'package:hungry/core/data/repositories/cart/cart_repo_provider.dart';
 import 'package:hungry/core/data/repositories/products/side_options/side_options_provider.dart';
-import 'package:hungry/core/data/repositories/products/side_options/side_options_state.dart';
 import 'package:hungry/core/data/repositories/products/toppings/toppings_provider.dart';
-import 'package:hungry/core/data/repositories/products/toppings/toppings_state.dart';
 import 'package:hungry/core/networks/retrofit/model/cart/items/item_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/cart/data/repository/cart_repository.dart';
