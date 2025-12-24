@@ -9,6 +9,9 @@ class ApiException implements Exception {
       case 401:
         return UnauthorizedError();
 
+      case 500:
+        return InternalServerError();
+
       default:
         return UnknownError();
     }

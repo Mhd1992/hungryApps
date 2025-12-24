@@ -33,16 +33,8 @@ abstract class BaseRepo<T> {
     required Future<BaseResponse<R>> Function() apiCall,
     required void Function(R result) onSuccess,
   }) async {
-    try {
-      controller.setLoading();
-      final result = await apiCall();
-      final data = result.data as R;
-      onSuccess(data);
-
-      /// TODO remove controller.setData(data as T);  and use handleData to control state UI
-      //  controller.setData(data as T);
-    } catch (e, st) {
-      controller.setError(e, st);
-    }
+    final result = await apiCall();
+    final data = result.data as R;
+    onSuccess(data);
   }
 }

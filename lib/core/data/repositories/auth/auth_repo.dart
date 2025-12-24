@@ -74,14 +74,6 @@ class AuthRepo extends BaseRepo<UserModel> {
     required WidgetRef ref,
     updateData = false,
   }) async {
-    final token = await PrefHelper.getToken();
-    if (token == 'guest') {
-      return null;
-    }
-    if (cachedUser != null && !updateData) {
-      ref.read(authState.notifier).setData(cachedUser!);
-      return cachedUser;
-    }
     await handleRequest<UserModel>(
       apiCall: _apiService.getProfile,
       onSuccess: (success) {
@@ -92,8 +84,6 @@ class AuthRepo extends BaseRepo<UserModel> {
   }
 
   Future<UserModel?> autoLogin({required WidgetRef ref}) async {
-    final token = await PrefHelper.getToken();
-    if (token == 'guest') return null;
     cachedUser = await profile(ref: ref);
     ref.read(authState.notifier).setData(cachedUser!);
     return cachedUser;
