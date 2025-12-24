@@ -35,16 +35,24 @@ class _ProductDetailViewState extends ConsumerState<ProductDetailView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      final sideOptionController = ref.read(
+        sideOptionControllerProvider.notifier,
+      );
+      sideOptionController.handleData(
+        () => ref.read(sideOptionProvider).fetchSideOption(ref: ref),
+      );
 
-      ref.read(sideOptionProvider).fetchSideOption(ref: ref);
-      ref.read(toppingProvider).fetchTopping(ref: ref);
+      final toppingController = ref.read(toppingControllerProvider.notifier);
+      toppingController.handleData(
+        () => ref.read(toppingProvider).fetchTopping(ref: ref),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final toppingState = ref.watch(toppingStateProvider);
-    final optionState = ref.watch(sideOptionState);
+    final toppingState = ref.watch(sideOptionControllerProvider);
+    final optionState = ref.watch(toppingControllerProvider);
     final loadProvider = ref.watch(loading);
     final selectedOption = ref.watch(selectedOptionProvider);
     final selectedTopping = ref.watch(selectedToppingProvider);

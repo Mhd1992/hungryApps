@@ -10,10 +10,16 @@ class SideOptionRepo extends BaseRepo<List<SideOptionModel>> {
 
   final ApiService _apiService = ApiService(DioClient().dio);
 
-  Future<void> fetchSideOption({required WidgetRef ref}) async {
+  Future<List<SideOptionModel>?> fetchSideOption({
+    required WidgetRef ref,
+  }) async {
+    List<SideOptionModel>? sideOptions;
     await handleRequest(
       apiCall: _apiService.getSideOptions,
-      onSuccess: (data) {},
+      onSuccess: (data) {
+        sideOptions = data;
+      },
     );
+    return sideOptions;
   }
 }

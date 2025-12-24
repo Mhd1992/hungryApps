@@ -14,7 +14,14 @@ class ToppingRepo extends BaseRepo<List<ToppingModel>> {
 
   final ApiService _apiService = ApiService(DioClient().dio);
 
-  Future<void> fetchTopping({required WidgetRef ref}) async {
-    await handleRequest(apiCall: _apiService.getToppings, onSuccess: (data) {});
+  Future<List<ToppingModel>?> fetchTopping({required WidgetRef ref}) async {
+    List<ToppingModel>? toppings;
+    await handleRequest(
+      apiCall: _apiService.getToppings,
+      onSuccess: (data) {
+        toppings = data;
+      },
+    );
+    return toppings;
   }
 }

@@ -1,6 +1,5 @@
 import 'package:hungry/core/data/base_controller.dart';
 import 'package:hungry/core/data/repositories/auth/auth_provider.dart';
-import 'package:hungry/core/data/repositories/auth/auth_repo.dart';
 import 'package:hungry/core/data/repositories/auth/auth_state.dart';
 import 'package:hungry/core/utils/exported_file.dart' hide AuthRepo;
 import 'package:hungry/gen/assets.gen.dart';
@@ -34,26 +33,26 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
       userController.handleData(() => ref.read(authProvider).profile(ref: ref));
     });
 
-    _listener = ref.listenManual<AsyncValue<UserModel?>>(authState, (
-      prev,
-      next,
-    ) {
-      next.whenOrNull(
-        data: (user) {
-          if (user == null) return;
-          nameController.text = user.name;
-          emailController.text = user.email;
-          addressController.text = user.address ?? '';
-          visaController.text = user.visa ?? '';
-          showVisa = user.visa != null;
-        },
-        error: (e, _) {
-          if (mounted) {
-            context.showSnackBar(e.toString());
-          }
-        },
-      );
-    });
+    _listener = ref.listenManual<AsyncValue<UserModel?>>(
+      authControllerProvider,
+      (prev, next) {
+        next.whenOrNull(
+          data: (user) {
+            if (user == null) return;
+            nameController.text = user.name;
+            emailController.text = user.email;
+            addressController.text = user.address ?? '';
+            visaController.text = user.visa ?? '';
+            showVisa = user.visa != null;
+          },
+          error: (e, _) {
+            if (mounted) {
+              context.showSnackBar(e.toString());
+            }
+          },
+        );
+      },
+    );
   }
 
   @override
