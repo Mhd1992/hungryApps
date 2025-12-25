@@ -15,9 +15,12 @@ class BaseController<T> extends StateNotifier<AsyncValue<T>> {
     });
   }
 
-  Future<void> handleData(Future<T?> Function() action) async {
+  Future<void> handleData(
+    Future<T?> Function() action, {
+    bool isUpdate = false,
+  }) async {
     final cached = repo.cachedData;
-    if (cached != null) {
+    if (cached != null && !isUpdate) {
       state = AsyncData(cached);
       return;
     }

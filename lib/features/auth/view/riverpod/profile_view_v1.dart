@@ -137,6 +137,7 @@ class _ProfileViewV1State extends ConsumerState<ProfileViewV1> {
                                     ),
                                     ref: ref,
                                   ),
+                              isUpdate: true,
                             );
                           },
                           child: (loading)

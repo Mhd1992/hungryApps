@@ -25,13 +25,13 @@ class AuthRepo extends BaseRepo<UserModel> {
       apiCall: _apiService.login,
       param: param,
       onSuccess: (success) {
-        user = success.data;
-        if (user?.token != null) {
+        cachedUser = success.data;
+        if (cachedUser?.token != null) {
           PrefHelper.saveToken(user!.token!);
         }
       },
     );
-    return user;
+    return cachedUser;
   }
 
   Future<UserModel?> signUp(
@@ -42,13 +42,13 @@ class AuthRepo extends BaseRepo<UserModel> {
       apiCall: _apiService.register,
       param: param,
       onSuccess: (success) {
-        user = success.data;
+        cachedUser = success.data;
         if (user?.token != null) {
           PrefHelper.saveToken(user!.token!);
         }
       },
     );
-    return user;
+    return cachedUser;
   }
 
   Future<UserModel?> updateProfileInfo({
@@ -60,14 +60,11 @@ class AuthRepo extends BaseRepo<UserModel> {
       apiCall: _apiService.updateUserData,
       param: updateData,
       onSuccess: (success) {
-        user = success.data;
-        if (user?.token != null) {
-          PrefHelper.saveToken(user!.token!);
-        }
+        cachedUser = success.data;
         ref.read(updateProfile.notifier).state = true;
       },
     );
-    return user;
+    return cachedUser;
   }
 
   Future<UserModel?> profile({
