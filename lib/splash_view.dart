@@ -11,7 +11,7 @@ class SplashView extends StatefulWidget {
 
 class _SplashViewState extends State<SplashView> {
   double _opacity = 0.0;
-  final AuthRepo authRepo = AuthRepo();
+  final AuthRepoV1 authRepo = AuthRepoV1();
   final AuthRepoV1 authRepoV1 = AuthRepoV1();
 
   @override

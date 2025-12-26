@@ -8,7 +8,7 @@ class CartView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CartRepo cartRepo = CartRepo();
-    AuthRepo authRepo = AuthRepo();
+    AuthRepoV1 authRepo = AuthRepoV1();
     CartItemModel? cartItems;
 
     final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);

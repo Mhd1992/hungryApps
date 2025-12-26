@@ -11,7 +11,6 @@ class LoginView extends ConsumerStatefulWidget {
 }
 
 class _LoginViewState extends ConsumerState<LoginView> {
-  AuthRepo authRepo = AuthRepo();
   AuthRepoV1 authRepoV1 = AuthRepoV1();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();

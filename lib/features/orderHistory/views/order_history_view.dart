@@ -5,7 +5,7 @@ class OrderHistoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthRepo authRepo = AuthRepo();
+    AuthRepoV1 authRepo = AuthRepoV1();
 
     return Scaffold(
       body: Padding(

@@ -15,7 +15,7 @@ class _SignupViewState extends State<SignupView> {
   TextEditingController confirmPassController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  AuthRepo authRepo = AuthRepo();
+
   AuthRepoV1 authRepoV1 = AuthRepoV1();
 
   @override

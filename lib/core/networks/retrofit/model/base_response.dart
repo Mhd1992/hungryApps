@@ -30,6 +30,6 @@ class BaseResponse<T> {
 
   @override
   String toString() {
-    return 'ApiError(code: $code, message: $message)';
+    return 'BaseResponse(code: $code, message: $message)';
   }
 }

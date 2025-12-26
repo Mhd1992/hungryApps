@@ -19,7 +19,6 @@ class _ProfileViewState extends State<ProfileView> {
   TextEditingController addressController = TextEditingController();
   TextEditingController visaController = TextEditingController();
 
-  AuthRepo authRepo = AuthRepo();
   AuthRepoV1 authRepoV1 = AuthRepoV1();
   UserModel? userModel;
   bool showVisa = false;
@@ -138,7 +137,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: (authRepo.isGuest)
+      child: (authRepoV1.isGuest)
           ? GuestLogo()
           : Scaffold(
               resizeToAvoidBottomInset: true,
