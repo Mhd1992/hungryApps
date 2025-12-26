@@ -28,35 +28,26 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    final userController = ref.watch(authControllerProvider.notifier);
     Future<void> login() async {
       if (formKey.currentState!.validate()) {
         try {
-          setState(() => _isLoading = true);
-          ref
-              .read(authProvider)
-              .loginUser({
-                'email': emailController.text.trim(),
-                'password': passController.text.trim(),
-              }, ref: ref)
+          userController
+              .handleData(
+                () => ref.read(authProvider).loginUser({
+                  'email': emailController.text.trim(),
+                  'password': passController.text.trim(),
+                }, ref: ref),
+              )
               .then((val) {
-                print('login user: $val');
-                if (val != null) {
+                if (userController.repo.cachedData != null) {
+                  //      PrefHelper.saveToken(userController.repo.cachedData!.token!);
                   if (!context.mounted) return;
                   Navigator.of(
                     context,
                   ).push(MaterialPageRoute(builder: (context) => Root()));
                 }
               });
-          /*  final user = await authRepoV1.login(
-            emailController.text.trim(),
-            passController.text.trim(),
-          );
-          if (user != null) {
-            if (!context.mounted) return;
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (context) => Root()));
-          }*/
         } catch (e) {
           String errorMessage = 'unknown Error';
           if (e is ApiError) {

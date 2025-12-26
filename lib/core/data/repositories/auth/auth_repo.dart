@@ -26,9 +26,6 @@ class AuthRepo extends BaseRepo<UserModel> {
       param: param,
       onSuccess: (success) {
         cachedUser = success.data;
-        if (cachedUser?.token != null) {
-          PrefHelper.saveToken(user!.token!);
-        }
       },
     );
     return cachedUser;
@@ -43,9 +40,6 @@ class AuthRepo extends BaseRepo<UserModel> {
       param: param,
       onSuccess: (success) {
         cachedUser = success.data;
-        if (user?.token != null) {
-          PrefHelper.saveToken(user!.token!);
-        }
       },
     );
     return cachedUser;
@@ -61,7 +55,6 @@ class AuthRepo extends BaseRepo<UserModel> {
       param: updateData,
       onSuccess: (success) {
         cachedUser = success.data;
-        ref.read(updateProfile.notifier).state = true;
       },
     );
     return cachedUser;

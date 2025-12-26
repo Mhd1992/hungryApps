@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:hungry/core/utils/exported_file.dart' hide AuthRepo;
 
 import '../../../../features/auth/data/models/user_model.dart';
 import '../../base_controller.dart';

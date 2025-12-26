@@ -8,7 +8,16 @@ class BaseController<T> extends StateNotifier<AsyncValue<T>> {
   BaseController(this.repo) : super(const AsyncLoading()) {
     repo.controller.addListener((repoState) {
       repoState.when(
-        data: (data) => state = AsyncData(data),
+        data: (data) {
+          state = AsyncData(data);
+
+          // ✅ Side effect for UserModel only
+          if (data is UserModel && data.token != null) {
+            print('Saving ${data.runtimeType}');
+            PrefHelper.saveToken(data.token!);
+          }
+        },
+
         loading: () => state = const AsyncLoading(),
         error: (e, st) => state = AsyncError(e, st),
       );
@@ -20,10 +29,10 @@ class BaseController<T> extends StateNotifier<AsyncValue<T>> {
     bool isUpdate = false,
   }) async {
     final cached = repo.cachedData;
-    if (cached != null && !isUpdate) {
+    /*   if (cached != null && !isUpdate) {
       state = AsyncData(cached);
       return;
-    }
+    }*/
     try {
       state = const AsyncLoading();
       final result = await action();
