@@ -85,5 +85,3 @@ export 'package:hungry/features/auth/provider/auth_provider.dart';
 export 'package:hungry/features/auth/widgets/visa_card_widget.dart';
 export 'package:hungry/shared/custom_load_image_button.dart';
 export 'package:image_picker/image_picker.dart';
-
-export 'package:flutter_riverpod/legacy.dart';

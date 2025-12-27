@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:hungry/core/networks/retrofit/model/cart/request_cart/cart_item_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/cart/data/repository/cart_repository.dart';
