@@ -13,7 +13,7 @@ class AuthRepo extends BaseRepo<UserModel> {
     return AuthRepo._internal(ref);
   }
 
-  final ApiService _apiService = ApiService(DioClient().dio);
+  final ApiService apiService = ApiService(DioClient().dio);
   UserModel? cachedUser;
   UserModel? user;
 
@@ -22,7 +22,7 @@ class AuthRepo extends BaseRepo<UserModel> {
     required WidgetRef ref,
   }) async {
     await handleRequestWithParam<BaseResponse<UserModel>, Map<String, dynamic>>(
-      apiCall: _apiService.login,
+      apiCall: apiService.login,
       param: param,
       onSuccess: (success) {
         cachedUser = success.data;
@@ -36,7 +36,7 @@ class AuthRepo extends BaseRepo<UserModel> {
     required WidgetRef ref,
   }) async {
     await handleRequestWithParam<BaseResponse<UserModel>, Map<String, dynamic>>(
-      apiCall: _apiService.register,
+      apiCall: apiService.register,
       param: param,
       onSuccess: (success) {
         cachedUser = success.data;
@@ -51,7 +51,7 @@ class AuthRepo extends BaseRepo<UserModel> {
   }) async {
     final updateData = await updateRequest!.toFormData();
     await handleRequestWithParam<BaseResponse<UserModel>, FormData>(
-      apiCall: _apiService.updateUserData,
+      apiCall: apiService.updateUserData,
       param: updateData,
       onSuccess: (success) {
         cachedUser = success.data;
@@ -65,7 +65,7 @@ class AuthRepo extends BaseRepo<UserModel> {
     updateData = false,
   }) async {
     await handleRequest<UserModel>(
-      apiCall: _apiService.getProfile,
+      apiCall: apiService.getProfile,
       onSuccess: (success) {
         cachedUser = success;
       },
@@ -86,7 +86,7 @@ class AuthRepo extends BaseRepo<UserModel> {
 
   Future<void> logout({required WidgetRef ref}) async {
     handleRequest(
-      apiCall: _apiService.logout,
+      apiCall: apiService.logout,
       onSuccess: (success) async {
         await PrefHelper.clearToken();
         ref.read(_isGuest.notifier).state = false;

@@ -46,6 +46,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.0"
+  bloc:
+    dependency: "direct main"
+    description:
+      name: bloc
+      sha256: a2cebb899f91d36eeeaa55c7b20b5915db5a9df1b8fd4a3c9c825e22e474537d
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.0"
+  bloc_concurrency:
+    dependency: "direct main"
+    description:
+      name: bloc_concurrency
+      sha256: "86b7b17a0a78f77fca0d7c030632b59b593b22acea2d96972588f40d4ef53a94"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -151,7 +167,7 @@ packages:
     source: hosted
     version: "4.11.0"
   collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: collection
       sha256: "2f5709ae4d3d59dd8f7cd309b4e023046b57d8a6c82130785d2b0e5868084e76"
@@ -238,6 +254,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  equatable:
+    dependency: "direct main"
+    description:
+      name: equatable
+      sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
   fake_async:
     dependency: transitive
     description:
@@ -307,6 +331,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_bloc:
+    dependency: "direct main"
+    description:
+      name: flutter_bloc
+      sha256: cf51747952201a455a1c840f8171d273be009b932c75093020f9af64f2123e38
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.1"
   flutter_gap:
     dependency: "direct main"
     description:
@@ -339,6 +371,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -355,6 +392,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.1"
+  flutter_staggered_grid_view:
+    dependency: transitive
+    description:
+      name: flutter_staggered_grid_view
+      sha256: "19e7abb550c96fbfeb546b23f3ff356ee7c59a019a651f8f102a4ba9b7349395"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -373,6 +418,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  foundation:
+    dependency: "direct main"
+    description:
+      name: foundation
+      sha256: "6f1fda07bd2a422145724b0f94ee68fabac95fabff982d5f334fe1a38cbed6a7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.5"
   freezed:
     dependency: "direct dev"
     description:
@@ -517,6 +570,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  infinite_scroll_pagination:
+    dependency: "direct main"
+    description:
+      name: infinite_scroll_pagination
+      sha256: b0d28e37cd8f62490ff6aef63f9db93d4c78b7f11b7c6b26f33c69d8476fda78
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.1"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.20.2"
   io:
     dependency: transitive
     description:
@@ -629,6 +698,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   package_config:
     dependency: transitive
     description:
@@ -725,6 +802,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
+  provider:
+    dependency: transitive
+    description:
+      name: provider
+      sha256: "4e82183fa20e5ca25703ead7e05de9e4cceed1fbd1eadc1ac3cb6f565a09f272"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.5+1"
   pub_semver:
     dependency: transitive
     description:
@@ -741,6 +826,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  reactive_forms:
+    dependency: "direct main"
+    description:
+      name: reactive_forms
+      sha256: b8dcd47f933927a0da76ec366f24377710595596a3253283927c18560a01e902
+      url: "https://pub.dev"
+    source: hosted
+    version: "18.2.2"
   retrofit:
     dependency: "direct main"
     description:
@@ -850,6 +943,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  sliver_tools:
+    dependency: transitive
+    description:
+      name: sliver_tools
+      sha256: eae28220badfb9d0559207badcbbc9ad5331aac829a88cb0964d330d2a4636a6
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.12"
   source_gen:
     dependency: transitive
     description:
