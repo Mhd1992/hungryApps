@@ -6,22 +6,28 @@ import '../../../../update_features/user/data/user_model.dart';
 import '../../../../update_features/user/data/user_provider.dart';
 
 final userControllerProvider =
-    StateNotifierProvider<UserController, AsyncValue<UserModel>>(
+    StateNotifierProvider<UserController, AsyncValue<UserModel?>>(
       (ref) => UserController(ref),
     );
 
-class UserController extends BaseController<UserModel> {
+class UserController extends BaseController<UserModel?> {
   final Ref ref;
 
   UserController(this.ref);
 
   void getProfile() {
     final repo = ref.read(userRepoProvider);
-    execute(() => repo.getProfile());
+    controlState(() => repo.getProfile());
   }
 
   void updateUserData(UserModel userModel) {
     final repo = ref.read(userRepoProvider);
-    execute(() => repo.updateUserData(userModel));
+    controlState(() => repo.updateUserData(userModel));
+  }
+
+  Future<void> logout() async {
+    final repo = ref.read(userRepoProvider);
+    await repo.logout();
+    state = const AsyncValue.data(null);
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/legacy.dart';
 class BaseController<T> extends StateNotifier<AsyncValue<T>> {
   BaseController() : super(const AsyncLoading());
 
-  Future<void> execute(Future<T> Function() action) async {
+  Future<void> controlState(Future<T> Function() action) async {
     state = const AsyncLoading();
     try {
       final result = await action();

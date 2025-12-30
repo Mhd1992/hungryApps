@@ -40,13 +40,13 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
       ref.read(userControllerProvider.notifier).getProfile();
     });
 
-    ref.listenManual<AsyncValue<UserModel>>(userControllerProvider, (
+    ref.listenManual<AsyncValue<UserModel?>>(userControllerProvider, (
       prev,
       next,
     ) {
       next.whenOrNull(
         data: (user) {
-          nameController.text = user.name;
+          nameController.text = user!.name;
           emailController.text = user.email;
           addressController.text = user.address ?? '';
           showVisa = user.visa != null;
@@ -166,229 +166,234 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(userControllerProvider);
-    return state.when(
-      data: (data) => GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: (authRepo.isGuest)
-            ? GuestLogo()
-            : Scaffold(
-                resizeToAvoidBottomInset: true,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: (authRepo.isGuest)
+          ? GuestLogo()
+          : Scaffold(
+              resizeToAvoidBottomInset: true,
+              backgroundColor: AppColors.primaryColor,
+              appBar: AppBar(
                 backgroundColor: AppColors.primaryColor,
-                appBar: AppBar(
-                  backgroundColor: AppColors.primaryColor,
-                  scrolledUnderElevation: 0,
-                  iconTheme: const IconThemeData(color: Colors.white),
-                  actions: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: SvgPicture.asset(
-                        'assets/icons/settings.svg',
-                        colorFilter: ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.modulate,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                body: RefreshIndicator(
-                  onRefresh: () async {
-                    // await getProfileData();
-                  },
-
-                  child: Skeletonizer(
-                    //enabled: userModel == null,
-                    enabled: state.value == null,
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 110,
-                                  width: 110,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.grey,
-                                    border: Border.all(
-                                      width: 2,
-                                      color: Colors.white,
-                                    ),
-                                    image: selectedImage != null
-                                        ? DecorationImage(
-                                            image: FileImage(
-                                              File(selectedImage!),
-                                            ),
-                                            fit: BoxFit.cover,
-                                          )
-                                        : null,
-                                  ),
-
-                                  clipBehavior: Clip.antiAlias,
-                                  child:
-                                      (selectedImage == null ||
-                                          selectedImage!.isEmpty)
-                                      ? (userModel?.image != null &&
-                                                userModel!.image!.isNotEmpty)
-                                            ? Image.network(
-                                                userModel!.image!,
-                                                errorBuilder:
-                                                    (context, error, builder) =>
-                                                        Icon(Icons.person),
-                                              )
-                                            : Image.asset(
-                                                'assets/images/placeHolder.png',
-                                                fit: BoxFit.cover,
-                                              )
-                                      : Image.file(
-                                          File(selectedImage!),
-
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
-                                Gap(8),
-                                CustomLoadImageButton(
-                                  buttonText: 'Load Image',
-                                  color: Colors.white,
-                                  onPressed: uploadImage,
-                                ),
-                                Gap(32),
-                                CustomUserTextField(
-                                  controller: nameController,
-                                  filed: 'Name',
-                                ),
-                                Gap(16),
-                                CustomUserTextField(
-                                  controller: emailController,
-                                  filed: 'Email',
-                                ),
-                                Gap(16),
-                                CustomUserTextField(
-                                  controller: addressController,
-                                  filed: 'Address',
-                                ),
-                                Gap(12),
-                                Divider(),
-                                Gap(12),
-                                (showVisa)
-                                    ? VisaCardWidget(
-                                        titleText: 'Debit Card',
-                                        subTitleText: '•••• •••• •••• 2022',
-                                      )
-                                    /* DefaultVisa(
-                                titleText: 'Debit Card',
-                                subTitleText: '3566 **** **** 0505',
-                                imageUrl: 'assets/icons/visa.png',
-                              )*/
-                                    : CustomUserTextField(
-                                        controller: visaController,
-                                        filed: 'XXXX-XXXX-XXXX-0505',
-                                        type: TextInputType.number,
-                                      ),
-                                Gap(32),
-                              ],
-                            ),
-                          ),
-                        ],
+                scrolledUnderElevation: 0,
+                iconTheme: const IconThemeData(color: Colors.white),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: SvgPicture.asset(
+                      'assets/icons/settings.svg',
+                      colorFilter: ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.modulate,
                       ),
                     ),
                   ),
-                ),
-                bottomSheet: IntrinsicHeight(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          GestureDetector(
-                            onTap: () => ref
-                                .read(userControllerProvider.notifier)
-                                .updateUserData(
-                                  UserModel(
-                                    name: nameController.text,
+                ],
+              ),
+              body: RefreshIndicator(
+                onRefresh: () async {
+                  // await getProfileData();
+                },
 
-                                    email: emailController.text,
-                                    address: addressController.text,
-                                    visa: visaController.text,
-                                    image: selectedImage,
-                                  ),
-                                ),
-                            child: (isUpdating)
-                                ? CircularProgressIndicator(
-                                    color: AppColors.primaryColor,
-                                  )
-                                : Container(
-                                    padding: EdgeInsets.all(20),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        color: AppColors.primaryColor,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        CustomText(
-                                          text: 'Edit Profile',
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        Gap(8),
-                                        SvgPicture.asset(
-                                          'assets/icons/edit.svg',
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                          ),
-                          GestureDetector(
-                            onTap: logout,
-                            child: Container(
-                              padding: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                color: AppColors.primaryColor,
-                                border: Border.all(
-                                  color: Colors.grey.shade400,
-                                  width: 2,
+                child: state.when(
+                  data: (data) => buildProfileData(data),
+                  error: (_, _) => Center(child: Text('error')),
+                  loading: () => buildProfileData(null),
+                ),
+              ),
+              bottomSheet: IntrinsicHeight(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        GestureDetector(
+                          onTap: () => ref
+                              .read(userControllerProvider.notifier)
+                              .updateUserData(
+                                UserModel(
+                                  name: nameController.text,
+
+                                  email: emailController.text,
+                                  address: addressController.text,
+                                  visa: visaController.text,
+                                  image: selectedImage,
                                 ),
                               ),
-                              child: Row(
-                                children: [
-                                  (isLoggingOut)
-                                      ? CircularProgressIndicator(
-                                          color: Colors.white,
-                                        )
-                                      : CustomText(
-                                          text: 'Logout',
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  Gap(8),
-                                  Icon(Icons.logout, color: Colors.white),
-                                ],
+                          child: (isUpdating)
+                              ? CircularProgressIndicator(
+                                  color: AppColors.primaryColor,
+                                )
+                              : Container(
+                                  padding: EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Colors.white,
+                                    border: Border.all(
+                                      color: AppColors.primaryColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      CustomText(
+                                        text: 'Edit Profile',
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      Gap(8),
+                                      SvgPicture.asset('assets/icons/edit.svg'),
+                                    ],
+                                  ),
+                                ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            /*    setState(() {
+                              isLoggingOut = true;
+                            });*/
+                            await ref
+                                .read(userControllerProvider.notifier)
+                                .logout();
+                            //   await Future.delayed(const Duration(seconds: 2));
+                            if (!context.mounted) return;
+
+                            /*    setState(() {
+                              isLoggingOut = false;
+                            });*/
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (_) => const LoginView(),
+                              ),
+                            );
+                          },
+
+                          child: Container(
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              color: AppColors.primaryColor,
+                              border: Border.all(
+                                color: Colors.grey.shade400,
+                                width: 2,
                               ),
                             ),
+                            child: Row(
+                              children: [
+                                (isLoggingOut)
+                                    ? CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : CustomText(
+                                        text: 'Logout',
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                Gap(8),
+                                Icon(Icons.logout, color: Colors.white),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
+            ),
+    );
+  }
+
+  Widget buildProfileData(UserModel? data) {
+    return Skeletonizer(
+      enabled: data == null,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  Container(
+                    height: 110,
+                    width: 110,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey,
+                      border: Border.all(width: 2, color: Colors.white),
+                      image: selectedImage != null
+                          ? DecorationImage(
+                              image: FileImage(File(selectedImage!)),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
+
+                    clipBehavior: Clip.antiAlias,
+                    child: (selectedImage == null || selectedImage!.isEmpty)
+                        ? (data?.image != null && data!.image!.isNotEmpty)
+                              ? Image.network(
+                                  data.image!,
+                                  errorBuilder: (context, error, builder) =>
+                                      Icon(Icons.person),
+                                )
+                              : Image.asset(
+                                  'assets/images/placeHolder.png',
+                                  fit: BoxFit.cover,
+                                )
+                        : Image.file(File(selectedImage!), fit: BoxFit.cover),
+                  ),
+                  Gap(8),
+                  CustomLoadImageButton(
+                    buttonText: 'Load Image',
+                    color: Colors.white,
+                    onPressed: uploadImage,
+                  ),
+                  Gap(32),
+                  CustomUserTextField(
+                    controller: nameController,
+                    filed: 'Name',
+                  ),
+                  Gap(16),
+                  CustomUserTextField(
+                    controller: emailController,
+                    filed: 'Email',
+                  ),
+                  Gap(16),
+                  CustomUserTextField(
+                    controller: addressController,
+                    filed: 'Address',
+                  ),
+                  Gap(12),
+                  Divider(),
+                  Gap(12),
+                  (showVisa)
+                      ? VisaCardWidget(
+                          titleText: 'Debit Card',
+                          subTitleText: '•••• •••• •••• 2022',
+                        )
+                      /* DefaultVisa(
+                                titleText: 'Debit Card',
+                                subTitleText: '3566 **** **** 0505',
+                                imageUrl: 'assets/icons/visa.png',
+                              )*/
+                      : CustomUserTextField(
+                          controller: visaController,
+                          filed: 'XXXX-XXXX-XXXX-0505',
+                          type: TextInputType.number,
+                        ),
+                  Gap(32),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-      error: (e, _) => Center(child: Text(e.toString())),
-      loading: () => const Center(child: CircularProgressIndicator()),
     );
   }
 }

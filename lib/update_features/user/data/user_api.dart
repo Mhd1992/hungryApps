@@ -14,4 +14,7 @@ abstract class UserApi {
 
   @POST("/update-profile")
   Future<BaseResponse<UserModel>> updateUserData(@Body() FormData body);
+
+  @POST("/logout")
+  Future<BaseResponse<UserModel>> logout();
 }
