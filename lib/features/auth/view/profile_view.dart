@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/features/auth/view/controller/user_ui_state.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../core/utils/exported_file.dart' hide UserModel;
 import '../../../shared/custom_load_image_button.dart';
@@ -24,8 +23,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   TextEditingController visaController = TextEditingController();
 
   AuthRepo authRepo = AuthRepo();
-
-  bool showVisa = false;
 
   void Function()? removeListener;
 
@@ -59,19 +56,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   void dispose() {
     removeListener?.call(); // cleanup listener
     super.dispose();
-  }
-
-  String? selectedImage;
-
-  Future<void> uploadImage() async {
-    final pickedImage = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedImage != null) {
-      setState(() {
-        selectedImage = pickedImage.path;
-      });
-    }
   }
 
   @override
@@ -109,9 +93,11 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                 },
 
                 child: state.when(
-                  data: (data) => buildProfileData(data, uiState.showVisa),
+                  data: (data) =>
+                      buildProfileData(data, uiState.showVisa, uiState),
                   error: (_, _) => Center(child: Text('error')),
-                  loading: () => buildProfileData(null, uiState.showVisa),
+                  loading: () =>
+                      buildProfileData(null, uiState.showVisa, uiState),
                 ),
               ),
               bottomSheet: IntrinsicHeight(
@@ -134,7 +120,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                                   email: emailController.text,
                                   address: addressController.text,
                                   visa: visaController.text,
-                                  image: selectedImage,
+                                  image: uiState.selectedImage,
                                 ),
                               ),
                           child: (uiState.isUpdating)
@@ -217,7 +203,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     );
   }
 
-  Widget buildProfileData(UserModel? data, bool showVisa) {
+  Widget buildProfileData(UserModel? data, bool showVisa, UserUiState ui) {
     return Skeletonizer(
       enabled: data == null,
       child: SingleChildScrollView(
@@ -235,16 +221,17 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                       shape: BoxShape.circle,
                       color: Colors.grey,
                       border: Border.all(width: 2, color: Colors.white),
-                      image: selectedImage != null
+                      image: ui.selectedImage != null
                           ? DecorationImage(
-                              image: FileImage(File(selectedImage!)),
+                              image: FileImage(File(ui.selectedImage!)),
                               fit: BoxFit.cover,
                             )
                           : null,
                     ),
 
                     clipBehavior: Clip.antiAlias,
-                    child: (selectedImage == null || selectedImage!.isEmpty)
+                    child:
+                        (ui.selectedImage == null || ui.selectedImage!.isEmpty)
                         ? (data?.image != null && data!.image!.isNotEmpty)
                               ? Image.network(
                                   data.image!,
@@ -255,13 +242,18 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                                   'assets/images/placeHolder.png',
                                   fit: BoxFit.cover,
                                 )
-                        : Image.file(File(selectedImage!), fit: BoxFit.cover),
+                        : Image.file(
+                            File(ui.selectedImage!),
+                            fit: BoxFit.cover,
+                          ),
                   ),
                   Gap(8),
                   CustomLoadImageButton(
                     buttonText: 'Load Image',
                     color: Colors.white,
-                    onPressed: uploadImage,
+                    onPressed: ref
+                        .read(userUiControllerProvider.notifier)
+                        .uploadImage,
                   ),
                   Gap(32),
                   CustomUserTextField(
