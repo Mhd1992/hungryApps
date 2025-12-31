@@ -37,6 +37,7 @@ class UserModel {
     };
 
     if (visa != null && visa!.isNotEmpty) {
+      print('');
       data['Visa'] = visa;
     }
 

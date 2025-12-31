@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hungry/core/base/base_controller.dart';
+import 'package:hungry/features/auth/view/controller/user_ui_state.dart';
 
 import '../../../../update_features/user/data/user_model.dart';
 import '../../../../update_features/user/data/user_provider.dart';
@@ -15,19 +16,27 @@ class UserController extends BaseController<UserModel?> {
 
   UserController(this.ref);
 
-  void getProfile() {
+  void getProfile() async {
     final repo = ref.read(userRepoProvider);
-    controlState(() => repo.getProfile());
+    await loadOnce(() => repo.getProfile());
   }
 
-  void updateUserData(UserModel userModel) {
+  void updateUserData(UserModel userModel) async {
     final repo = ref.read(userRepoProvider);
-    controlState(() => repo.updateUserData(userModel));
+    ref.read(userUiControllerProvider.notifier).isUpdate(true);
+
+    final updatedUser = await repo.updateUserData(userModel);
+    updateCache(updatedUser);
+    ref.read(userUiControllerProvider.notifier).isUpdate(false);
   }
 
   Future<void> logout() async {
     final repo = ref.read(userRepoProvider);
+    ref.read(userUiControllerProvider.notifier).isLogout(true);
     await repo.logout();
     state = const AsyncValue.data(null);
+    ref.read(userUiControllerProvider.notifier).isLogout(true);
+
+    clearCache();
   }
 }
