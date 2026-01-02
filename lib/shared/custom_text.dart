@@ -25,7 +25,7 @@ class CustomText extends StatelessWidget {
       textScaler: TextScaler.linear(1.0),
       style: TextStyle(
         fontWeight: fontWeight,
-        fontSize: fontSize ?? 14,
+        fontSize: fontSize ?? 12,
         color: color,
         overflow: overflow,
       ),

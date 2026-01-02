@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hungry/core/base/base_controller.dart';
@@ -8,13 +10,14 @@ import '../../../../update_features/user/data/user_provider.dart';
 
 final userControllerProvider =
     StateNotifierProvider<UserController, AsyncValue<UserModel?>>(
-      (ref) => UserController(ref),
+      (ref) => UserController(ref, onLogoutSuccess: () {}),
     );
 
 class UserController extends BaseController<UserModel?> {
   final Ref ref;
+  void Function()? onLogoutSuccess;
 
-  UserController(this.ref);
+  UserController(this.ref, {this.onLogoutSuccess});
 
   void getProfile() async {
     final repo = ref.read(userRepoProvider);
@@ -30,12 +33,14 @@ class UserController extends BaseController<UserModel?> {
     ref.read(userUiControllerProvider.notifier).isUpdate(false);
   }
 
-  Future<void> logout() async {
+  Future<void> logout({VoidCallback? onSuccess}) async {
     final repo = ref.read(userRepoProvider);
     ref.read(userUiControllerProvider.notifier).isLogout(true);
     await repo.logout();
     state = const AsyncValue.data(null);
+
     ref.read(userUiControllerProvider.notifier).isLogout(true);
+    if (onSuccess != null) onSuccess();
 
     clearCache();
   }

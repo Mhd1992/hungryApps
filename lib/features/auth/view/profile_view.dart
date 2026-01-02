@@ -23,8 +23,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   TextEditingController visaController = TextEditingController();
 
   AuthRepo authRepo = AuthRepo();
-
-  void Function()? removeListener;
+  late ProviderSubscription<AsyncValue<UserModel?>> userListener;
 
   @override
   void initState() {
@@ -33,28 +32,32 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
       if (!mounted) return;
       ref.read(userControllerProvider.notifier).getProfile();
     });
-    ref.listenManual<AsyncValue<UserModel?>>(userControllerProvider, (
-      prev,
-      next,
-    ) {
-      next.whenOrNull(
-        data: (user) {
-          if (user == null) return;
-          nameController.text = user.name;
-          emailController.text = user.email;
-          addressController.text = user.address ?? '';
-          ref
-              .read(userUiControllerProvider.notifier)
-              .isShowVisa(user.visa != null);
-          setState(() {});
-        },
-      );
-    });
+    userListener = ref.listenManual<AsyncValue<UserModel?>>(
+      userControllerProvider,
+      (prev, next) {
+        next.whenOrNull(
+          data: (user) {
+            if (user == null) return;
+
+            nameController.text = user.name;
+            emailController.text = user.email;
+            addressController.text = user.address ?? '';
+            ref
+                .read(userUiControllerProvider.notifier)
+                .isShowVisa(user.visa != null);
+          },
+        );
+      },
+    );
   }
 
   @override
   void dispose() {
-    removeListener?.call(); // cleanup listener
+    userListener.closed;
+    nameController.dispose();
+    emailController.dispose();
+    addressController.dispose();
+    visaController.dispose();
     super.dispose();
   }
 
@@ -153,14 +156,15 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                           onTap: () async {
                             await ref
                                 .read(userControllerProvider.notifier)
-                                .logout();
-                            if (!context.mounted) return;
-
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (_) => const LoginView(),
-                              ),
-                            );
+                                .logout(
+                                  onSuccess: () {
+                                    Navigator.of(ref.context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (_) => const LoginView(),
+                                      ),
+                                    );
+                                  },
+                                );
                           },
 
                           child: (uiState.isLoggingOut)
