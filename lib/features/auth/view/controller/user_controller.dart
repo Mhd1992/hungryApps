@@ -10,14 +10,13 @@ import '../../../../update_features/user/data/user_provider.dart';
 
 final userControllerProvider =
     StateNotifierProvider<UserController, AsyncValue<UserModel?>>(
-      (ref) => UserController(ref, onLogoutSuccess: () {}),
+      (ref) => UserController(ref),
     );
 
 class UserController extends BaseController<UserModel?> {
   final Ref ref;
-  void Function()? onLogoutSuccess;
 
-  UserController(this.ref, {this.onLogoutSuccess});
+  UserController(this.ref);
 
   void getProfile() async {
     final repo = ref.read(userRepoProvider);
