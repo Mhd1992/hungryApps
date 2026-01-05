@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/update_features/auth/data/auth_model.dart';
 
 import '../../../core/base/base_controller.dart';
@@ -19,7 +20,13 @@ class AuthController extends BaseController<AuthModel?> {
 
   void login(String email, String password, {VoidCallback? onSuccess}) async {
     final repo = ref.read(authRepoProvider);
+
     await request(() => repo.login(email, password));
+    final authData = state.value;
+
+    if (authData != null) {
+      await PrefHelper.saveToken(authData.token!);
+    }
     if (onSuccess != null) onSuccess();
   }
 
