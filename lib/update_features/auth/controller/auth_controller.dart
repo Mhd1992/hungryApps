@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/update_features/auth/data/auth_model.dart';
+import 'package:hungry/update_features/auth/pref_helper_provider.dart';
 
 import '../../../core/base/base_controller.dart';
 import '../data/auth_provider.dart';
@@ -20,12 +21,14 @@ class AuthController extends BaseController<AuthModel?> {
 
   void login(String email, String password, {VoidCallback? onSuccess}) async {
     final repo = ref.read(authRepoProvider);
+    final prefProvider = ref.read(prefHelperProvider);
 
     await request(() => repo.login(email, password));
     final authData = state.value;
 
     if (authData != null) {
-      await PrefHelper.saveToken(authData.token!);
+      await prefProvider.saveToken(authData.token!);
+      //   await PrefHelper.saveToken(authData.token!);
     }
     if (onSuccess != null) onSuccess();
   }
@@ -33,5 +36,9 @@ class AuthController extends BaseController<AuthModel?> {
   void register(String name, String email, String password) async {
     final repo = ref.read(authRepoProvider);
     await request(() => repo.register(name, email, password));
+    final authData = state.value;
+    if (authData != null) {
+      await PrefHelper.saveToken(authData.token!);
+    }
   }
 }
