@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:hungry/core/utils/exported_file.dart';
 
 class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
   BaseController() : super(const AsyncData(null));
@@ -41,5 +42,6 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
   void clearCache() {
     _cachedData = null;
     state = const AsyncLoading();
+    PrefHelper.clearToken();
   }
 }

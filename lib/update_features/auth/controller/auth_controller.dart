@@ -28,7 +28,6 @@ class AuthController extends BaseController<AuthModel?> {
 
     if (authData != null) {
       await prefProvider.saveToken(authData.token!);
-      //   await PrefHelper.saveToken(authData.token!);
     }
     if (onSuccess != null) onSuccess();
   }
@@ -40,5 +39,10 @@ class AuthController extends BaseController<AuthModel?> {
     if (authData != null) {
       await PrefHelper.saveToken(authData.token!);
     }
+  }
+
+  Future<bool> autoLogin() async {
+    final token = await PrefHelper.getToken();
+    return token != null && token.isNotEmpty ? true : false;
   }
 }
