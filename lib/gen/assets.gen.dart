@@ -60,6 +60,12 @@ class $AssetsImagesGen {
   AssetGenImage get placeHolder =>
       const AssetGenImage('assets/images/placeHolder.png');
 
+  /// File path: assets/images/server.svg
+  String get server => 'assets/images/server.svg';
+
+  /// File path: assets/images/serverfailure.svg
+  String get serverfailure => 'assets/images/serverfailure.svg';
+
   /// File path: assets/images/test.png
   AssetGenImage get test => const AssetGenImage('assets/images/test.png');
 
@@ -67,8 +73,16 @@ class $AssetsImagesGen {
   AssetGenImage get tomato => const AssetGenImage('assets/images/tomato.png');
 
   /// List of all assets
-  List<dynamic> get values =>
-      [detail, guestLogoPng, guestLogoSvg, placeHolder, test, tomato];
+  List<dynamic> get values => [
+        detail,
+        guestLogoPng,
+        guestLogoSvg,
+        placeHolder,
+        server,
+        serverfailure,
+        test,
+        tomato
+      ];
 }
 
 class $AssetsLogoGen {

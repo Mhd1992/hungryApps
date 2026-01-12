@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/features/auth/view/controller/user_ui_state.dart';
+import 'package:hungry/update_features/auth/controller/auth_controller.dart';
 
 import '../../../core/utils/exported_file.dart' hide UserModel;
 import '../../../shared/custom_load_image_button.dart';
@@ -67,7 +68,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     final uiState = ref.watch(userUiControllerProvider);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: (authRepo.isGuest)
+      child: (ref.read(guestProvider.notifier).state)
           ? GuestLogo()
           : Scaffold(
               resizeToAvoidBottomInset: true,

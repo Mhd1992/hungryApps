@@ -6,7 +6,11 @@ class ApiException implements Exception {
     final statusCode = error.response?.statusCode;
     final data = error.response?.data;
     if (data['message'] != null) {
-      return ApiError(message: data['message'], statusCode: statusCode);
+      if (statusCode == 500) {
+        return ApiError(message: data['message'], statusCode: statusCode);
+      } else {
+        return ApiError(message: data['message'], statusCode: statusCode);
+      }
     }
     switch (error.type) {
       case DioExceptionType.connectionTimeout:

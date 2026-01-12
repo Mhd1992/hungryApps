@@ -14,6 +14,8 @@ final authControllerProvider =
       (ref) => AuthController(ref),
     );
 
+final guestProvider = StateProvider((ref) => false);
+
 class AuthController extends BaseController<AuthModel?> {
   final Ref ref;
 
@@ -44,5 +46,11 @@ class AuthController extends BaseController<AuthModel?> {
   Future<bool> autoLogin() async {
     final token = await PrefHelper.getToken();
     return token != null && token.isNotEmpty ? true : false;
+  }
+
+  Future<void> continueAsGuest(VoidCallback onPress) async {
+    ref.read(guestProvider.notifier).state = true;
+    await PrefHelper.saveToken('guest');
+    onPress();
   }
 }

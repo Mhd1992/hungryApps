@@ -172,12 +172,17 @@ class _LoginViewState extends ConsumerState<LoginView> {
                             Gap(8),
                             TextButton(
                               onPressed: () {
-                                authRepo.continueAsGuest();
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (context) => Root(),
-                                  ),
-                                );
+                                ref
+                                    .read(authControllerProvider.notifier)
+                                    .continueAsGuest(
+                                      () =>
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (context) => Root(),
+                                            ),
+                                          ),
+                                    );
+                                // authRepo.continueAsGuest();
                               },
                               child: CustomText(
                                 text: 'Continue as Guest',
