@@ -1,147 +1,56 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/update_features/home/categories/controller/category_controller.dart';
 
-class HomeView extends StatefulWidget {
+import '../../../update_features/home/home_controller.dart';
+import '../../../update_features/home/products/controller/product_controller.dart';
+
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  ConsumerState<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
-  HomeRepo homeRepo = HomeRepo();
-  bool _isAllLoading = false;
+class _HomeViewState extends ConsumerState<HomeView> {
   int _selectedCategoryIndex = 0;
-  List<CategoryModel> categoriesModels = [];
-  List<ProductModel> productModels = [];
 
   @override
   void initState() {
-    // TODO: implement initState
-    _loadAllData();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(categoryControllerProvider.notifier).getAllCategories();
+      ref.read(productControllerProvider.notifier).loadAllProduct();
+    });
   }
-
-  Future<void> _loadAllData() async {
-    setState(() => _isAllLoading = true);
-
-    await Future.wait([_loadCategories(), _loadProducts()]);
-
-    setState(() => _isAllLoading = false);
-  }
-
-  Future<void> _loadCategories() async {
-    await _loadProductCategory<CategoryModel>(
-      apiCall: homeRepo.loadCategories,
-      onSuccess: (data) {
-        categoriesModels = data;
-      },
-    );
-  }
-
-  Future<void> _loadProducts() async {
-    await _loadProductCategory<ProductModel>(
-      apiCall: homeRepo.loadProducts,
-      onSuccess: (data) {
-        productModels = data;
-      },
-    );
-  }
-
-  /*
- before Enhanced generic method to load categories or products
- code above  equal to the following two methods:
-  Future<void> _loadCategories() async {
-    try {
-      final categories = await homeRepo.loadCategories();
-      if (categories != null || categories.isNotEmpty) {
-        categoriesModels = categories;
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    }
-  }
-
-  Future<void> _loadProducts() async {
-    try {
-      final products = await homeRepo.loadProducts();
-      if (products != null || products.isNotEmpty) {
-        productModels = products;
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    }
-  }*/
-
-  Future<void> _loadProductCategory<T>({
-    required Future<List<T>> Function() apiCall,
-    required void Function(List<T>) onSuccess,
-  }) async {
-    try {
-      final data = await apiCall();
-      if (data.isNotEmpty) {
-        onSuccess(data);
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    }
-  }
-
-  /* List<String> categories = [
-    'All',
-    'Combo',
-    'Sliders',
-    'Juice',
-    'chickenBurger',
-  ];*/
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: CustomScrollView(
-        slivers: [
-          ///Header of view
-          SliverAppBar(
-            elevation: 0,
-            backgroundColor: Colors.white,
-            pinned: true,
-            floating: false,
-            scrolledUnderElevation: 0,
-            toolbarHeight: 200,
-            automaticallyImplyLeading: false,
-            flexibleSpace: Padding(
-              padding: EdgeInsets.only(top: 40, left: 16, right: 16),
-              child: Column(children: [UserHeader(), Gap(16), SearchField()]),
-            ),
-          ),
+    final homeState = ref.watch(homeCombinedProvider);
 
-          /// Show one loading spinner if both APIs not ready
-          if (_isAllLoading)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: CircularProgressIndicator(color: AppColors.primaryColor),
+    return homeState.when(
+      data: (data) => GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: CustomScrollView(
+          slivers: [
+            ///Header of view
+            SliverAppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              pinned: true,
+              floating: false,
+              scrolledUnderElevation: 0,
+              toolbarHeight: 200,
+              automaticallyImplyLeading: false,
+              flexibleSpace: Padding(
+                padding: EdgeInsets.only(top: 40, left: 16, right: 16),
+                child: Column(children: [UserHeader(), Gap(16), SearchField()]),
               ),
-            )
-          else ...[
+            ),
+
+            /// Show one loading spinner if both APIs not ready
+
             ///body of view
             SliverPadding(
               padding: const EdgeInsets.symmetric(
@@ -152,7 +61,7 @@ class _HomeViewState extends State<HomeView> {
                 child: Column(
                   children: [
                     CustomWrapFilterChoice(
-                      categories: categoriesModels,
+                      categories: data.categories,
                       selectedIndex: _selectedCategoryIndex,
                       onChanged: (newIndex) {
                         setState(() {
@@ -170,23 +79,23 @@ class _HomeViewState extends State<HomeView> {
               padding: EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverGrid(
                 delegate: SliverChildBuilderDelegate(
-                  childCount: productModels.length,
+                  childCount: data.products.length,
                   (context, index) => GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => ProductDetailView(
-                            productId: productModels[index].id,
-                            price: productModels[index].price,
+                            productId: data.products[index].id,
+                            price: data.products[index].price,
                           ),
                         ),
                       );
                     },
                     child: CardItem(
-                      title: productModels[index].name,
-                      imageUrl: productModels[index].imageUrl,
-                      description: productModels[index].description,
-                      rate: productModels[index].rating,
+                      title: data.products[index].name,
+                      imageUrl: data.products[index].imageUrl,
+                      description: data.products[index].description,
+                      rate: data.products[index].rating,
                     ),
                   ),
                 ),
@@ -198,7 +107,11 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
           ],
-        ],
+        ),
+      ),
+      error: (error, _) => Text('Error'),
+      loading: () => Center(
+        child: CircularProgressIndicator(color: AppColors.primaryColor),
       ),
     );
   }

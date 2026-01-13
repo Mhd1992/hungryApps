@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hungry/core/constants/app_colors.dart';
-import 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
+
+import 'package:hungry/update_features/home/categories/data/category_model.dart';
 
 class CustomWrapFilterChoice extends StatelessWidget {
   const CustomWrapFilterChoice({

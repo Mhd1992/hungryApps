@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:hungry/core/networks/base_response.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:hungry/update_features/user/data/user_model.dart';
+
+import '../../../core/networks/retrofit/model/base_response.dart';
 
 part 'user_api.g.dart';
 

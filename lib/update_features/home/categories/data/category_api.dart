@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import '../../../../core/networks/retrofit/model/base_response.dart';
 import 'package:retrofit/retrofit.dart';
+import '../../../../core/networks/retrofit/model/base_response.dart';
 import 'category_model.dart';
 
 part 'category_api.g.dart';

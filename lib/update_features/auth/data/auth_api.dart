@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:hungry/core/networks/base_response.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../../../core/networks/retrofit/model/base_response.dart';
 import 'auth_model.dart';
 
 part 'auth_api.g.dart';

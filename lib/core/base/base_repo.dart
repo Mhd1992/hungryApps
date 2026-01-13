@@ -1,4 +1,4 @@
-import '../networks/base_response.dart';
+import '../networks/retrofit/model/base_response.dart';
 
 abstract class BaseRepo {
   Future<T> runData<T>(Future<BaseResponse<T>> Function() request) async {
