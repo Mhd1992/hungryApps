@@ -5,16 +5,14 @@ import 'package:hungry/update_features/home/products/data/product_model.dart';
 import 'categories/controller/category_controller.dart';
 import 'categories/data/category_model.dart';
 
-final homeCombinedProvider = Provider<AsyncValue<HomeState>>((ref) {
+final homeScreenProvider = Provider<AsyncValue<HomeState>>((ref) {
   final categoryState = ref.watch(categoryControllerProvider);
   final productState = ref.watch(productControllerProvider);
 
-  /// Loading
   if (categoryState.isLoading || productState.isLoading) {
     return const AsyncLoading();
   }
 
-  /// Error
   if (categoryState.hasError) {
     return AsyncError(categoryState.error!, categoryState.stackTrace!);
   }
@@ -23,7 +21,6 @@ final homeCombinedProvider = Provider<AsyncValue<HomeState>>((ref) {
     return AsyncError(productState.error!, productState.stackTrace!);
   }
 
-  /// Data ready
   return AsyncData(
     HomeState(
       categories: categoryState.value ?? [],

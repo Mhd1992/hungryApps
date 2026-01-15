@@ -27,7 +27,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    final homeState = ref.watch(homeCombinedProvider);
+    final homeState = ref.watch(homeScreenProvider);
 
     return homeState.when(
       data: (data) => GestureDetector(
