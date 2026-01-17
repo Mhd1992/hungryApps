@@ -1,6 +1,7 @@
-import 'package:hungry/core/networks/retrofit/model/cart/items/item_model.dart';
-import 'package:hungry/core/networks/retrofit/model/cart/request_cart/cart_item_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+
+import '../../../../update_features/cart/cart/items/item_model.dart';
+import '../../../../update_features/cart/cart/request_cart/cart_item_model.dart';
 
 class CartRepo {
   CartRepo._internal();

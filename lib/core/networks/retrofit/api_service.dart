@@ -1,9 +1,9 @@
-import 'package:hungry/core/networks/retrofit/model/cart/cart_model.dart';
-import 'package:hungry/core/networks/retrofit/model/cart/request_cart/cart_item_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:retrofit/retrofit.dart';
 
-import 'model/cart/items/item_model.dart';
+import '../../../update_features/cart/cart/items/item_model.dart';
+import '../../../update_features/cart/cart/request_cart/cart_item_model.dart'
+    show CartItemModel;
 
 part 'api_service.g.dart';
 

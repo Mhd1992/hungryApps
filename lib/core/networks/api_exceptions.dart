@@ -8,6 +8,8 @@ class ApiException implements Exception {
     if (data['message'] != null) {
       if (statusCode == 500) {
         return ApiError(message: data['message'], statusCode: statusCode);
+      } else if (statusCode == 429) {
+        return ApiError(message: data['message'], statusCode: statusCode);
       } else {
         return ApiError(message: data['message'], statusCode: statusCode);
       }

@@ -12,7 +12,6 @@ class AppErrorWidget extends StatelessWidget {
     if (error is ApiError) {
       final apiError = error as ApiError;
       if (apiError.statusCode == 500) {
-        //return Center(child: Icon(Icons.error, size: 20));
         return Center(
           child: ServerFailureLogo(
             color: ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
@@ -23,8 +22,15 @@ class AppErrorWidget extends StatelessWidget {
       if (apiError.statusCode == 401) {
         return Center(child: Text('unAuthorized'));
       }
-      if (apiError.statusCode == 401) {
+      if (apiError.statusCode == 404) {
         return Center(child: Text('notFoundContent'));
+      }
+      if (apiError.statusCode == 429) {
+        return Center(
+          child: Text(
+            'Too many requests. Please wait a moment and try again. ',
+          ),
+        );
       }
     }
     return Center(child: Text('something went error'));

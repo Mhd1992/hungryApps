@@ -19,8 +19,11 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
     }
   }
 
-  Future<void> loadOnce(Future<T> Function() action) async {
-    if (_cachedData != null) {
+  Future<void> loadOnce(
+    Future<T> Function() action, {
+    bool useCache = true,
+  }) async {
+    if (_cachedData != null && useCache) {
       state = AsyncData(_cachedData);
       return;
     }

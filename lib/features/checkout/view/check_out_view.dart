@@ -1,8 +1,11 @@
-import 'package:hungry/core/networks/retrofit/model/cart/items/item_model.dart';
-import 'package:hungry/core/networks/retrofit/model/cart/request_cart/cart_item_model.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
 import 'package:hungry/features/checkout/data/repositorty/check_out_repo.dart';
+
+import 'package:hungry/update_features/cart/cart/items/item_model.dart';
+
+import '../../../update_features/cart/cart/request_cart/cart_item_model.dart'
+    show CartItemModel;
 
 class CheckOutView extends StatelessWidget {
   CheckOutView({

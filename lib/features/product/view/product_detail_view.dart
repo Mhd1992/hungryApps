@@ -1,8 +1,19 @@
-import 'package:hungry/core/networks/retrofit/model/cart/items/item_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/cart/data/repository/cart_repository.dart';
+import 'package:hungry/shared/extensions/ref_extension.dart';
+import 'package:hungry/update_features/cart/cart/request_cart/cart_item_model.dart';
+import 'package:hungry/update_features/cart/controller/cart_controller.dart';
+import 'package:hungry/update_features/product_details/product_detail_controller.dart';
+import 'package:hungry/update_features/product_details/side_option/controller/side_option_controller.dart';
+import 'package:hungry/update_features/product_details/topping/controller/topping_controller.dart';
 
-class ProductDetailView extends StatefulWidget {
+import 'package:hungry/update_features/cart/cart/items/item_model.dart'
+    as cart_request;
+import '../../../core/networks/error_widget.dart';
+import '../../../update_features/cart/data/cart_adaptor_provider.dart';
+
+class ProductDetailView extends ConsumerStatefulWidget {
   const ProductDetailView({
     super.key,
     required this.productId,
@@ -13,336 +24,176 @@ class ProductDetailView extends StatefulWidget {
   final String price;
 
   @override
-  State<ProductDetailView> createState() => _ProductDetailViewState();
+  ConsumerState<ProductDetailView> createState() => _ProductDetailViewState();
 }
 
-class _ProductDetailViewState extends State<ProductDetailView> {
+class _ProductDetailViewState extends ConsumerState<ProductDetailView> {
   List<ToppingModel> toppings = [];
   List<SideOptionModel> options = [];
   Set<int> selectedToppings = {};
   Set<int> selectedOptions = {};
   double spicyLevel = 0.5;
   ProductOptionRepo productOptionRepo = ProductOptionRepo();
-  bool _isAllLoading = false;
   CartRepo cartRepo = CartRepo();
   List<CartModel> cartModel = [];
-  bool _isAdded = false;
 
   @override
   void initState() {
     // TODO: implement initState
-    _loadAllData();
     super.initState();
-  }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(toppingControllerProvider.notifier).loadToppings();
+      ref.read(sideOptionControllerProvider.notifier).loadSideOption();
+      setState(() {});
+    });
 
-  Future<void> _loadAllData() async {
-    setState(() => _isAllLoading = true);
-
-    await Future.wait([loadToppings(), loadSideOptions()]);
-
-    setState(() => _isAllLoading = false);
-  }
-
-  /*  Future<void> loadSideOptions() async {
-    try {
-      final loadedOptions = await productOptionRepo.loadSideOptions();
-      if (loadedOptions.isNotEmpty) {
-        setState(() {
-          options = loadedOptions;
-        });
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    }
-  }
-
-  Future<void> loadToppings() async {
-    try {
-      final loadedToppings = await productOptionRepo.loadToppings();
-      if (loadedToppings.isNotEmpty) {
-        setState(() {
-          toppings = loadedToppings;
-        });
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    }
-  }*/
-
-  Future<void> loadSideOptions() async {
-    await _loadProductOptions(
-      apiCall: productOptionRepo.loadSideOptions,
-      onSuccess: (data) => options = data,
-    );
-  }
-
-  Future<void> loadToppings() async {
-    await _loadProductOptions(
-      apiCall: productOptionRepo.loadToppings,
-      onSuccess: (data) => toppings = data,
-    );
-  }
-
-  Future<void> _loadProductOptions<T>({
-    required Future<List<T>> Function() apiCall,
-    required void Function(List<T>) onSuccess,
-  }) async {
-    try {
-      final result = await apiCall();
-      if (result.isNotEmpty) {
-        setState(() {
-          onSuccess(result);
-        });
-      }
-    } catch (e) {
-      String errorMessage = 'Unknown error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    }
-  }
-
-  /*
-
-  Future<void> a() async {
-    await _loadProductOptionsP<ToppingModel, int>(
-      apiCall: productOptionRepo.loadToId,
-      param: 1,
-      onSuccess: (data) => toppings = data,
-    );
-  }
-  Future<void> _loadProductOptionsP<T, P>({
-    required Future<T> Function(P param) apiCall,
-    required P param,
-    required void Function(List<T>) onSuccess,
-  }) async {
-    try {
-      final result = await apiCall(param);
-     if (result != null) {
-        setState(() {
-      //    onSuccess(result);
-        });
-      }
-    } catch (e) {
-      String errorMessage = 'Unknown error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    }
-  }
-*/
-
-  Future<void> addToCart() async {
-    try {
-      setState(() {
-        _isAdded = true;
-      });
-      cartModel.add(
-        CartModel(
-          widget.productId,
-          1,
-          spicyLevel,
-          selectedToppings.toList(),
-          selectedOptions.toList(),
-        ),
+    ref.listenManual<AsyncValue<CartItemModel?>>(cartControllerProvider, (
+      previous,
+      next,
+    ) {
+      next.whenOrNull(
+        data: (state) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('cart added successfully'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        },
+        error: (error, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error.toString()),
+              backgroundColor: Colors.red,
+            ),
+          );
+        },
       );
-      final response = await cartRepo.addToCart(CartRequest(cartModel));
-      if (response.isNotEmpty) {
-        if (!mounted) return;
-        context.showSnackBar(response);
-      }
-    } catch (e) {
-      String errorMessage = 'unknown Error';
-      if (e is ApiError) {
-        errorMessage = e.message;
-        if (mounted) {
-          context.showSnackBar(errorMessage);
-        }
-      }
-    } finally {
-      setState(() {
-        _isAdded = false;
-      });
-    }
-  }
-
-  Future<void> addCartX() async {
-    cartModel.add(
-      CartModel(
-        widget.productId,
-        1,
-        spicyLevel,
-        selectedToppings.toList(),
-        selectedOptions.toList(),
-      ),
-    );
-    await _addToCaretX<String, CartRequest>(
-      apiCall: cartRepo.addToCart,
-      param: CartRequest(cartModel),
-      onSuccess: (data) => data,
-    );
-  }
-
-  Future<void> _addToCaretX<T, P>({
-    required Future<T> Function(P param) apiCall,
-    required P param,
-    required void Function(T) onSuccess,
-  }) async {
-    try {
-      setState(() {
-        _isAdded = true;
-      });
-      final result = await apiCall(param);
-      if (result != null) {
-        setState(() {
-          onSuccess(result);
-          context.showSnackBar(result.toString());
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        context.showSnackBar(e.toString());
-      }
-    } finally {
-      setState(() {
-        _isAdded = false;
-      });
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(productDetailScreenProvider);
     return PopScope(
       // canPop: false,
       child: Scaffold(
         appBar: AppBar(backgroundColor: Colors.white),
-        body: _isAllLoading
-            ? Center(
-                child: CircularProgressIndicator(color: AppColors.primaryColor),
-              )
-            : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        body: state.when(
+          data: (data) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Image.asset('assets/images/detail.png', height: 250),
-                          Gap(64),
-                          SpicySlider(
-                            value: spicyLevel,
-                            onChanged: (value) {
-                              setState(() => spicyLevel = value);
-                            },
-                          ),
-                        ],
+                      Image.asset('assets/images/detail.png', height: 250),
+                      Gap(64),
+                      SpicySlider(
+                        value: spicyLevel,
+                        onChanged: (value) {
+                          setState(() => spicyLevel = value);
+                        },
                       ),
-                      Gap(16),
-                      CustomText(text: 'Toppings', fontSize: 32),
-                      Gap(16),
-
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: List.generate(
-                            toppings.length,
-                            (index) => Padding(
-                              padding: const EdgeInsets.only(
-                                right: 16.0,
-                                bottom: 16.0,
-                              ),
-                              child: ToppingCard(
-                                imageUrl: toppings[index].imageUrl,
-                                title: toppings[index].name,
-                                isSelected: selectedToppings.contains(
-                                  toppings[index].id,
-                                ),
-                                onAdd: () {
-                                  setState(() {
-                                    if (selectedToppings.contains(
-                                      toppings[index].id,
-                                    )) {
-                                      selectedToppings.remove(
-                                        toppings[index].id,
-                                      ); // remove if exists
-                                    } else {
-                                      selectedToppings.add(
-                                        toppings[index].id,
-                                      ); // add if not
-                                    }
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Gap(16),
-                      CustomText(text: 'Side Options', fontSize: 32),
-                      Gap(16),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: List.generate(
-                            options.length,
-                            (index) => Padding(
-                              padding: const EdgeInsets.only(
-                                right: 16.0,
-                                bottom: 16.0,
-                              ),
-                              child: ToppingCard(
-                                imageUrl: options[index].imageUrl,
-                                title: options[index].name,
-                                isSelected: selectedOptions.contains(
-                                  options[index].id,
-                                ),
-                                onAdd: () {
-                                  setState(() {
-                                    if (selectedOptions.contains(
-                                      options[index].id,
-                                    )) {
-                                      selectedOptions.remove(
-                                        options[index].id,
-                                      ); // remove if exists
-                                    } else {
-                                      selectedOptions.add(
-                                        options[index].id,
-                                      ); // add if not
-                                    }
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Gap(20),
                     ],
                   ),
-                ),
+                  Gap(16),
+                  CustomText(text: 'Toppings', fontSize: 32),
+                  Gap(16),
+
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(
+                        data.toppings.length,
+                        (index) => Padding(
+                          padding: const EdgeInsets.only(
+                            right: 16.0,
+                            bottom: 16.0,
+                          ),
+                          child: ToppingCard(
+                            imageUrl: data.toppings[index].imageUrl,
+                            title: data.toppings[index].name,
+                            isSelected: selectedToppings.contains(
+                              data.toppings[index].id,
+                            ),
+                            onAdd: () {
+                              setState(() {
+                                if (selectedToppings.contains(
+                                  data.toppings[index].id,
+                                )) {
+                                  selectedToppings.remove(
+                                    data.toppings[index].id,
+                                  ); // remove if exists
+                                } else {
+                                  selectedToppings.add(
+                                    data.toppings[index].id,
+                                  ); // add if not
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Gap(16),
+                  CustomText(text: 'Side Options', fontSize: 32),
+                  Gap(16),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(
+                        data.sideOptions.length,
+                        (index) => Padding(
+                          padding: const EdgeInsets.only(
+                            right: 16.0,
+                            bottom: 16.0,
+                          ),
+                          child: ToppingCard(
+                            imageUrl: data.sideOptions[index].imageUrl,
+                            title: data.sideOptions[index].name,
+                            isSelected: selectedOptions.contains(
+                              data.sideOptions[index].id,
+                            ),
+                            onAdd: () {
+                              setState(() {
+                                if (selectedOptions.contains(
+                                  data.sideOptions[index].id,
+                                )) {
+                                  selectedOptions.remove(
+                                    data.sideOptions[index].id,
+                                  ); // remove if exists
+                                } else {
+                                  selectedOptions.add(
+                                    data.sideOptions[index].id,
+                                  ); // add if not
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Gap(20),
+                ],
               ),
-        bottomSheet: _isAdded
-            ? CircularProgressIndicator(color: AppColors.primaryColor)
-            : IntrinsicHeight(
+            ),
+          ),
+          error: (error, _) => AppErrorWidget(error: error),
+          loading: () => Center(
+            child: CircularProgressIndicator(color: AppColors.primaryColor),
+          ),
+        ),
+
+        bottomSheet: Consumer(
+          builder: (BuildContext context, WidgetRef ref, Widget? child) {
+            final controller = ref.watch(cartControllerProvider);
+            return controller.when(
+              data: (_) => IntrinsicHeight(
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -370,7 +221,12 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                               fontSize: 20,
                               fontWeight: FontWeight.w500,
                             ),
-                            CustomText(text: '\$${widget.price}', fontSize: 16),
+                            state.isLoading
+                                ? Text('0')
+                                : CustomText(
+                                    text: '\$${widget.price}',
+                                    fontSize: 16,
+                                  ),
                           ],
                         ),
                         Spacer(),
@@ -385,7 +241,21 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                             //  cartRepo.
                             //   if (cartRepo.cachedCartItem != null) {}
 
-                            addCartX();
+                            cartModel.add(
+                              CartModel(
+                                widget.productId,
+                                1,
+                                spicyLevel,
+                                selectedToppings.toList(),
+                                selectedOptions.toList(),
+                              ),
+                            );
+                            ref
+                                .read(cartControllerProvider.notifier)
+                                .addToCartItem(
+                                  cart_request.CartRequest(cartModel),
+                                );
+                            //   addCartX();
                           },
                         ),
                       ],
@@ -393,6 +263,12 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   ),
                 ),
               ),
+              error: (error, _) => AppErrorWidget(error: error),
+              loading: () =>
+                  CircularProgressIndicator(color: AppColors.primaryColor),
+            );
+          },
+        ),
       ),
     );
   }

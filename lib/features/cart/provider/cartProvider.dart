@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hungry/features/cart/data/repository/cart_repository.dart';
-import 'package:hungry/core/networks/retrofit/model/cart/request_cart/cart_item_model.dart';
+
+import '../../../update_features/cart/cart/request_cart/cart_item_model.dart';
 
 final cartControllerProvider =
     StateNotifierProvider<CartController, AsyncValue<CartItemModel?>>(

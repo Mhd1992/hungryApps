@@ -9,9 +9,9 @@ abstract class BaseRepo {
     return response.data!;
   }
 
-  Future<T?> runOptional<T>(Future<BaseResponse<T>> Function() request) async {
+  Future<T?> runOptional<T>(Future<BaseResponse<T?>> Function() request) async {
     final response = await request();
-    return response.data!;
+    return response.data;
   }
 
   Future<void> runAction(

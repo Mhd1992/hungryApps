@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/update_features/home/categories/controller/category_controller.dart';
 
+import '../../../core/networks/error_widget.dart';
 import '../../../update_features/home/home_controller.dart';
 import '../../../update_features/home/products/controller/product_controller.dart';
 
@@ -109,7 +110,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
           ],
         ),
       ),
-      error: (error, _) => Text('Error'),
+      error: (error, _) => AppErrorWidget(error: error),
       loading: () => Center(
         child: CircularProgressIndicator(color: AppColors.primaryColor),
       ),

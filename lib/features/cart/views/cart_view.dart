@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/networks/error_widget.dart';
 import 'package:hungry/core/utils/exported_file.dart';
-import 'package:hungry/features/cart/provider/cartProvider.dart';
 import 'package:hungry/gen/assets.gen.dart';
 import 'package:hungry/update_features/auth/controller/auth_controller.dart';
+
+import '../../../update_features/cart/controller/cart_controller.dart';
 
 class CartView extends ConsumerStatefulWidget {
   const CartView({super.key});
@@ -18,15 +19,14 @@ class _CartViewState extends ConsumerState<CartView> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return; // ✅ double safety
-      ref.read(cartControllerProvider.notifier).loadCartItems();
+      if (!mounted) return;
+      ref.read(cartControllerProvider.notifier).loadCartItem();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final cartState = ref.watch(cartControllerProvider);
-    final cartController = ref.read(cartControllerProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +40,7 @@ class _CartViewState extends ConsumerState<CartView> {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => AppErrorWidget(error: error),
               data: (cartData) {
-                if (cartData == null || cartData.items.isEmpty) {
+                if (cartData == null) {
                   return Center(
                     child: Assets.icons.emptyIcon.image(
                       width: 200,
@@ -48,7 +48,6 @@ class _CartViewState extends ConsumerState<CartView> {
                     ),
                   );
                 }
-
                 return Column(
                   children: [
                     Expanded(
@@ -66,15 +65,12 @@ class _CartViewState extends ConsumerState<CartView> {
                               cartData.items[index] = item.copyWith(
                                 quantity: newQty,
                               );
+                              setState(() {});
                             },
                             onRemove: () async {
-                              await cartController
-                                  .removeCartItem(item.itemId)
-                                  .then((val) {
-                                    cartData.items.remove(item);
-                                    if (!context.mounted) return;
-                                    context.showSnackBar(val.toString());
-                                  });
+                              ref
+                                  .read(cartControllerProvider.notifier)
+                                  .removeFromCartItem(item.itemId);
                             },
                           );
                         },
