@@ -20,5 +20,5 @@ abstract class CartApi {
   );
 
   @DELETE("/cart/remove/{id}")
-  Future<BaseResponse<CartItemModel?>> removeFromCartItem(@Path("id") int id);
+  Future<BaseResponse<String?>> removeFromCartItem(@Path("id") int id);
 }

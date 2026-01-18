@@ -100,12 +100,12 @@ class _CartApi implements CartApi {
   }
 
   @override
-  Future<BaseResponse<CartItemModel?>> removeFromCartItem(int id) async {
+  Future<BaseResponse<String?>> removeFromCartItem(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<BaseResponse<CartItemModel>>(Options(
+    final _options = _setStreamType<BaseResponse<String>>(Options(
       method: 'DELETE',
       headers: _headers,
       extra: _extra,
@@ -122,13 +122,11 @@ class _CartApi implements CartApi {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponse<CartItemModel?> _value;
+    late BaseResponse<String?> _value;
     try {
-      _value = BaseResponse<CartItemModel?>.fromJson(
+      _value = BaseResponse<String?>.fromJson(
         _result.data!,
-        (json) => json == null
-            ? null
-            : CartItemModel.fromJson(json as Map<String, dynamic>),
+        (json) => json as String?,
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

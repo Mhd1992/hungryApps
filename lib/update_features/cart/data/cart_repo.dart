@@ -1,7 +1,9 @@
 import 'package:hungry/core/base/base_repo.dart';
+
 import 'package:hungry/update_features/cart/cart/items/item_model.dart';
 import 'package:hungry/update_features/cart/data/cart_api.dart';
 
+import '../../../core/networks/retrofit/model/base_response.dart';
 import '../cart/request_cart/cart_item_model.dart';
 
 class CartRepo extends BaseRepo {
@@ -16,7 +18,7 @@ class CartRepo extends BaseRepo {
     return runOptional(() => _api.addToCaretItem(request));
   }
 
-  Future<CartItemModel?> removeCartItem(int id) async {
-    return runOptional(() => _api.removeFromCartItem(id));
+  Future<BaseResponse<String?>> removeCartItem(int id) async {
+    return runAction(() => _api.removeFromCartItem(id));
   }
 }

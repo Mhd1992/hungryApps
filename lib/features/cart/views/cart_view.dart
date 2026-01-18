@@ -3,8 +3,11 @@ import 'package:hungry/core/networks/error_widget.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/gen/assets.gen.dart';
 import 'package:hungry/update_features/auth/controller/auth_controller.dart';
+import 'package:riverpod/src/framework.dart';
 
+import '../../../update_features/cart/controller/cart_action_controller.dart';
 import '../../../update_features/cart/controller/cart_controller.dart';
+import '../../../update_features/cart/controller/cart_screen_contoller.dart';
 
 class CartView extends ConsumerStatefulWidget {
   const CartView({super.key});
@@ -17,9 +20,36 @@ class _CartViewState extends ConsumerState<CartView> {
   @override
   void initState() {
     super.initState();
+    ref.listenManual<AsyncValue<String?>>(cartActionControllerProvider, (
+      prev,
+      next,
+    ) {
+      next.whenOrNull(
+        data: (data) {
+          if (data != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.orange,
 
+                content: SizedBox(
+                  height: 48,
+                  child: Center(
+                    child: Text(
+                      data,
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+        loading: () => CircularProgressIndicator(),
+      );
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+
       ref.read(cartControllerProvider.notifier).loadCartItem();
     });
   }
@@ -27,7 +57,7 @@ class _CartViewState extends ConsumerState<CartView> {
   @override
   Widget build(BuildContext context) {
     final cartState = ref.watch(cartControllerProvider);
-
+    final screenState = ref.watch(cartScreenProvider);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
@@ -36,7 +66,7 @@ class _CartViewState extends ConsumerState<CartView> {
       ),
       body: ref.read(guestProvider.notifier).state
           ? GuestLogo()
-          : cartState.when(
+          : screenState.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => AppErrorWidget(error: error),
               data: (cartData) {
@@ -53,23 +83,22 @@ class _CartViewState extends ConsumerState<CartView> {
                     Expanded(
                       child: ListView.builder(
                         padding: const EdgeInsets.only(top: 20, bottom: 20),
-                        itemCount: cartData.items.length,
+                        itemCount: cartData.cartItemModel!.items.length,
                         itemBuilder: (context, index) {
-                          final item = cartData.items[index];
+                          final item = cartData.cartItemModel!.items[index];
                           return CartItem(
                             title: item.name,
                             imageUrl: item.imageUrl,
                             desc: '',
                             quantity: item.quantity,
                             onChanged: (newQty) {
-                              cartData.items[index] = item.copyWith(
-                                quantity: newQty,
-                              );
+                              cartData.cartItemModel!.items[index] = item
+                                  .copyWith(quantity: newQty);
                               setState(() {});
                             },
                             onRemove: () async {
-                              ref
-                                  .read(cartControllerProvider.notifier)
+                              await ref
+                                  .read(cartActionControllerProvider.notifier)
                                   .removeFromCartItem(item.itemId);
                             },
                           );
@@ -90,7 +119,7 @@ class _CartViewState extends ConsumerState<CartView> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              Text("\$${cartData.totalPrice}"),
+                              Text("\$${cartData.cartItemModel!.totalPrice}"),
                             ],
                           ),
                           const Spacer(),
@@ -101,8 +130,9 @@ class _CartViewState extends ConsumerState<CartView> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => CheckOutView(
-                                    cartItemModel: cartData,
-                                    totalPrice: cartData.totalPrice,
+                                    cartItemModel: cartData.cartItemModel!,
+                                    totalPrice:
+                                        cartData.cartItemModel!.totalPrice,
                                   ),
                                 ),
                               );
@@ -118,9 +148,3 @@ class _CartViewState extends ConsumerState<CartView> {
     );
   }
 }
-
-///    /// Start loading when widget builds
-///    like initState and futureBuilder in statelessWidget
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       loadCartItem();
-//     });

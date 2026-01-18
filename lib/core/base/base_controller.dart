@@ -19,6 +19,21 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
     }
   }
 
+  Future<void> requestAction(
+    Future<BaseResponse<String?>> Function()
+    action, // action()   // does the API call
+    T Function(BaseResponse<dynamic> response)
+    mapper, // mapper()   // converts the response to T
+  ) async {
+    state = const AsyncLoading();
+    try {
+      final result = await action();
+      state = AsyncData(mapper(result));
+    } catch (e, st) {
+      state = AsyncError(ApiError(message: e.toString()), st);
+    }
+  }
+
   Future<void> loadOnce(
     Future<T> Function() action, {
     bool useCache = true,

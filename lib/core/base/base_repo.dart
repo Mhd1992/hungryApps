@@ -14,9 +14,11 @@ abstract class BaseRepo {
     return response.data;
   }
 
-  Future<void> runAction(
+  Future<BaseResponse<String?>> runAction(
     Future<BaseResponse<dynamic>> Function() request,
   ) async {
-    await request();
+    final message = await request();
+    return BaseResponse(code: 200, message: message.message);
+    message.message;
   }
 }

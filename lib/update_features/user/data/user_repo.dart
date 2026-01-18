@@ -3,6 +3,8 @@ import 'package:hungry/update_features/user/data/user_api.dart';
 
 import 'package:hungry/update_features/user/data/user_model.dart';
 
+import '../../../core/networks/retrofit/model/base_response.dart';
+
 class UserRepo extends BaseRepo {
   final UserApi api;
 
@@ -17,7 +19,7 @@ class UserRepo extends BaseRepo {
     return runData(() => api.updateUserData(data));
   }
 
-  Future<void> logout() async {
+  Future<BaseResponse<dynamic>> logout() async {
     return runAction(() => api.logout());
   }
 }

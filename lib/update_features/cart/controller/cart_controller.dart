@@ -18,18 +18,23 @@ class CartController extends BaseController<CartItemModel?> {
 
   Future<void> loadCartItem({bool useCache = true}) async {
     final repo = ref.read(cartRepoProvider);
+
     await loadOnce(() => repo.loadCartItem(), useCache: useCache);
   }
 
-  void addToCartItem(CartRequest req) {
+  Future<void> addToCartItem(CartRequest req) async {
     final repo = ref.read(cartRepoProvider);
+
     request(() => repo.addToCartItem(req));
   }
 
-  Future<void> removeFromCartItem(int id) async {
+  /*  Future<String> removeFromCartItem(int id) async {
     final repo = ref.read(cartRepoProvider);
-    await request(() => repo.removeCartItem(id)).then((_) {
-      loadCartItem(useCache: false);
-    });
-  }
+
+    final message = await requestAction(() => repo.removeCartItem(id));
+
+    await loadCartItem(useCache: false);
+
+    return message ?? "Item removed";
+  }*/
 }
