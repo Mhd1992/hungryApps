@@ -76,7 +76,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
             );
           }
         },
-        loading: () => CircularProgressIndicator(),
       );
     });
   }
