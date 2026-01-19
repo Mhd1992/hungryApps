@@ -96,12 +96,12 @@ class _UserApi implements UserApi {
   }
 
   @override
-  Future<BaseResponse<UserModel>> logout() async {
+  Future<BaseResponse<String>> logout() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<BaseResponse<UserModel>>(Options(
+    final _options = _setStreamType<BaseResponse<String>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -118,11 +118,11 @@ class _UserApi implements UserApi {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponse<UserModel> _value;
+    late BaseResponse<String> _value;
     try {
-      _value = BaseResponse<UserModel>.fromJson(
+      _value = BaseResponse<String>.fromJson(
         _result.data!,
-        (json) => UserModel.fromJson(json as Map<String, dynamic>),
+        (json) => json as String,
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

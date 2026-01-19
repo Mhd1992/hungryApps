@@ -47,17 +47,20 @@ class _CartViewState extends ConsumerState<CartView> {
         loading: () => CircularProgressIndicator(),
       );
     });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      ref.read(cartControllerProvider.notifier).loadCartItem();
+      ref.read(cartControllerProvider.notifier).loadCartItem(useCache: false);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final cartState = ref.watch(cartControllerProvider);
-    final screenState = ref.watch(cartScreenProvider);
+    final actionState = ref.watch(cartActionControllerProvider);
+    final isRemoving = actionState is AsyncLoading && actionState.value == null;
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
@@ -66,11 +69,19 @@ class _CartViewState extends ConsumerState<CartView> {
       ),
       body: ref.read(guestProvider.notifier).state
           ? GuestLogo()
-          : screenState.when(
+          : isRemoving
+          ? Center(
+              child: CircularProgressIndicator(color: AppColors.primaryColor),
+            )
+          : cartState.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => AppErrorWidget(error: error),
               data: (cartData) {
                 if (cartData == null) {
+                  return const Center(child: Text('No cart data'));
+                }
+
+                if (cartData.items.isEmpty) {
                   return Center(
                     child: Assets.icons.emptyIcon.image(
                       width: 200,
@@ -78,22 +89,24 @@ class _CartViewState extends ConsumerState<CartView> {
                     ),
                   );
                 }
+
                 return Column(
                   children: [
                     Expanded(
                       child: ListView.builder(
                         padding: const EdgeInsets.only(top: 20, bottom: 20),
-                        itemCount: cartData.cartItemModel!.items.length,
+                        itemCount: cartData.items.length,
                         itemBuilder: (context, index) {
-                          final item = cartData.cartItemModel!.items[index];
+                          final item = cartData.items[index];
                           return CartItem(
                             title: item.name,
                             imageUrl: item.imageUrl,
                             desc: '',
                             quantity: item.quantity,
                             onChanged: (newQty) {
-                              cartData.cartItemModel!.items[index] = item
-                                  .copyWith(quantity: newQty);
+                              cartData.items[index] = item.copyWith(
+                                quantity: newQty,
+                              );
                               setState(() {});
                             },
                             onRemove: () async {
@@ -119,7 +132,7 @@ class _CartViewState extends ConsumerState<CartView> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              Text("\$${cartData.cartItemModel!.totalPrice}"),
+                              Text("\$${cartData.totalPrice}"),
                             ],
                           ),
                           const Spacer(),
@@ -130,9 +143,8 @@ class _CartViewState extends ConsumerState<CartView> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => CheckOutView(
-                                    cartItemModel: cartData.cartItemModel!,
-                                    totalPrice:
-                                        cartData.cartItemModel!.totalPrice,
+                                    cartItemModel: cartData,
+                                    totalPrice: cartData.totalPrice,
                                   ),
                                 ),
                               );

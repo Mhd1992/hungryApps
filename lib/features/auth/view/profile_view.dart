@@ -8,6 +8,7 @@ import '../../../core/utils/exported_file.dart' hide UserModel;
 import '../../../shared/custom_load_image_button.dart';
 import '../../../update_features/user/data/user_model.dart';
 import '../widgets/visa_card_widget.dart';
+import 'controller/user_action_controller.dart';
 import 'controller/user_controller.dart';
 
 class ProfileView extends ConsumerStatefulWidget {
@@ -50,6 +51,34 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
         );
       },
     );
+
+    ref.listenManual<AsyncValue<String?>>(userActionControllerProvider, (
+      prev,
+      next,
+    ) {
+      next.whenOrNull(
+        data: (message) {
+          if (message != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.orange,
+
+                content: SizedBox(
+                  height: 48,
+                  child: Center(
+                    child: Text(
+                      message,
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+        loading: () => CircularProgressIndicator(),
+      );
+    });
   }
 
   @override
@@ -156,6 +185,17 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                         GestureDetector(
                           onTap: () async {
                             await ref
+                                .read(userActionControllerProvider.notifier)
+                                .logOut(
+                                  onSuccess: () {
+                                    Navigator.of(ref.context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (_) => const LoginView(),
+                                      ),
+                                    );
+                                  },
+                                );
+                            /* await ref
                                 .read(userControllerProvider.notifier)
                                 .logout(
                                   onSuccess: () {
@@ -165,7 +205,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                                       ),
                                     );
                                   },
-                                );
+                                );*/
                           },
 
                           child: (uiState.isLoggingOut)

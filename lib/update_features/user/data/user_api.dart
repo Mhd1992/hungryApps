@@ -17,5 +17,5 @@ abstract class UserApi {
   Future<BaseResponse<UserModel>> updateUserData(@Body() FormData body);
 
   @POST("/logout")
-  Future<BaseResponse<UserModel>> logout();
+  Future<BaseResponse<String>> logout();
 }

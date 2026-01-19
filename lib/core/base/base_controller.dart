@@ -15,7 +15,7 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
       final result = await action();
       state = AsyncData(result);
     } catch (e, st) {
-      state = AsyncError(ApiError(message: e.toString()), st);
+      state = AsyncError(ApiException(), st);
     }
   }
 
@@ -30,7 +30,7 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
       final result = await action();
       state = AsyncData(mapper(result));
     } catch (e, st) {
-      state = AsyncError(ApiError(message: e.toString()), st);
+      state = AsyncError(ApiException(), st);
     }
   }
 
@@ -48,7 +48,8 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
       _cachedData = result;
       state = AsyncData(result);
     } catch (e, st) {
-      state = AsyncError(ApiError(message: e.toString()), st);
+      // state = AsyncError(ApiError(message: e.toString()), st);
+      state = AsyncError(ApiException(), st);
     }
   }
 

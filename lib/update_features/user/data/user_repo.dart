@@ -19,7 +19,7 @@ class UserRepo extends BaseRepo {
     return runData(() => api.updateUserData(data));
   }
 
-  Future<BaseResponse<dynamic>> logout() async {
+  Future<BaseResponse<String?>> logout() async {
     return runAction(() => api.logout());
   }
 }
