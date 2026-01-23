@@ -7,7 +7,7 @@ abstract class BaseRepo {
     final response = await request();
 
     if (response.data == null) {
-      throw ApiException();
+      throw Exception("No Data Returned !!! ");
     }
     return response.data!;
   }
@@ -22,6 +22,5 @@ abstract class BaseRepo {
   ) async {
     final message = await request();
     return BaseResponse(code: 200, message: message.message);
-    message.message;
   }
 }

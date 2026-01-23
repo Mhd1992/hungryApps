@@ -47,9 +47,11 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
       final result = await action();
       _cachedData = result;
       state = AsyncData(result);
+    } on DioException catch (e, st) {
+      state = AsyncError(ApiException.handleError(e), st);
     } catch (e, st) {
       // state = AsyncError(ApiError(message: e.toString()), st);
-      state = AsyncError(ApiException.handleError(e as DioException), st);
+      state = AsyncError(e, st);
     }
   }
 
