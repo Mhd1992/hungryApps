@@ -11,7 +11,8 @@ class CartRepo extends BaseRepo {
   CartRepo(this._api);
 
   Future<CartItemModel> loadCartItem() async {
-    return runData(() => _api.loadCartItem());
+    final r = runData(() => _api.loadCartItem());
+    return r;
   }
 
   Future<CartItemModel?> addToCartItem(CartRequest request) async {

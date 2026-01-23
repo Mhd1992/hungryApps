@@ -49,7 +49,7 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
       state = AsyncData(result);
     } catch (e, st) {
       // state = AsyncError(ApiError(message: e.toString()), st);
-      state = AsyncError(ApiException(), st);
+      state = AsyncError(ApiException.handleError(e as DioException), st);
     }
   }
 

@@ -1,10 +1,13 @@
+import 'package:hungry/core/networks/api_exceptions.dart';
+
 import '../networks/retrofit/model/base_response.dart';
 
 abstract class BaseRepo {
   Future<T> runData<T>(Future<BaseResponse<T>> Function() request) async {
     final response = await request();
+
     if (response.data == null) {
-      throw Exception('API returned null data');
+      throw ApiException();
     }
     return response.data!;
   }
