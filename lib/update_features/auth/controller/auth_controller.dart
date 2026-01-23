@@ -23,14 +23,17 @@ class AuthController extends BaseController<AuthModel?> {
 
   void login(String email, String password, {VoidCallback? onSuccess}) async {
     final repo = ref.read(authRepoProvider);
+
     final prefProvider = ref.read(prefHelperProvider);
 
     await request(() => repo.login(email, password));
+
     final authData = state.value;
 
     if (authData != null) {
       await prefProvider.saveToken(authData.token!);
     }
+
     if (onSuccess != null) onSuccess();
   }
 

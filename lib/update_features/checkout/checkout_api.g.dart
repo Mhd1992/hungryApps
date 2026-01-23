@@ -97,7 +97,7 @@ class _CheckoutApi implements CheckoutApi {
 
   @override
   Future<BaseResponse<CreatedOrderModel>> saveOrder(
-      CheckoutModel checkoutModel) async {
+      CartRequest checkoutModel) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};

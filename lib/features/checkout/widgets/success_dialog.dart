@@ -1,13 +1,16 @@
 import 'package:hungry/core/utils/exported_file.dart';
 
 class SuccessDialog extends StatelessWidget {
-  const SuccessDialog({super.key});
+  final String? orderId;
+  const SuccessDialog({super.key, this.orderId});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 40,
@@ -19,6 +22,19 @@ class SuccessDialog extends StatelessWidget {
             ),
           ),
           Gap(20),
+          CustomText(
+            text: 'OrderId',
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+          Gap(10),
+          CustomText(
+            text: orderId.toString(),
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+
+          Gap(10),
           const CustomText(
             text: 'Payment Successful!',
             fontSize: 18,

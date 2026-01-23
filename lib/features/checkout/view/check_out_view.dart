@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
 import 'package:hungry/features/checkout/data/repositorty/check_out_repo.dart';
@@ -6,9 +7,11 @@ import 'package:hungry/update_features/cart/cart/items/item_model.dart';
 
 import '../../../update_features/cart/cart/request_cart/cart_item_model.dart'
     show CartItemModel;
+import '../../../update_features/checkout/controller/checkout_controller.dart';
+import '../../../update_features/checkout/model/orders/created_order_model.dart';
 
-class CheckOutView extends StatelessWidget {
-  CheckOutView({
+class CheckOutView extends ConsumerStatefulWidget {
+  const CheckOutView({
     super.key,
     required this.totalPrice,
     required this.cartItemModel,
@@ -17,8 +20,16 @@ class CheckOutView extends StatelessWidget {
   final String totalPrice;
   final CartItemModel cartItemModel;
 
+  @override
+  ConsumerState<CheckOutView> createState() => _CheckOutViewState();
+}
+
+class _CheckOutViewState extends ConsumerState<CheckOutView> {
   final AuthRepoV1 authRepo = AuthRepoV1();
+
   final List<CartModel> orders = [];
+
+  final List<CartItemModel> items = [];
 
   final CheckoutRepo checkoutRepo = CheckoutRepo();
 
@@ -46,13 +57,36 @@ class CheckOutView extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref.listenManual<AsyncValue<CreatedOrderModel?>>(
+      checkoutControllerProvider,
+      (prev, next) {
+        next.whenOrNull(
+          data: (data) {
+            if (data != null) {
+              showDialog(
+                context: context,
+                builder: (context) =>
+                    SuccessDialog(orderId: data.orderId.toString()),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     // List<CartModel> orders = [];
     final ValueNotifier<PaymentType?> paymentMethod =
         ValueNotifier<PaymentType?>(PaymentType.cash);
     final ValueNotifier<bool> isChecked = ValueNotifier<bool>(false);
-    double total = double.parse(totalPrice) + 0.7 + 1.4;
+    double total = double.parse(widget.totalPrice) + 0.7 + 1.4;
 
+    final state = ref.watch(checkoutControllerProvider);
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white),
       body: ValueListenableBuilder(
@@ -69,7 +103,7 @@ class CheckOutView extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
                 OrderDetail(
-                  order: double.parse(totalPrice),
+                  order: double.parse(widget.totalPrice),
                   taxes: 0.7,
                   fees: 1.4,
                 ),
@@ -146,7 +180,7 @@ class CheckOutView extends StatelessWidget {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min, // 👈 important!
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     CustomText(
                       text: 'Total Price:',
@@ -160,21 +194,32 @@ class CheckOutView extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                CustomButton(
-                  buttonText: 'Pay Now',
-                  onPressed: () {
-                    for (var e in cartItemModel.items) {
-                      orders.add(
-                        CartModel(
-                          e.productId,
-                          e.quantity,
-                          e.spicy,
-                          e.toppingIds.map((t) => t.id).toList(),
-                          e.optionIds.map((o) => o.id).toList(),
+                state.isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primaryColor,
                         ),
-                      );
-                    }
-                    final currentContext = context;
+                      )
+                    : CustomButton(
+                        buttonText: 'Pay Now',
+                        onPressed: () {
+                          for (var e in widget.cartItemModel.items) {
+                            orders.add(
+                              CartModel(
+                                e.productId,
+                                e.quantity,
+                                e.spicy,
+                                e.toppingIds.map((t) => t.id).toList(),
+                                e.optionIds.map((o) => o.id).toList(),
+                              ),
+                            );
+                          }
+
+                          ref
+                              .read(checkoutControllerProvider.notifier)
+                              .saveOrder(CartRequest(orders));
+
+                          /*    final currentContext = context;
 
                     checkout(orders).then((val) {
                       if (currentContext.mounted) {
@@ -183,9 +228,9 @@ class CheckOutView extends StatelessWidget {
                           builder: (context) => SuccessDialog(),
                         );
                       }
-                    });
-                  },
-                ),
+                    });*/
+                        },
+                      ),
               ],
             ),
           ),

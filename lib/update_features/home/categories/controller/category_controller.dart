@@ -18,3 +18,5 @@ class CategoryController extends BaseController<List<CategoryModel>?> {
     await loadOnce(() => repo.getAllCategory());
   }
 }
+
+final isLogin = Provider((ref) => false);

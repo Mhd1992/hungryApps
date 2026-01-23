@@ -7,7 +7,6 @@ import 'package:riverpod/src/framework.dart';
 
 import '../../../update_features/cart/controller/cart_action_controller.dart';
 import '../../../update_features/cart/controller/cart_controller.dart';
-import '../../../update_features/cart/controller/cart_screen_contoller.dart';
 
 class CartView extends ConsumerStatefulWidget {
   const CartView({super.key});
@@ -61,6 +60,7 @@ class _CartViewState extends ConsumerState<CartView> {
     final actionState = ref.watch(cartActionControllerProvider);
     final isRemoving = actionState is AsyncLoading && actionState.value == null;
 
+    //cartState.when(data: data, error: error, loading: loading);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
