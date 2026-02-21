@@ -7,10 +7,10 @@ part of 'topping_model.dart';
 // **************************************************************************
 
 ToppingModel _$ToppingModelFromJson(Map<String, dynamic> json) => ToppingModel(
-      id: (json['id'] as num).toInt(),
-      name: json['name'] as String,
-      imageUrl: json['image'] as String,
-    );
+  id: (json['id'] as num).toInt(),
+  name: json['name'] as String,
+  imageUrl: json['image'] as String,
+);
 
 Map<String, dynamic> _$ToppingModelToJson(ToppingModel instance) =>
     <String, dynamic>{

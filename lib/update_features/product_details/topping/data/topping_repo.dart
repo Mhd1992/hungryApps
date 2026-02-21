@@ -8,10 +8,10 @@ class ToppingRepo extends BaseRepo {
   ToppingRepo(this._api);
 
   Future<List<ToppingModel>> loadTopping() async {
-    return runData(() => _api.loadToppings());
+    return loadData(() => _api.loadToppings());
   }
 
   Future<ToppingModel> getTopping(int toppingId) async {
-    return runData(() => _api.getTopping(toppingId));
+    return loadData(() => _api.getTopping(toppingId));
   }
 }

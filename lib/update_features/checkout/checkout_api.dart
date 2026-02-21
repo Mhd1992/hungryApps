@@ -6,7 +6,7 @@ import 'package:retrofit/retrofit.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/networks/retrofit/model/base_response.dart';
-import 'checkout_model.dart';
+import 'model/order_item/item_detail_model.dart';
 
 part 'checkout_api.g.dart';
 
@@ -15,12 +15,10 @@ abstract class CheckoutApi {
   factory CheckoutApi(Dio dio, {String baseUrl}) = _CheckoutApi;
 
   @GET("/orders")
-  Future<BaseResponse<OrderModel>> getOrders();
+  Future<BaseResponse<List<OrderModel>>> getOrders();
 
-  @POST("/orders/{id}")
-  Future<BaseResponse<dynamic>> getOrder(
-    @Path("id") CheckoutModel checkoutModel,
-  );
+  @GET("/orders/{id}")
+  Future<BaseResponse<ItemDetailModel>> getOrder(@Path("id") int id);
 
   @POST("/orders")
   Future<BaseResponse<CreatedOrderModel>> saveOrder(

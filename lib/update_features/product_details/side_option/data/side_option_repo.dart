@@ -8,6 +8,6 @@ class SideOptionRepo extends BaseRepo {
   SideOptionRepo(this._api);
 
   Future<List<SideOptionModel>> loadSideOption() async {
-    return runData(() => _api.loadSideOptions());
+    return loadData(() => _api.loadSideOptions());
   }
 }

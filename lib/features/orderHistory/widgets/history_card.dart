@@ -9,8 +9,7 @@ class HistoryCard extends StatelessWidget {
     this.preRequest,
   });
 
-  final String imageUrl, title;
-  final int quantity;
+  final String imageUrl, title, quantity;
 
   final Function()? preRequest;
 
@@ -31,14 +30,15 @@ class HistoryCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Image.asset(imageUrl, width: 100),
+                  //  Image.asset(imageUrl, width: 100),
+                  Image.network(imageUrl, width: 100),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Gap(20),
                       CustomText(text: title, fontWeight: FontWeight.bold),
                       CustomText(text: 'quantity : X3'),
-                      CustomText(text: 'price : \$8'),
+                      CustomText(text: 'price : \$ $quantity'),
                     ],
                   ),
                 ],

@@ -7,12 +7,12 @@ part of 'order_model.dart';
 // **************************************************************************
 
 OrderModel _$OrderModelFromJson(Map<String, dynamic> json) => OrderModel(
-      (json['id'] as num).toInt(),
-      $enumDecode(_$OrderStatusEnumMap, json['status']),
-      json['total_price'] as String,
-      json['created_at'] as String,
-      json['product_image'] as String,
-    );
+  (json['id'] as num).toInt(),
+  $enumDecode(_$OrderStatusEnumMap, json['status']),
+  json['total_price'] as String,
+  json['created_at'] as String,
+  json['product_image'] as String,
+);
 
 Map<String, dynamic> _$OrderModelToJson(OrderModel instance) =>
     <String, dynamic>{

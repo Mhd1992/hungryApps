@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:hungry/update_features/checkout/checkout_provider.dart';
 import 'package:hungry/update_features/checkout/model/orders/created_order_model.dart';
 import '../../../core/base/base_controller.dart';

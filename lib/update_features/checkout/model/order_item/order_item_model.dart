@@ -1,4 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../../product_details/side_option/data/side_option_model.dart';
+import '../../../product_details/topping/data/topping_model.dart';
 part 'order_item_model.g.dart';
 
 @JsonSerializable()
@@ -10,11 +13,18 @@ class OrderItemModel {
   @JsonKey(name: "spicy")
   final dynamic spicyLevel;
   @JsonKey(name: "toppings")
-  final List<int> toppingIds;
+  final List<ToppingModel> toppingIds;
   @JsonKey(name: "side_options")
-  final List<int> optionIds;
+  final List<SideOptionModel> optionIds;
+  final String name;
+  final String price;
+  final String image;
+
   OrderItemModel(
     this.productId,
+    this.name,
+    this.image,
+    this.price,
     this.quantity,
     this.spicyLevel,
     this.toppingIds,

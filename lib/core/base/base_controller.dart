@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 
 class BaseController<T> extends StateNotifier<AsyncValue<T?>> {

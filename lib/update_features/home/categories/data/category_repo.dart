@@ -9,6 +9,6 @@ class CategoryRepo extends BaseRepo {
   CategoryRepo(this._api);
 
   Future<List<CategoryModel>> getAllCategory() async {
-    return runData(() => _api.getCategories());
+    return loadData(() => _api.getCategories());
   }
 }

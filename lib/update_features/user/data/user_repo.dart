@@ -11,12 +11,12 @@ class UserRepo extends BaseRepo {
   UserRepo(this.api);
 
   Future<UserModel> getProfile() async {
-    return runData(() => api.getProfile());
+    return loadData(() => api.getProfile());
   }
 
   Future<UserModel> updateUserData(UserModel updateRequest) async {
     final data = await updateRequest.toFormData();
-    return runData(() => api.updateUserData(data));
+    return loadData(() => api.updateUserData(data));
   }
 
   Future<BaseResponse<String?>> logout() async {

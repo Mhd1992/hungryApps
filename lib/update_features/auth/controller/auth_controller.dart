@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/update_features/auth/data/auth_model.dart';
 import 'package:hungry/update_features/auth/pref_helper_provider.dart';

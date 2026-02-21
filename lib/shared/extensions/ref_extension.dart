@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart';
 import 'package:hungry/core/networks/retrofit/model/base_response.dart';
 
 extension BaseResponseAdapter<T> on ProviderListenable<AsyncValue<T>> {

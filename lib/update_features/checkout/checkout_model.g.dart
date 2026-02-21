@@ -14,6 +14,4 @@ CheckoutModel _$CheckoutModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$CheckoutModelToJson(CheckoutModel instance) =>
-    <String, dynamic>{
-      'items': instance.orderItems,
-    };
+    <String, dynamic>{'items': instance.orderItems};

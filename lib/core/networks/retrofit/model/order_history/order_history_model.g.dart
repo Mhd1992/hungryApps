@@ -7,12 +7,12 @@ part of 'order_history_model.dart';
 // **************************************************************************
 
 OrderHistory _$OrderHistoryFromJson(Map<String, dynamic> json) => OrderHistory(
-      (json['id'] as num).toInt(),
-      json['total_price'] as String,
-      json['status'] as String,
-      json['created_at'] as String,
-      json['product_image'] as String,
-    );
+  (json['id'] as num).toInt(),
+  json['total_price'] as String,
+  json['status'] as String,
+  json['created_at'] as String,
+  json['product_image'] as String,
+);
 
 Map<String, dynamic> _$OrderHistoryToJson(OrderHistory instance) =>
     <String, dynamic>{

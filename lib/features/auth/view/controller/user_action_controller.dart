@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:hungry/core/base/base_controller.dart';
 import 'package:hungry/features/auth/view/controller/user_ui_state.dart';
 import 'package:hungry/update_features/user/data/user_provider.dart';

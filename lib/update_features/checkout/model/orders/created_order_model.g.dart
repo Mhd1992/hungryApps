@@ -7,11 +7,7 @@ part of 'created_order_model.dart';
 // **************************************************************************
 
 CreatedOrderModel _$CreatedOrderModelFromJson(Map<String, dynamic> json) =>
-    CreatedOrderModel(
-      (json['order_id'] as num).toInt(),
-    );
+    CreatedOrderModel((json['order_id'] as num).toInt());
 
 Map<String, dynamic> _$CreatedOrderModelToJson(CreatedOrderModel instance) =>
-    <String, dynamic>{
-      'order_id': instance.orderId,
-    };
+    <String, dynamic>{'order_id': instance.orderId};

@@ -9,6 +9,6 @@ class ProductRepo extends BaseRepo {
   ProductRepo(this._api);
 
   Future<List<ProductModel>> getAllProducts() async {
-    return runData(() => _api.getProducts());
+    return loadData(() => _api.getProducts());
   }
 }

@@ -9,11 +9,11 @@ class AuthRepo extends BaseRepo {
   AuthRepo(this.api);
 
   Future<AuthModel> login(String email, String password) {
-    return runData(() => api.login({'email': email, 'password': password}));
+    return loadData(() => api.login({'email': email, 'password': password}));
   }
 
   Future<AuthModel> register(String name, String email, String password) {
-    return runData(
+    return loadData(
       () => api.login({'name': name, 'email': email, 'password': password}),
     );
   }

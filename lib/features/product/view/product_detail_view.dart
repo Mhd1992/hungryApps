@@ -99,6 +99,7 @@ class _ProductDetailViewState extends ConsumerState<ProductDetailView> {
                       ),
                     ],
                   ),
+
                   Gap(16),
                   CustomText(text: 'Toppings', fontSize: 32),
                   Gap(16),
