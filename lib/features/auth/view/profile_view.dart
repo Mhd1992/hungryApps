@@ -7,6 +7,8 @@ import 'package:hungry/update_features/auth/controller/auth_controller.dart';
 import '../../../core/utils/exported_file.dart' hide UserModel;
 import '../../../shared/custom_load_image_button.dart';
 import '../../../update_features/user/data/user_model.dart';
+import 'package:hungry/features/settings/views/settings_view.dart';
+
 import '../widgets/visa_card_widget.dart';
 import 'controller/user_action_controller.dart';
 import 'controller/user_controller.dart';
@@ -106,11 +108,15 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                 scrolledUnderElevation: 0,
                 iconTheme: const IconThemeData(color: Colors.white),
                 actions: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: SvgPicture.asset(
+                  IconButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const SettingsView(),
+                      ),
+                    ),
+                    icon: SvgPicture.asset(
                       'assets/icons/settings.svg',
-                      colorFilter: ColorFilter.mode(
+                      colorFilter: const ColorFilter.mode(
                         Colors.white,
                         BlendMode.modulate,
                       ),
