@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/theme/primary_color_provider.dart';
 
@@ -16,11 +17,55 @@ final List<Color> _presetColors = [
   const Color(0xff6A1B9A),
 ];
 
-class SettingsView extends ConsumerWidget {
+class SettingsView extends ConsumerStatefulWidget {
   const SettingsView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends ConsumerState<SettingsView> {
+  void _openColorPicker(Color currentColor, PrimaryColorNotifier notifier) {
+    Color pickerColor = currentColor;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            title: const Text('Pick a color'),
+            content: SingleChildScrollView(
+              child: ColorPicker(
+                pickerColor: pickerColor,
+                onColorChanged: (color) {
+                  pickerColor = color;
+                  setDialogState(() {});
+                },
+                enableAlpha: false,
+                labelTypes: const [],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  notifier.setColor(pickerColor);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Apply'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final currentColor = ref.watch(primaryColorProvider);
     final notifier = ref.read(primaryColorProvider.notifier);
 
@@ -42,7 +87,7 @@ class SettingsView extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           const Text(
-            'Choose a color to change the app theme.',
+            'Choose a preset or pick a custom color.',
             style: TextStyle(color: Colors.grey, fontSize: 14),
           ),
           const SizedBox(height: 20),
@@ -85,6 +130,16 @@ class SettingsView extends ConsumerWidget {
                 ),
               );
             },
+          ),
+          const SizedBox(height: 20),
+          FilledButton.icon(
+            onPressed: () => _openColorPicker(currentColor, notifier),
+            icon: const Icon(Icons.color_lens),
+            label: const Text('Pick custom color'),
+            style: FilledButton.styleFrom(
+              backgroundColor: currentColor,
+              foregroundColor: Colors.white,
+            ),
           ),
           const SizedBox(height: 24),
           OutlinedButton.icon(
