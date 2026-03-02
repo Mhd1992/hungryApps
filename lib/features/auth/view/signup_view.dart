@@ -1,4 +1,5 @@
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
@@ -15,6 +16,7 @@ class _SignupViewState extends State<SignupView> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   AuthRepo authRepo = AuthRepo();
+  AuthRepoV1 authRepoV1 = AuthRepoV1();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class _SignupViewState extends State<SignupView> {
         try {
           setState(() => _isLoading = true);
 
-          final user = await authRepo.signUp(
+          final user = await authRepoV1.register(
             nameController.text.trim(),
             emailController.text.trim(),
             passController.text.trim(),

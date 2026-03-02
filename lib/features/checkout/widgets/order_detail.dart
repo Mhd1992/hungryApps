@@ -9,14 +9,14 @@ class OrderDetail extends StatelessWidget {
     this.duration,
   });
 
-  final String order, taxes, fees;
+  final double order, taxes, fees;
   final String? duration;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        infoBar(text: ' rder', amount: order),
+        infoBar(text: 'Order', amount: order),
         Gap(10),
         infoBar(text: 'Taxes', amount: taxes),
         Gap(10),
@@ -24,7 +24,7 @@ class OrderDetail extends StatelessWidget {
         Gap(10),
         Divider(),
         Gap(10),
-        infoBar(text: 'Total', amount: '11.15', isBold: true),
+        infoBar(text: 'Total', amount: order + taxes + fees, isBold: true),
         Gap(20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,7 +41,7 @@ class OrderDetail extends StatelessWidget {
   }
 }
 
-Widget infoBar({String? text, String? amount, bool isBold = false}) {
+Widget infoBar({String? text, double? amount, bool isBold = false}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -52,7 +52,7 @@ Widget infoBar({String? text, String? amount, bool isBold = false}) {
         color: isBold ? Colors.black : Colors.grey.shade500,
       ),
       CustomText(
-        text: '\$ $amount',
+        text: '\$ ${amount!.toStringAsFixed(3)}',
         fontSize: 16,
         fontWeight: isBold ? FontWeight.bold : FontWeight.w400,
         color: isBold ? Colors.black : Colors.grey.shade500,

@@ -1,14 +1,92 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
+import 'package:hungry/features/checkout/data/repositorty/check_out_repo.dart';
 
-class CheckOutView extends StatelessWidget {
-  const CheckOutView({super.key});
+import 'package:hungry/update_features/cart/cart/items/item_model.dart';
+
+import '../../../update_features/cart/cart/request_cart/cart_item_model.dart'
+    show CartItemModel;
+import '../../../update_features/checkout/controller/checkout_controller.dart';
+import '../../../update_features/checkout/model/orders/created_order_model.dart';
+
+class CheckOutView extends ConsumerStatefulWidget {
+  const CheckOutView({
+    super.key,
+    required this.totalPrice,
+    required this.cartItemModel,
+  });
+
+  final String totalPrice;
+  final CartItemModel cartItemModel;
+
+  @override
+  ConsumerState<CheckOutView> createState() => _CheckOutViewState();
+}
+
+class _CheckOutViewState extends ConsumerState<CheckOutView> {
+  final AuthRepoV1 authRepo = AuthRepoV1();
+
+  final List<CartModel> orders = [];
+
+  final List<CartItemModel> items = [];
+
+  final CheckoutRepo checkoutRepo = CheckoutRepo();
+
+  Future<void> _checkout<T, P>({
+    required Future<T> Function(P param) apiCall,
+    required P param,
+    required void Function(T) onSuccess,
+  }) async {
+    try {
+      final result = await apiCall(param);
+      if (result != null) {}
+    } catch (e) {
+      //if (contmounted) {
+      //context.showSnackBar(e.toString());
+      // }
+    } finally {}
+  }
+
+  Future<void> checkout(List<CartModel> cartModel) async {
+    await _checkout<String, CartRequest>(
+      apiCall: checkoutRepo.checkout,
+      param: CartRequest(cartModel),
+      onSuccess: (data) => data,
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref.listenManual<AsyncValue<CreatedOrderModel?>>(
+      checkoutControllerProvider,
+      (prev, next) {
+        next.whenOrNull(
+          data: (data) {
+            if (data != null) {
+              showDialog(
+                context: context,
+                builder: (context) =>
+                    SuccessDialog(orderId: data.orderId.toString()),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    // List<CartModel> orders = [];
     final ValueNotifier<PaymentType?> paymentMethod =
         ValueNotifier<PaymentType?>(PaymentType.cash);
     final ValueNotifier<bool> isChecked = ValueNotifier<bool>(false);
+    double total = double.parse(widget.totalPrice) + 0.7 + 1.4;
 
+    final state = ref.watch(checkoutControllerProvider);
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white),
       body: ValueListenableBuilder(
@@ -24,7 +102,11 @@ class CheckOutView extends StatelessWidget {
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
-                const OrderDetail(order: '9.4', taxes: '0.7', fees: '1.4'),
+                OrderDetail(
+                  order: double.parse(widget.totalPrice),
+                  taxes: 0.7,
+                  fees: 1.4,
+                ),
                 const Gap(80),
                 const CustomText(
                   text: 'Payment methods',
@@ -41,15 +123,17 @@ class CheckOutView extends StatelessWidget {
                   onChanged: (newVal) => paymentMethod.value = PaymentType.cash,
                 ),
                 const Gap(20),
-
-                VisaListTile(
-                  paymentLogo: 'assets/icons/visaSvg.svg',
-                  text: 'Debit Card',
-                  subTitleText: '3566 **** **** 0505',
-                  value: PaymentType.visa,
-                  groupValue: selectedMethod,
-                  onChanged: (newVal) => paymentMethod.value = PaymentType.visa,
-                ),
+                (authRepo.cachedUser?.visa == null)
+                    ? SizedBox.shrink()
+                    : VisaListTile(
+                        paymentLogo: 'assets/icons/visaSvg.svg',
+                        text: 'Debit Card',
+                        subTitleText: '3566 **** **** 0505',
+                        value: PaymentType.visa,
+                        groupValue: selectedMethod,
+                        onChanged: (newVal) =>
+                            paymentMethod.value = PaymentType.visa,
+                      ),
                 const Gap(20),
 
                 Row(
@@ -96,26 +180,57 @@ class CheckOutView extends StatelessWidget {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min, // 👈 important!
-                  children: const [
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     CustomText(
                       text: 'Total Price:',
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
                     ),
-                    CustomText(text: '\$11.15', fontSize: 16),
+                    CustomText(
+                      text: '\$${total.toStringAsFixed(3)}',
+                      fontSize: 16,
+                    ),
                   ],
                 ),
                 const Spacer(),
-                CustomButton(
-                  buttonText: 'Pay Now',
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => SuccessDialog(),
-                    );
-                  },
-                ),
+                state.isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primaryColor,
+                        ),
+                      )
+                    : CustomButton(
+                        buttonText: 'Pay Now',
+                        onPressed: () {
+                          for (var e in widget.cartItemModel.items) {
+                            orders.add(
+                              CartModel(
+                                e.productId,
+                                e.quantity,
+                                e.spicy,
+                                e.toppingIds.map((t) => t.id).toList(),
+                                e.optionIds.map((o) => o.id).toList(),
+                              ),
+                            );
+                          }
+
+                          ref
+                              .read(checkoutControllerProvider.notifier)
+                              .saveOrder(CartRequest(orders));
+
+                          /*    final currentContext = context;
+
+                    checkout(orders).then((val) {
+                      if (currentContext.mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => SuccessDialog(),
+                        );
+                      }
+                    });*/
+                        },
+                      ),
               ],
             ),
           ),

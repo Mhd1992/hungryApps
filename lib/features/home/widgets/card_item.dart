@@ -16,14 +16,16 @@ class CardItem extends StatelessWidget {
     return Card(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 32.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: Image.asset(imageUrl, fit: BoxFit.cover, width: 150)),
+            Center(
+              child: Image.network(imageUrl, fit: BoxFit.cover, width: 150),
+            ),
             Gap(10),
             CustomText(text: title, fontWeight: FontWeight.bold),
-            CustomText(text: description),
+            CustomText(text: description, overflow: TextOverflow.ellipsis),
             Row(
               children: [
                 CustomText(text: '⭐️$rate'),

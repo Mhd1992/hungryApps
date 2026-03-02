@@ -1,133 +1,162 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hungry/core/networks/error_widget.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/gen/assets.gen.dart';
+import 'package:hungry/update_features/auth/controller/auth_controller.dart';
+import 'package:riverpod/src/framework.dart';
 
-class CartView extends StatelessWidget {
+import '../../../update_features/cart/controller/cart_action_controller.dart';
+import '../../../update_features/cart/controller/cart_controller.dart';
+
+class CartView extends ConsumerStatefulWidget {
   const CartView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<ValueNotifier<int>> quantities = List.generate(
-      3,
-      (_) => ValueNotifier<int>(0),
-    );
-    final ValueNotifier<int> initialValue = ValueNotifier<int>(0);
+  ConsumerState<CartView> createState() => _CartViewState();
+}
 
+class _CartViewState extends ConsumerState<CartView> {
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual<AsyncValue<String?>>(cartActionControllerProvider, (
+      prev,
+      next,
+    ) {
+      next.whenOrNull(
+        data: (data) {
+          if (data != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.orange,
+
+                content: SizedBox(
+                  height: 48,
+                  child: Center(
+                    child: Text(
+                      data,
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+        loading: () => CircularProgressIndicator(),
+      );
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      ref.read(cartControllerProvider.notifier).loadCartItem(useCache: false);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cartState = ref.watch(cartControllerProvider);
+    final actionState = ref.watch(cartActionControllerProvider);
+    final isRemoving = actionState is AsyncLoading && actionState.value == null;
+
+    //cartState.when(data: data, error: error, loading: loading);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
-        scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            // Scrollable content
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.only(bottom: 20, top: 20),
-                itemCount: quantities.length,
-                itemBuilder: (context, index) {
-                  return ValueListenableBuilder<int>(
-                    valueListenable: quantities[index],
-                    builder: (context, value, _) {
-                      return CartItem(
-                        title: 'Hamburger',
-                        imageUrl: 'assets/images/test.png',
-                        desc: 'Veggie Burger',
-                        quantity: quantities[index].value,
-                        onChanged: (newValue) {
-                          quantities[index].value = newValue;
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
+      body: ref.read(guestProvider.notifier).state
+          ? GuestLogo()
+          : isRemoving
+          ? Center(
+              child: CircularProgressIndicator(color: AppColors.primaryColor),
+            )
+          : cartState.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, _) => AppErrorWidget(error: error),
+              data: (cartData) {
+                if (cartData == null) {
+                  return const Center(child: Text('No cart data'));
+                }
 
-            // Fixed bottom section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8.0),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      CustomText(
-                        text: 'Total Price:',
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      CustomText(text: '\$12.99', fontSize: 16),
-                    ],
-                  ),
-                  const Spacer(),
-                  CustomButton(
-                    buttonText: 'Checkout',
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return CheckOutView();
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      /*    bottomSheet: IntrinsicHeight(
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade800,
-                blurRadius: 20,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min, // 👈 important!
-                  children: const [
-                    CustomText(
-                      text: 'Total Price:',
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
+                if (cartData.items.isEmpty) {
+                  return Center(
+                    child: Assets.icons.emptyIcon.image(
+                      width: 200,
+                      height: 200,
                     ),
-                    CustomText(text: '\$11.15', fontSize: 16),
+                  );
+                }
+
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(top: 20, bottom: 20),
+                        itemCount: cartData.items.length,
+                        itemBuilder: (context, index) {
+                          final item = cartData.items[index];
+                          return CartItem(
+                            title: item.name,
+                            imageUrl: item.imageUrl,
+                            desc: '',
+                            quantity: item.quantity,
+                            onChanged: (newQty) {
+                              cartData.items[index] = item.copyWith(
+                                quantity: newQty,
+                              );
+                              setState(() {});
+                            },
+                            onRemove: () async {
+                              await ref
+                                  .read(cartActionControllerProvider.notifier)
+                                  .removeFromCartItem(item.itemId);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Total Price:',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text("\$${cartData.totalPrice}"),
+                            ],
+                          ),
+                          const Spacer(),
+                          CustomButton(
+                            buttonText: 'Checkout',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CheckOutView(
+                                    cartItemModel: cartData,
+                                    totalPrice: cartData.totalPrice,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
-                ),
-                const Spacer(),
-                CustomButton(
-                  buttonText: 'Pay Now',
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => SuccessDialog(),
-                    );
-                  },
-                ),
-              ],
+                );
+              },
             ),
-          ),
-        ),
-      ),*/
     );
   }
 }

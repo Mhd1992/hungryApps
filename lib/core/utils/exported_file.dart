@@ -62,3 +62,17 @@ export 'package:hungry/core/utils/pref_helpers.dart';
 
 ///features/feat/data/repository
 export 'package:hungry/features/auth/data/repository/auth_repo.dart';
+
+/// retrofit
+export 'package:hungry/core/networks/retrofit/api_service.dart';
+export 'package:hungry/core/networks/retrofit/model/base_response.dart';
+
+export 'package:hungry/core/networks/retrofit/model/side_option/side_option_model.dart';
+export 'package:hungry/core/networks/retrofit/model/topping/topping_model.dart';
+export 'package:hungry/features/product/data/repository/product_option_repo.dart';
+
+export 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
+export 'package:hungry/core/networks/retrofit/model/products/product_model.dart';
+export 'package:hungry/features/home/data/repository/home_repo.dart';
+
+export 'package:hungry/core/networks/retrofit/model/cart/cart_model.dart';

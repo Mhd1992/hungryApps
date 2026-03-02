@@ -1,0 +1,58 @@
+import 'dart:ui';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/update_features/auth/data/auth_model.dart';
+import 'package:hungry/update_features/auth/pref_helper_provider.dart';
+
+import '../../../core/base/base_controller.dart';
+import '../data/auth_provider.dart';
+
+final authControllerProvider =
+    StateNotifierProvider<AuthController, AsyncValue<AuthModel?>>(
+      (ref) => AuthController(ref),
+    );
+
+final guestProvider = StateProvider((ref) => false);
+
+class AuthController extends BaseController<AuthModel?> {
+  final Ref ref;
+
+  AuthController(this.ref);
+
+  void login(String email, String password, {VoidCallback? onSuccess}) async {
+    final repo = ref.read(authRepoProvider);
+
+    final prefProvider = ref.read(prefHelperProvider);
+
+    await request(() => repo.login(email, password));
+
+    final authData = state.value;
+
+    if (authData != null) {
+      await prefProvider.saveToken(authData.token!);
+    }
+
+    if (onSuccess != null) onSuccess();
+  }
+
+  void register(String name, String email, String password) async {
+    final repo = ref.read(authRepoProvider);
+    await request(() => repo.register(name, email, password));
+    final authData = state.value;
+    if (authData != null) {
+      await PrefHelper.saveToken(authData.token!);
+    }
+  }
+
+  Future<bool> autoLogin() async {
+    final token = await PrefHelper.getToken();
+    return token != null && token.isNotEmpty ? true : false;
+  }
+
+  Future<void> continueAsGuest(VoidCallback onPress) async {
+    ref.read(guestProvider.notifier).state = true;
+    await PrefHelper.saveToken('guest');
+    onPress();
+  }
+}

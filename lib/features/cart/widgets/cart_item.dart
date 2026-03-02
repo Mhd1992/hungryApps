@@ -13,7 +13,7 @@ class CartItem extends StatelessWidget {
     this.onChanged,
   });
 
-  final String imageUrl, title, desc;
+  final String? imageUrl, title, desc;
   final int quantity;
 
   final Function()? onAdd;
@@ -39,14 +39,21 @@ class CartItem extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.asset(imageUrl, width: 100),
-                      CustomText(text: title, fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        (imageUrl != null)
+                            ? Image.network(imageUrl.toString(), width: 100)
+                            : Image.asset('assets/images/test.png', width: 100),
+                        CustomText(
+                          text: title.toString(),
+                          fontWeight: FontWeight.bold,
+                        ),
 
-                      CustomText(text: desc),
-                    ],
+                        CustomText(text: desc.toString()),
+                      ],
+                    ),
                   ),
                   Column(
                     children: [

@@ -5,11 +5,13 @@ class ToppingCard extends StatelessWidget {
     super.key,
     required this.imageUrl,
     required this.title,
+    required this.isSelected,
     required this.onAdd,
   });
 
   final String imageUrl;
   final String title;
+  final bool isSelected;
   final VoidCallback onAdd;
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class ToppingCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            child: Image.asset(imageUrl, height: 80, fit: BoxFit.cover),
+            child: Image.network(imageUrl, height: 80, fit: BoxFit.cover),
           ),
           Container(
             decoration: const BoxDecoration(
@@ -45,7 +47,9 @@ class ToppingCard extends StatelessWidget {
                   backgroundColor: Colors.red,
                   child: GestureDetector(
                     onTap: onAdd,
-                    child: Icon(Icons.add, size: 16, color: Colors.white),
+                    child: (isSelected)
+                        ? Icon(Icons.remove, size: 16, color: Colors.white)
+                        : Icon(Icons.add, size: 16, color: Colors.white),
                   ),
                 ),
               ],

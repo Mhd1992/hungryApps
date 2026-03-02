@@ -1,18 +1,25 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/update_features/auth/controller/auth_controller.dart';
+import 'package:hungry/update_features/auth/data/auth_provider.dart';
 
-class LoginView extends StatefulWidget {
+import '../data/repository/v1/auth_repo_v1.dart';
+
+class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  ConsumerState<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginViewState extends ConsumerState<LoginView> {
   AuthRepo authRepo = AuthRepo();
+  AuthRepoV1 authRepoV1 = AuthRepoV1();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -23,12 +30,13 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(authRepoProvider);
     Future<void> login() async {
       if (formKey.currentState!.validate()) {
         try {
           setState(() => _isLoading = true);
 
-          final user = await authRepo.login(
+          final user = await authRepoV1.login(
             emailController.text.trim(),
             passController.text.trim(),
           );
@@ -111,11 +119,44 @@ class _LoginViewState extends State<LoginView> {
                                 ? const CircularProgressIndicator(
                                     color: Colors.white,
                                   )
-                                : CustomAuthBtn(
-                                    textColor: Colors.white,
-                                    color: AppColors.primaryColor,
-                                    text: 'Login',
-                                    onPressed: login,
+                                : Consumer(
+                                    builder: (context, ref, _) {
+                                      final control = ref.watch(
+                                        authControllerProvider,
+                                      );
+                                      return control.when(
+                                        data: (data) => CustomAuthBtn(
+                                          textColor: Colors.white,
+                                          color: AppColors.primaryColor,
+                                          text: 'Login',
+                                          onPressed: () {
+                                            ref
+                                                .read(
+                                                  authControllerProvider
+                                                      .notifier,
+                                                )
+                                                .login(
+                                                  emailController.text,
+                                                  passController.text,
+                                                  onSuccess: () {
+                                                    Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Root(),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                          },
+                                        ),
+                                        error: (e, _) =>
+                                            Center(child: Text(e.toString())),
+                                        loading: () =>
+                                            CircularProgressIndicator(
+                                              color: Colors.white,
+                                            ),
+                                      );
+                                    },
                                   ),
                             Gap(16),
                             CustomAuthBtn(
@@ -131,12 +172,17 @@ class _LoginViewState extends State<LoginView> {
                             Gap(8),
                             TextButton(
                               onPressed: () {
-                                authRepo.continueAsGuest();
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (context) => Root(),
-                                  ),
-                                );
+                                ref
+                                    .read(authControllerProvider.notifier)
+                                    .continueAsGuest(
+                                      () =>
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (context) => Root(),
+                                            ),
+                                          ),
+                                    );
+                                // authRepo.continueAsGuest();
                               },
                               child: CustomText(
                                 text: 'Continue as Guest',

@@ -1,21 +1,27 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/update_features/auth/controller/auth_controller.dart';
 
-class SplashView extends StatefulWidget {
+import 'features/auth/data/repository/v1/auth_repo_v1.dart';
+
+class SplashView extends ConsumerStatefulWidget {
   const SplashView({super.key});
 
   @override
-  State<SplashView> createState() => _SplashViewState();
+  ConsumerState<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends State<SplashView> {
+class _SplashViewState extends ConsumerState<SplashView> {
   double _opacity = 0.0;
   final AuthRepo authRepo = AuthRepo();
-
+  final AuthRepoV1 authRepoV1 = AuthRepoV1();
+  bool isLoggedIn = false;
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      isLoggedIn = await ref.read(authControllerProvider.notifier).autoLogin();
       setState(() => _opacity = 1.0);
     });
 
@@ -26,14 +32,15 @@ class _SplashViewState extends State<SplashView> {
     await Future.delayed(const Duration(seconds: 2)); // short delay for splash
 
     // 🟢 Call autoLogin first
-    await authRepo.autoLogin();
+    // await authRepo.autoLogin();//with out retrofit
+    // await authRepoV1.autoLogin();
 
     if (!mounted) return;
 
     // 🟢 Now decide which screen to go to
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => authRepo.isLoggedIn ? Root() : LoginView(),
+        pageBuilder: (_, __, ___) => isLoggedIn ? Root() : LoginView(),
         transitionDuration: const Duration(milliseconds: 500),
         transitionsBuilder: (_, animation, __, child) {
           return FadeTransition(opacity: animation, child: child);
