@@ -80,10 +80,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
         children: [
           const Text(
             'Primary color',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           const Text(
@@ -120,7 +117,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
                       BoxShadow(
                         color: color.withOpacity(0.5),
                         blurRadius: isSelected ? 8 : 4,
-                        spreadRadius: isSelected ? 2 : 0,
+                        spreadRadius: isSelected ? 8 : 0,
                       ),
                     ],
                   ),
@@ -143,7 +140,8 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
           ),
           const SizedBox(height: 24),
           OutlinedButton.icon(
-            onPressed: () => notifier.setColor(PrimaryColorNotifier.defaultColor),
+            onPressed: () =>
+                notifier.setColor(PrimaryColorNotifier.defaultColor),
             icon: const Icon(Icons.restore),
             label: const Text('Reset to default'),
             style: OutlinedButton.styleFrom(

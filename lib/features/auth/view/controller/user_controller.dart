@@ -37,7 +37,7 @@ class UserController extends BaseController<UserModel?> {
     await repo.logout();
     state = const AsyncValue.data(null);
 
-    ref.read(userUiControllerProvider.notifier).isLogout(true);
+    ref.read(userUiControllerProvider.notifier).isLogout(false);
     if (onSuccess != null) onSuccess();
 
     clearCache();

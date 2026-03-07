@@ -45,6 +45,9 @@ dependencies:
   flutter_riverpod:
   riverpod:
   flutter_colorpicker: ^1.1.0
+
+  flutter_hooks:
+  hooks_riverpod:
   #permission_handler: ^12.0.1
 
 

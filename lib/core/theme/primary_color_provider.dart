@@ -13,15 +13,16 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   );
 });
 
-final primaryColorProvider =
-    StateNotifierProvider<PrimaryColorNotifier, Color>((ref) {
-  final prefs = ref.watch(sharedPreferencesProvider);
-  return PrimaryColorNotifier(prefs);
-});
+final primaryColorProvider = StateNotifierProvider<PrimaryColorNotifier, Color>(
+  (ref) {
+    final prefs = ref.watch(sharedPreferencesProvider);
+    return PrimaryColorNotifier(prefs);
+  },
+);
 
 class PrimaryColorNotifier extends StateNotifier<Color> {
   PrimaryColorNotifier(this._prefs, [Color? initialColor])
-      : super(initialColor ?? _defaultColor) {
+    : super(initialColor ?? _defaultColor) {
     if (initialColor == null) {
       _load();
     } else {
@@ -39,8 +40,9 @@ class PrimaryColorNotifier extends StateNotifier<Color> {
   }
 
   /// Saves the selected color to SharedPreferences and updates the app theme.
+  ///color.toARGB32()  == color.value but color.value is deprecated
   Future<void> setColor(Color color) async {
-    await _prefs.setInt(_primaryColorKey, color.value);
+    await _prefs.setInt(_primaryColorKey, color.toARGB32());
     state = color;
     AppColors.primaryColor = color;
   }

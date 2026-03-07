@@ -25,7 +25,7 @@ class UserActionController extends BaseController<String?> {
     if (onSuccess != null) onSuccess();
     state = const AsyncValue.data(null);
 
-    ref.read(userUiControllerProvider.notifier).isLogout(true);
+    ref.read(userUiControllerProvider.notifier).isLogout(false);
     clearCache();
   }
 }

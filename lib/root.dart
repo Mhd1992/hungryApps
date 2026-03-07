@@ -1,5 +1,7 @@
 import 'package:hungry/core/utils/exported_file.dart';
 
+import 'features/auth/view/profile_view_hook.dart';
+
 class Root extends StatefulWidget {
   const Root({super.key});
 
@@ -16,7 +18,8 @@ class _RootState extends State<Root> {
   void initState() {
     // TODO: implement initState
     pageController = PageController(initialPage: currentScreen);
-    screens = [HomeView(), CartView(), OrderHistoryView(), ProfileView()];
+    // screens = [HomeView(), CartView(), OrderHistoryView(), ProfileView()];
+    screens = [HomeView(), CartView(), OrderHistoryView(), ProfileViewHook()];
     super.initState();
   }
 

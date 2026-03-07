@@ -6,28 +6,25 @@ import '../../../core/networks/error_widget.dart';
 import '../../../update_features/home/home_controller.dart';
 import '../../../update_features/home/products/controller/product_controller.dart';
 
-class HomeView extends ConsumerStatefulWidget {
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+class HomeView extends HookConsumerWidget {
   const HomeView({super.key});
 
   @override
-  ConsumerState<HomeView> createState() => _HomeViewState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedCategoryIndex = useState(0);
 
-class _HomeViewState extends ConsumerState<HomeView> {
-  int _selectedCategoryIndex = 0;
+    /// Run once (like initState)
+    useEffect(() {
+      Future.microtask(() {
+        ref.read(categoryControllerProvider.notifier).getAllCategories();
+        ref.read(productControllerProvider.notifier).loadAllProduct();
+      });
+      return null;
+    }, const []);
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      ref.read(categoryControllerProvider.notifier).getAllCategories();
-      ref.read(productControllerProvider.notifier).loadAllProduct();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final homeState = ref.watch(homeScreenProvider);
 
     return homeState.when(
@@ -35,7 +32,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: CustomScrollView(
           slivers: [
-            ///Header of view
             SliverAppBar(
               elevation: 0,
               backgroundColor: Colors.white,
@@ -45,39 +41,33 @@ class _HomeViewState extends ConsumerState<HomeView> {
               toolbarHeight: 200,
               automaticallyImplyLeading: false,
               flexibleSpace: Padding(
-                padding: EdgeInsets.only(top: 40, left: 16, right: 16),
-                child: Column(children: [UserHeader(), Gap(16), SearchField()]),
+                padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
+                child: Column(
+                  children: const [UserHeader(), Gap(16), SearchField()],
+                ),
               ),
             ),
 
-            /// Show one loading spinner if both APIs not ready
-
-            ///body of view
+            /// Categories
             SliverPadding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
                 vertical: 2,
               ),
               sliver: SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    CustomWrapFilterChoice(
-                      categories: data.categories,
-                      selectedIndex: _selectedCategoryIndex,
-                      onChanged: (newIndex) {
-                        setState(() {
-                          _selectedCategoryIndex = newIndex;
-                        });
-                      },
-                    ),
-                  ],
+                child: CustomWrapFilterChoice(
+                  categories: data.categories,
+                  selectedIndex: selectedCategoryIndex.value,
+                  onChanged: (newIndex) {
+                    selectedCategoryIndex.value = newIndex;
+                  },
                 ),
               ),
             ),
 
-            ///footer of view
+            /// Products Grid
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverGrid(
                 delegate: SliverChildBuilderDelegate(
                   childCount: data.products.length,
@@ -85,7 +75,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => ProductDetailView(
+                          builder: (_) => ProductDetailView(
                             productId: data.products[index].id,
                             price: data.products[index].price,
                           ),
@@ -100,7 +90,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     ),
                   ),
                 ),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 2,
                   childAspectRatio: 0.75,

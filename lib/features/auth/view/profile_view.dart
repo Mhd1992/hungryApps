@@ -110,9 +110,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                 actions: [
                   IconButton(
                     onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const SettingsView(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const SettingsView()),
                     ),
                     icon: SvgPicture.asset(
                       'assets/icons/settings.svg',
@@ -200,17 +198,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                                     );
                                   },
                                 );
-                            /* await ref
-                                .read(userControllerProvider.notifier)
-                                .logout(
-                                  onSuccess: () {
-                                    Navigator.of(ref.context).pushReplacement(
-                                      MaterialPageRoute(
-                                        builder: (_) => const LoginView(),
-                                      ),
-                                    );
-                                  },
-                                );*/
                           },
 
                           child: (uiState.isLoggingOut)
@@ -229,15 +216,11 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                                   ),
                                   child: Row(
                                     children: [
-                                      (uiState.isLoggingOut)
-                                          ? CircularProgressIndicator(
-                                              color: AppColors.primaryColor,
-                                            )
-                                          : CustomText(
-                                              text: 'Logout',
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                      CustomText(
+                                        text: 'Logout',
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                       Gap(8),
                                       Icon(Icons.logout, color: Colors.white),
                                     ],
