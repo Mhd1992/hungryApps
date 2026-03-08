@@ -34,8 +34,7 @@ export 'package:hungry/features/home/widgets/card_item.dart';
 export 'package:hungry/features/home/widgets//filter_ships/custom_filter_wrap_choice.dart';
 export 'package:hungry/features/home/widgets/search_field.dart';
 export 'package:hungry/features/home/widgets/user_header.dart';
-export 'package:hungry/features/cart/widgets/cart_item.dart';
-export 'package:hungry/features/orderHistory/widgets/history_card.dart';
+
 export 'package:hungry/features/checkout/widgets/order_detail.dart';
 export 'package:hungry/features/checkout/widgets/visa_list_tile.dart';
 export 'package:hungry/features/checkout/widgets/payment_list_tile.dart';

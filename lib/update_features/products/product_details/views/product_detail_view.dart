@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
-import 'package:hungry/features/cart/data/repository/cart_repository.dart';
 import 'package:hungry/shared/extensions/ref_extension.dart';
 import 'package:hungry/update_features/cart/cart/request_cart/cart_item_model.dart';
 import 'package:hungry/update_features/cart/controller/cart_controller.dart';
