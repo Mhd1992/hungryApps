@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hungry/features/cart/provider/cartProvider.dart';
 import 'package:hungry/update_features/cart/controller/cart_action_controller.dart';
 
 import '../cart/request_cart/cart_item_model.dart';
+import 'cart_controller.dart';
 
 final cartScreenProvider = Provider<AsyncValue<CartScreenState>>((ref) {
   final cartState = ref.watch(cartControllerProvider);

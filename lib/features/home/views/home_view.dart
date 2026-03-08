@@ -9,6 +9,8 @@ import '../../../update_features/home/products/controller/product_controller.dar
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../../update_features/products/product_details/views/product_detail_view.dart';
+
 class HomeView extends HookConsumerWidget {
   const HomeView({super.key});
 

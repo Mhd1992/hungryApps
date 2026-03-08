@@ -29,8 +29,7 @@ export 'package:hungry/shared/extensions/context_extension.dart';
 
 ///features/feat/widgets
 export 'package:hungry/features/auth/widgets/custom_auth_btn.dart';
-export 'package:hungry/features/product/widgets/spicy_slider.dart';
-export 'package:hungry/features/product/widgets/topping_card.dart';
+
 export 'package:hungry/features/home/widgets/card_item.dart';
 export 'package:hungry/features/home/widgets//filter_ships/custom_filter_wrap_choice.dart';
 export 'package:hungry/features/home/widgets/search_field.dart';
@@ -48,9 +47,6 @@ export 'package:hungry/features/auth/view/profile_view.dart';
 export 'package:hungry/features/auth/view/login_view.dart';
 export 'package:hungry/features/auth/view/signup_view.dart';
 export 'package:hungry/features/home/views/home_view.dart';
-export 'package:hungry/features/cart/views/cart_view.dart';
-export 'package:hungry/features/orderHistory/views/order_history_view.dart';
-export 'package:hungry/features/product/view/product_detail_view.dart';
 export 'package:hungry/features/checkout/view/check_out_view.dart';
 
 ///features/feat/data
@@ -69,7 +65,6 @@ export 'package:hungry/core/networks/retrofit/model/base_response.dart';
 
 export 'package:hungry/core/networks/retrofit/model/side_option/side_option_model.dart';
 export 'package:hungry/core/networks/retrofit/model/topping/topping_model.dart';
-export 'package:hungry/features/product/data/repository/product_option_repo.dart';
 
 export 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
 export 'package:hungry/core/networks/retrofit/model/products/product_model.dart';

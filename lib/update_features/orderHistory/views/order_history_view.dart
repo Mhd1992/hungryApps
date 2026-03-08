@@ -3,6 +3,7 @@ import 'package:hungry/core/utils/exported_file.dart';
 
 import '../../../core/networks/error_widget.dart';
 import '../../../update_features/checkout/order_history/controller/order_history_controller.dart';
+import '../widgets/history_card.dart';
 import 'item_detail.dart';
 
 class OrderHistoryView extends ConsumerStatefulWidget {

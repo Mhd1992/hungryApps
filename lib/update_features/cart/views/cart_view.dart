@@ -7,6 +7,7 @@ import 'package:riverpod/src/framework.dart';
 
 import '../../../update_features/cart/controller/cart_action_controller.dart';
 import '../../../update_features/cart/controller/cart_controller.dart';
+import '../widgets/cart_item.dart';
 
 class CartView extends ConsumerStatefulWidget {
   const CartView({super.key});

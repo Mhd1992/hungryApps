@@ -1,6 +1,6 @@
 import 'package:hungry/core/base/base_repo.dart';
-import 'package:hungry/update_features/product_details/topping/data/topping_api.dart';
-import 'package:hungry/update_features/product_details/topping/data/topping_model.dart';
+import 'package:hungry/update_features/products/product_details/topping/data/topping_api.dart';
+import 'package:hungry/update_features/products/product_details/topping/data/topping_model.dart';
 
 class ToppingRepo extends BaseRepo {
   final ToppingApi _api;

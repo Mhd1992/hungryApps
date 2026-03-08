@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:hungry/core/constants/app_strings.dart';
 import 'package:retrofit/retrofit.dart';
-import '../../../../core/networks/retrofit/model/base_response.dart';
+import '../../../../../core/networks/retrofit/model/base_response.dart';
 import 'topping_model.dart';
 
 part 'topping_api.g.dart';

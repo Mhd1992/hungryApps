@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../product_details/side_option/data/side_option_model.dart';
-import '../../../product_details/topping/data/topping_model.dart';
+import '../../../products/product_details/side_option/data/side_option_model.dart';
+import '../../../products/product_details/topping/data/topping_model.dart';
 part 'order_item_model.g.dart';
 
 @JsonSerializable()

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import '../../../../core/networks/retrofit/model/base_response.dart';
+import 'package:hungry/core/networks/retrofit/model/base_response.dart';
 import 'side_option_model.dart';
 
 part 'side_option_api.g.dart';

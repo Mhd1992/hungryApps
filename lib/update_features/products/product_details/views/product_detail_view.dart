@@ -4,14 +4,15 @@ import 'package:hungry/features/cart/data/repository/cart_repository.dart';
 import 'package:hungry/shared/extensions/ref_extension.dart';
 import 'package:hungry/update_features/cart/cart/request_cart/cart_item_model.dart';
 import 'package:hungry/update_features/cart/controller/cart_controller.dart';
-import 'package:hungry/update_features/product_details/product_detail_controller.dart';
-import 'package:hungry/update_features/product_details/side_option/controller/side_option_controller.dart';
-import 'package:hungry/update_features/product_details/topping/controller/topping_controller.dart';
+import 'package:hungry/update_features/products/product_details/product_detail_controller.dart';
+import 'package:hungry/update_features/products/product_details/side_option/controller/side_option_controller.dart';
+import 'package:hungry/update_features/products/product_details/topping/controller/topping_controller.dart';
 
 import 'package:hungry/update_features/cart/cart/items/item_model.dart'
     as cart_request;
-import '../../../core/networks/error_widget.dart';
-import '../../../update_features/cart/data/cart_adaptor_provider.dart';
+import '../../../../core/networks/error_widget.dart';
+import '../../widgets/spicy_slider.dart';
+import '../../widgets/topping_card.dart';
 
 class ProductDetailView extends ConsumerStatefulWidget {
   const ProductDetailView({
@@ -33,8 +34,8 @@ class _ProductDetailViewState extends ConsumerState<ProductDetailView> {
   Set<int> selectedToppings = {};
   Set<int> selectedOptions = {};
   double spicyLevel = 0.5;
-  ProductOptionRepo productOptionRepo = ProductOptionRepo();
-  CartRepo cartRepo = CartRepo();
+  //ProductOptionRepo productOptionRepo = ProductOptionRepo();
+
   List<CartModel> cartModel = [];
 
   @override
@@ -235,10 +236,8 @@ class _ProductDetailViewState extends ConsumerState<ProductDetailView> {
                           buttonText: 'Add To Cart',
                           onPressed: () {
                             // addToCart();
-                            CartRepo cartRepo = CartRepo();
 
                             ///to reset cached
-                            cartRepo.resetItem();
                             //  cartRepo.
                             //   if (cartRepo.cachedCartItem != null) {}
 

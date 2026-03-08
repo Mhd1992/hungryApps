@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/base/base_controller.dart';
-import 'package:hungry/update_features/product_details/topping/data/topping_model.dart';
-import 'package:hungry/update_features/product_details/topping/data/topping_provider.dart';
+import 'package:hungry/update_features/products/product_details/topping/data/topping_model.dart';
+import 'package:hungry/update_features/products/product_details/topping/data/topping_provider.dart';
 
 final toppingControllerProvider =
     StateNotifierProvider<ToppingController, AsyncValue<List<ToppingModel>?>>(

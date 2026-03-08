@@ -1,4 +1,6 @@
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/update_features/cart/views/cart_view.dart';
+import 'package:hungry/update_features/orderHistory/views/order_history_view.dart';
 
 import 'features/auth/view/profile_view_hook.dart';
 
@@ -18,8 +20,8 @@ class _RootState extends State<Root> {
   void initState() {
     // TODO: implement initState
     pageController = PageController(initialPage: currentScreen);
-    // screens = [HomeView(), CartView(), OrderHistoryView(), ProfileView()];
-    screens = [HomeView(), CartView(), OrderHistoryView(), ProfileViewHook()];
+    screens = [HomeView(), CartView(), OrderHistoryView(), ProfileView()];
+    //screens = [HomeView(), CartView(), OrderHistoryView(), ProfileViewHook()];
     super.initState();
   }
 

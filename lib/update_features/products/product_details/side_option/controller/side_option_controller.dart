@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/base/base_controller.dart';
-import 'package:hungry/update_features/product_details/side_option/data/side_option_model.dart';
-import 'package:hungry/update_features/product_details/side_option/data/side_option_provider.dart';
+import 'package:hungry/update_features/products/product_details/side_option/data/side_option_model.dart';
+import 'package:hungry/update_features/products/product_details/side_option/data/side_option_provider.dart';
 
 final sideOptionControllerProvider =
     StateNotifierProvider<

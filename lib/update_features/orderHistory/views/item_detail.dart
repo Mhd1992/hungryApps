@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/constants/app_colors.dart';
+import 'package:hungry/update_features/products/widgets/spicy_slider.dart';
 
 import '../../../core/networks/error_widget.dart';
 import '../../../shared/custom_text.dart';
 import '../../../update_features/checkout/item_detail/contorller/item_detail_controller.dart';
 import '../../../update_features/checkout/model/order_item/order_item_model.dart';
-import '../../../update_features/product_details/side_option/data/side_option_model.dart';
-import '../../../update_features/product_details/topping/data/topping_model.dart';
-import '../../product/widgets/spicy_slider.dart';
+import '../../../update_features/products/product_details/side_option/data/side_option_model.dart';
+import '../../../update_features/products/product_details/topping/data/topping_model.dart';
 import '../widgets/topping_Item_card.dart';
 
 /// Padding and layout constants for the item detail screen.
@@ -50,7 +50,8 @@ class _ItemDetailState extends ConsumerState<ItemDetail> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order details'),
-        backgroundColor: theme.appBarTheme.backgroundColor ?? AppColors.primaryColor,
+        backgroundColor:
+            theme.appBarTheme.backgroundColor ?? AppColors.primaryColor,
         foregroundColor: theme.appBarTheme.foregroundColor ?? Colors.white,
       ),
       body: Padding(
@@ -65,11 +66,10 @@ class _ItemDetailState extends ConsumerState<ItemDetail> {
               itemBuilder: (context, index) {
                 final item = data.orderItems[index];
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: _ItemDetailLayout.sectionGap),
-                  child: _OrderItemCard(
-                    item: item,
-                    createdAt: data.createdAt,
+                  padding: const EdgeInsets.only(
+                    bottom: _ItemDetailLayout.sectionGap,
                   ),
+                  child: _OrderItemCard(item: item, createdAt: data.createdAt),
                 );
               },
             );
@@ -88,7 +88,11 @@ class _ItemDetailState extends ConsumerState<ItemDetail> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.receipt_long_outlined, size: 64, color: Colors.grey.shade400),
+          Icon(
+            Icons.receipt_long_outlined,
+            size: 64,
+            color: Colors.grey.shade400,
+          ),
           const Gap(16),
           CustomText(
             text: 'No order details found',
@@ -102,10 +106,7 @@ class _ItemDetailState extends ConsumerState<ItemDetail> {
 }
 
 class _OrderItemCard extends StatelessWidget {
-  const _OrderItemCard({
-    required this.item,
-    required this.createdAt,
-  });
+  const _OrderItemCard({required this.item, required this.createdAt});
 
   final OrderItemModel item;
   final String createdAt;
@@ -157,18 +158,9 @@ class _OrderItemCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: 20,
             ),
-            CustomText(
-              text: 'Quantity: ${item.quantity}',
-              fontSize: 16,
-            ),
-            CustomText(
-              text: 'Price: \$${item.price}',
-              fontSize: 16,
-            ),
-            CustomText(
-              text: createdAt,
-              fontSize: 16,
-            ),
+            CustomText(text: 'Quantity: ${item.quantity}', fontSize: 16),
+            CustomText(text: 'Price: \$${item.price}', fontSize: 16),
+            CustomText(text: createdAt, fontSize: 16),
             const Gap(_ItemDetailLayout.contentGap),
             const Divider(color: Colors.white, thickness: 2),
             const Gap(_ItemDetailLayout.contentGap),
@@ -192,13 +184,17 @@ class _OrderItemCard extends StatelessWidget {
 
   Widget _buildOptionRow(List<SideOptionModel> options) {
     return _buildOptionOrToppingRow(
-      options.map((o) => ToppingItemCard(imageUrl: o.imageUrl, title: o.name)).toList(),
+      options
+          .map((o) => ToppingItemCard(imageUrl: o.imageUrl, title: o.name))
+          .toList(),
     );
   }
 
   Widget _buildToppingRow(List<ToppingModel> options) {
     return _buildOptionOrToppingRow(
-      options.map((o) => ToppingItemCard(imageUrl: o.imageUrl, title: o.name)).toList(),
+      options
+          .map((o) => ToppingItemCard(imageUrl: o.imageUrl, title: o.name))
+          .toList(),
     );
   }
 
