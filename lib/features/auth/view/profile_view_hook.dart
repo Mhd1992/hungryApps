@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../shared/custom_load_image_button.dart';
@@ -16,11 +17,11 @@ import '../widgets/visa_card_widget.dart';
 import 'hooks/user_hook.dart';
 import 'login_view.dart';
 
-class ProfileViewHook extends HookWidget {
+class ProfileViewHook extends HookConsumerWidget {
   const ProfileViewHook({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final nameController = useTextEditingController();
     final emailController = useTextEditingController();
     final addressController = useTextEditingController();
@@ -89,43 +90,10 @@ class ProfileViewHook extends HookWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
                     children: [
-                      (userHook.selectedImage == null ||
-                              userHook.selectedImage!.isEmpty)
-                          ? (data?.image != null && data!.image!.isNotEmpty)
-                                ? Container(
-                                    height: 110,
-                                    width: 110,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.grey,
-                                      border: Border.all(
-                                        width: 2,
-                                        color: Colors.white,
-                                      ),
-                                      image: userHook.selectedImage != null
-                                          ? DecorationImage(
-                                              image: FileImage(
-                                                File(userHook.selectedImage!),
-                                              ),
-                                              fit: BoxFit.cover,
-                                            )
-                                          : null,
-                                    ),
-                                    child: Image.network(
-                                      data.image!,
-                                      errorBuilder: (context, error, builder) =>
-                                          Icon(Icons.person),
-                                    ),
-                                  )
-                                : Image.asset(
-                                    'assets/images/placeHolder.png',
-                                    fit: BoxFit.cover,
-                                  )
-                          : Image.file(
-                              File(userHook.selectedImage!),
-                              fit: BoxFit.cover,
-                            ),
-
+                      _ProfileAvatar(
+                        data: data,
+                        selectedImage: userHook.selectedImage,
+                      ),
                       const Gap(8),
                       CustomLoadImageButton(
                         buttonText: 'Load Image',
@@ -160,7 +128,6 @@ class ProfileViewHook extends HookWidget {
                               filed: 'XXXX-XXXX-XXXX-0505',
                               type: TextInputType.number,
                             ),
-                      const Gap(32),
                     ],
                   ),
                 ),
@@ -172,7 +139,7 @@ class ProfileViewHook extends HookWidget {
           child: Container(
             decoration: const BoxDecoration(color: Colors.white),
             child: Padding(
-              padding: const EdgeInsets.all(4.0),
+              padding: const EdgeInsets.all(16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -274,6 +241,7 @@ class _ProfileAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasLocalImage = selectedImage != null && selectedImage!.isNotEmpty;
+    final hasNetworkImage = data?.image != null && data!.image!.isNotEmpty;
 
     return Container(
       height: 110,
@@ -290,7 +258,18 @@ class _ProfileAvatar extends StatelessWidget {
             : null,
       ),
       clipBehavior: Clip.antiAlias,
-      child: Container(),
+      child: hasLocalImage
+          ? null
+          : (hasNetworkImage
+                ? Image.network(
+                    data!.image!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Icon(Icons.person),
+                  )
+                : Image.asset(
+                    'assets/images/placeHolder.png',
+                    fit: BoxFit.cover,
+                  )),
     );
   }
 }

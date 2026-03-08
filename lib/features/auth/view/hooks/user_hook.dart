@@ -38,8 +38,6 @@ class UseProfileHook {
   });
 }
 
-/// Profile state and actions using only Flutter Hooks (no Riverpod).
-/// [context] is used for [mounted] checks and can be omitted if not needed.
 UseProfileHook useProfile(BuildContext context) {
   final user = useState<UserModel?>(null);
   final loading = useState<bool>(true);
@@ -56,6 +54,7 @@ UseProfileHook useProfile(BuildContext context) {
   });
 
   Future<void> fetchUser() async {
+    if (user.value != null) return; //prevent reload
     if (!context.mounted) return;
     loading.value = true;
     error.value = null;
