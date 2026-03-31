@@ -1,21 +1,25 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/features/auth/data/repository/v1/auth_repo_v1.dart';
+import 'package:hungry/update_features/auth/controller/auth_controller.dart'
+    show guestProvider, authControllerProvider;
 
-class SignupView extends StatefulWidget {
+class SignupView extends ConsumerStatefulWidget {
   const SignupView({super.key});
 
   @override
-  State<SignupView> createState() => _SignupViewState();
+  ConsumerState<SignupView> createState() => _SignupViewState();
 }
 
-class _SignupViewState extends State<SignupView> {
+class _SignupViewState extends ConsumerState<SignupView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   TextEditingController confirmPassController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  AuthRepo authRepo = AuthRepo();
+
+  //AuthRepo authRepo = AuthRepo();
   AuthRepoV1 authRepoV1 = AuthRepoV1();
 
   @override
@@ -133,11 +137,17 @@ class _SignupViewState extends State<SignupView> {
                             Gap(8),
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (context) => Root(),
-                                  ),
-                                );
+                                ref
+                                    .read(authControllerProvider.notifier)
+                                    .continueAsGuest(
+                                      () =>
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (context) => Root(),
+                                            ),
+                                          ),
+                                    );
+                                // authRepo.continueAsGuest();
                               },
                               child: CustomText(
                                 text: 'Continue as Guest',

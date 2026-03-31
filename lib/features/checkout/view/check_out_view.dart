@@ -31,7 +31,7 @@ class _CheckOutViewState extends ConsumerState<CheckOutView> {
 
   final List<CartItemModel> items = [];
 
-  final CheckoutRepo checkoutRepo = CheckoutRepo();
+  //final CheckoutRepo checkoutRepo = CheckoutRepo();
 
   Future<void> _checkout<T, P>({
     required Future<T> Function(P param) apiCall,
@@ -48,6 +48,7 @@ class _CheckOutViewState extends ConsumerState<CheckOutView> {
     } finally {}
   }
 
+  /*
   Future<void> checkout(List<CartModel> cartModel) async {
     await _checkout<String, CartRequest>(
       apiCall: checkoutRepo.checkout,
@@ -55,6 +56,7 @@ class _CheckOutViewState extends ConsumerState<CheckOutView> {
       onSuccess: (data) => data,
     );
   }
+*/
 
   @override
   void initState() {

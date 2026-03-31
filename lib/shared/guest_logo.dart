@@ -25,10 +25,14 @@ class GuestLogo extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                'assets/images/guestLogo.png',
-                fit: BoxFit.cover,
+              child: SvgPicture.asset(
+                'assets/images/guestLogo.svg',
+                colorFilter: ColorFilter.mode(
+                  AppColors.primaryColor,
+                  BlendMode.srcIn,
+                ),
               ),
+              //  child: Image.asset('assets/images/abc.svg', fit: BoxFit.cover),
             ),
           ),
           Gap(8),

@@ -26,7 +26,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   TextEditingController addressController = TextEditingController();
   TextEditingController visaController = TextEditingController();
 
-  AuthRepo authRepo = AuthRepo();
+  // AuthRepo authRepo = AuthRepo();
   late ProviderSubscription<AsyncValue<UserModel?>> userListener;
 
   @override
@@ -99,7 +99,28 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: (ref.read(guestProvider.notifier).state)
-          ? GuestLogo()
+          ? Scaffold(
+              appBar: AppBar(
+                backgroundColor: AppColors.primaryColor,
+                scrolledUnderElevation: 0,
+                iconTheme: const IconThemeData(color: Colors.white),
+                actions: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const SettingsView()),
+                    ),
+                    icon: SvgPicture.asset(
+                      'assets/icons/settings.svg',
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.modulate,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              body: GuestLogo(),
+            )
           : Scaffold(
               resizeToAvoidBottomInset: true,
               backgroundColor: AppColors.primaryColor,

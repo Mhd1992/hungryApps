@@ -23,7 +23,13 @@ class AppErrorWidget extends StatelessWidget {
         return Center(child: Text('unAuthorized'));
       }
       if (apiError.statusCode == 404) {
-        return Center(child: Text('notFoundContent'));
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('NotFoundAnyData')));
+        });
+
+        return const SizedBox();
       }
       if (apiError.statusCode == 429) {
         return Center(

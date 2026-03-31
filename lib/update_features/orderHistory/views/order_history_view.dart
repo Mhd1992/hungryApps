@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
+import 'package:hungry/update_features/auth/controller/auth_controller.dart';
 
 import '../../../core/networks/error_widget.dart';
 import '../../../update_features/checkout/order_history/controller/order_history_controller.dart';
@@ -22,58 +23,75 @@ class _OrderHistoryViewState extends ConsumerState<OrderHistoryView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       ref.read(orderHistoryControllerProvider.notifier).getOrders();
-
       setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    AuthRepo authRepo = AuthRepo();
+    //  AuthRepo authRepo = AuthRepo();
+    final guest = ref.watch(guestProvider);
     final historyState = ref.watch(orderHistoryControllerProvider);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(8.0),
 
-        child: (authRepo.isGuest)
+        /// Todo using guest provider instead of auth repo is guest
+        child: (guest)
             ? Center(child: GuestLogo())
             : historyState.when(
                 data: (data) {
                   final orders = data ?? [];
-
-                  return Column(
-                    children: [
-                      // Scrollable content
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: orders.length,
-                          itemBuilder: (context, index) {
-                            final orders = data ?? [];
-                            return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ItemDetail(orders[index].id),
-                                  ),
-                                );
-                              },
-                              child: HistoryCard(
-                                imageUrl: orders[index].productImage,
-                                title: orders[index].status.name,
-                                quantity: orders[index].totalPrice,
-                              ),
-                            );
-                          },
-                        ),
+                  if (orders.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset('assets/images/empty.png'),
+                          CustomText(
+                            text: 'Not Items Found',
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryColor,
+                          ),
+                        ],
                       ),
+                    );
+                  } else {
+                    return Column(
+                      children: [
+                        // Scrollable content
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: orders.length,
+                            itemBuilder: (context, index) {
+                              final orders = data ?? [];
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ItemDetail(orders[index].id),
+                                    ),
+                                  );
+                                },
+                                child: HistoryCard(
+                                  imageUrl: orders[index].productImage,
+                                  title: orders[index].status.name,
+                                  quantity: orders[index].totalPrice,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
 
-                      // Fixed bottom section
-                    ],
-                  );
+                        // Fixed bottom section
+                      ],
+                    );
+                  }
                 },
-                error: (error, _) => AppErrorWidget(error: error),
+                error: (error, _) => Center(child: Text('NotFoundContent')),
                 loading: () => const Center(child: CircularProgressIndicator()),
               ),
       ),

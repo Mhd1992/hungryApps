@@ -13,7 +13,7 @@ class SplashView extends ConsumerStatefulWidget {
 
 class _SplashViewState extends ConsumerState<SplashView> {
   double _opacity = 0.0;
-  final AuthRepo authRepo = AuthRepo();
+  //final AuthRepo authRepo = AuthRepo();
   final AuthRepoV1 authRepoV1 = AuthRepoV1();
   bool isLoggedIn = false;
   @override

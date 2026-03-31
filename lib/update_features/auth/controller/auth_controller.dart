@@ -47,6 +47,8 @@ class AuthController extends BaseController<AuthModel?> {
 
   Future<bool> autoLogin() async {
     final token = await PrefHelper.getToken();
+    print("token is -------------\n{$token}\n--------- ");
+    return token != null && token != 'guest';
     return token != null && token.isNotEmpty ? true : false;
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hungry/core/networks/error_widget.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/update_features/auth/controller/auth_controller.dart';
 import 'package:hungry/update_features/auth/data/auth_provider.dart';
@@ -13,8 +14,8 @@ class LoginView extends ConsumerStatefulWidget {
 }
 
 class _LoginViewState extends ConsumerState<LoginView> {
-  AuthRepo authRepo = AuthRepo();
-  AuthRepoV1 authRepoV1 = AuthRepoV1();
+  // AuthRepo authRepo = AuthRepo();
+  //AuthRepoV1 authRepoV1 = AuthRepoV1();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -26,12 +27,21 @@ class _LoginViewState extends ConsumerState<LoginView> {
     emailController.text = 'Alhammali@gmail.com';
     passController.text = '123456789';
     super.initState();
+    ref.listenManual(authControllerProvider, (previous, next) {
+      next.whenOrNull(
+        error: (e, _) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(e.toString())));
+        },
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authRepoProvider);
-    Future<void> login() async {
+    /* Future<void> login() async {
       if (formKey.currentState!.validate()) {
         try {
           setState(() => _isLoading = true);
@@ -58,7 +68,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
           setState(() => _isLoading = false);
         }
       }
-    }
+    }*/
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -115,16 +125,59 @@ class _LoginViewState extends ConsumerState<LoginView> {
                             ),
 
                             Gap(32),
-                            _isLoading
+                            /*  _isLoading
                                 ? const CircularProgressIndicator(
                                     color: Colors.white,
                                   )
-                                : Consumer(
-                                    builder: (context, ref, _) {
-                                      final control = ref.watch(
-                                        authControllerProvider,
+                                :*/
+                            Consumer(
+                              builder: (context, ref, _) {
+                                final control = ref.watch(
+                                  authControllerProvider,
+                                );
+
+                                final isLoading = control.isLoading;
+
+                                return isLoading
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : CustomAuthBtn(
+                                        textColor: Colors.white,
+                                        color: AppColors.primaryColor,
+                                        text: 'Login',
+                                        onPressed: () {
+                                          ref
+                                              .read(
+                                                authControllerProvider.notifier,
+                                              )
+                                              .login(
+                                                emailController.text,
+                                                passController.text,
+                                                onSuccess: () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Root(),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                        },
                                       );
-                                      return control.when(
+                              },
+                            ),
+                            /*     Consumer(
+                              builder: (context, ref, _) {
+                                final control = ref.watch(
+                                  authControllerProvider,
+                                );
+                                final isLoading = control.isLoading;
+                                return isLoading
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : control.when(
                                         data: (data) => CustomAuthBtn(
                                           textColor: Colors.white,
                                           color: AppColors.primaryColor,
@@ -150,14 +203,14 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                           },
                                         ),
                                         error: (e, _) =>
-                                            Center(child: Text(e.toString())),
+                                            AppErrorWidget(error: e),
                                         loading: () =>
                                             CircularProgressIndicator(
                                               color: Colors.white,
                                             ),
                                       );
-                                    },
-                                  ),
+                              },
+                            ),*/
                             Gap(16),
                             CustomAuthBtn(
                               text: 'SignUp',

@@ -13,6 +13,8 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
     try {
       final result = await action();
       state = AsyncData(result);
+    } on DioException catch (e, st) {
+      state = AsyncError(ApiException.handleError(e), st);
     } catch (e, st) {
       state = AsyncError(ApiException(), st);
     }
@@ -28,6 +30,8 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
     try {
       final result = await action();
       state = AsyncData(mapper(result));
+    } on DioException catch (e, st) {
+      state = AsyncError(ApiException.handleError(e), st);
     } catch (e, st) {
       state = AsyncError(ApiException(), st);
     }
@@ -38,6 +42,9 @@ class BaseController<T> extends StateNotifier<AsyncValue<T?>> {
     bool useCache = true,
   }) async {
     if (_cachedData != null && useCache) {
+      print(
+        'the type of cachedData is --------- \n${_cachedData.runtimeType}\n--------------',
+      );
       state = AsyncData(_cachedData);
       return;
     }

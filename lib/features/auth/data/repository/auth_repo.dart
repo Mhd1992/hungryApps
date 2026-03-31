@@ -1,3 +1,4 @@
+/*
 import 'package:hungry/core/utils/exported_file.dart';
 
 class AuthRepo {
@@ -188,3 +189,4 @@ class AuthRepo {
   bool get isGuest => _isGuest;
   bool get isLoggedIn => !_isGuest && _cachedUser != null;
 }
+*/

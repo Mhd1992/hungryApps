@@ -1,3 +1,4 @@
+/*
 import 'package:hungry/core/networks/retrofit/model/category/category_model.dart';
 import 'package:hungry/core/networks/retrofit/model/products/product_model.dart';
 
@@ -52,3 +53,4 @@ class HomeRepo {
     throw ApiError(message: 'Unknown error occurred loadCategory failed.');
   }
 }
+*/
