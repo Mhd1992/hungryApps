@@ -14,7 +14,7 @@ class AuthRepo extends BaseRepo {
 
   Future<AuthModel> register(String name, String email, String password) {
     return loadData(
-      () => api.login({'name': name, 'email': email, 'password': password}),
+      () => api.register({'name': name, 'email': email, 'password': password}),
     );
   }
 }

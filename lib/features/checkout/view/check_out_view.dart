@@ -9,6 +9,7 @@ import '../../../update_features/cart/cart/request_cart/cart_item_model.dart'
     show CartItemModel;
 import '../../../update_features/checkout/controller/checkout_controller.dart';
 import '../../../update_features/checkout/model/orders/created_order_model.dart';
+import '../../auth/view/controller/user_controller.dart';
 
 class CheckOutView extends ConsumerStatefulWidget {
   const CheckOutView({
@@ -62,6 +63,12 @@ class _CheckOutViewState extends ConsumerState<CheckOutView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(userControllerProvider.notifier).getProfile();
+    });
+
     ref.listenManual<AsyncValue<CreatedOrderModel?>>(
       checkoutControllerProvider,
       (prev, next) {
@@ -82,6 +89,7 @@ class _CheckOutViewState extends ConsumerState<CheckOutView> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(userControllerProvider);
     // List<CartModel> orders = [];
     final ValueNotifier<PaymentType?> paymentMethod =
         ValueNotifier<PaymentType?>(PaymentType.cash);
@@ -125,7 +133,7 @@ class _CheckOutViewState extends ConsumerState<CheckOutView> {
                   onChanged: (newVal) => paymentMethod.value = PaymentType.cash,
                 ),
                 const Gap(20),
-                (authRepo.cachedUser?.visa == null)
+                (user.value?.visa == null)
                     ? SizedBox.shrink()
                     : VisaListTile(
                         paymentLogo: 'assets/icons/visaSvg.svg',

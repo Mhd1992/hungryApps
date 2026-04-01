@@ -36,18 +36,24 @@ class AuthController extends BaseController<AuthModel?> {
     if (onSuccess != null) onSuccess();
   }
 
-  void register(String name, String email, String password) async {
+  void register(
+    String name,
+    String email,
+    String password, {
+    VoidCallback? onSuccess,
+  }) async {
     final repo = ref.read(authRepoProvider);
     await request(() => repo.register(name, email, password));
     final authData = state.value;
     if (authData != null) {
       await PrefHelper.saveToken(authData.token!);
     }
+    if (onSuccess != null) onSuccess();
   }
 
   Future<bool> autoLogin() async {
     final token = await PrefHelper.getToken();
-    print("token is -------------\n{$token}\n--------- ");
+
     return token != null && token != 'guest';
     return token != null && token.isNotEmpty ? true : false;
   }

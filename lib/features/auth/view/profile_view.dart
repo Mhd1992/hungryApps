@@ -42,7 +42,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
         next.whenOrNull(
           data: (user) {
             if (user == null) return;
-
             nameController.text = user.name;
             emailController.text = user.email;
             addressController.text = user.address ?? '';
