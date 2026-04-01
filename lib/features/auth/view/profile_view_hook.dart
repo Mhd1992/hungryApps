@@ -11,7 +11,7 @@ import '../../../shared/custom_load_image_button.dart';
 import '../../../shared/custom_text.dart';
 import '../../../shared/custom_user_text_field.dart';
 import '../../../shared/guest_logo.dart';
-import '../../../update_features/user/data/user_model.dart';
+import '../../../update_features/user/model/user_model.dart';
 import '../../settings/views/settings_view.dart';
 import '../widgets/visa_card_widget.dart';
 import 'hooks/user_hook.dart';

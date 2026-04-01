@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../../../../core/networks/retrofit/model/base_response.dart';
-import '../../../core/constants/app_strings.dart';
-import '../cart/items/item_model.dart';
-import '../cart/request_cart/cart_item_model.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../cart/items/item_model.dart';
+import '../../cart/request_cart/cart_item_model.dart';
 
 part 'cart_api.g.dart';
 

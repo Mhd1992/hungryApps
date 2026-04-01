@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/networks/error_widget.dart';
 import 'package:hungry/core/utils/exported_file.dart';
 import 'package:hungry/update_features/auth/controller/auth_controller.dart';
-import 'package:hungry/update_features/auth/data/auth_provider.dart';
+import 'package:hungry/update_features/auth/data/provider/auth_provider.dart';
 
 import '../data/repository/v1/auth_repo_v1.dart';
 

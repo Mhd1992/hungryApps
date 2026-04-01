@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/networks/dio_client.dart';
 import '../../../../core/utils/pref_helpers.dart';
 import '../../../../update_features/user/data/user_api.dart';
-import '../../../../update_features/user/data/user_model.dart';
+import '../../../../update_features/user/model/user_model.dart';
 import '../../../../update_features/user/data/user_repo.dart';
 
 /// Result of [useProfile]. All state is held in hooks so the UI rebuilds

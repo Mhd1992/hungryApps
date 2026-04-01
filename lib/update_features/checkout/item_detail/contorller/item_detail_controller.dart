@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/base/base_controller.dart';
-import '../../data/checkout_provider.dart';
+import '../../data/provider/checkout_provider.dart';
 import '../../model/order_item/item_detail_model.dart';
 
 final itemDetailControllerProvider =

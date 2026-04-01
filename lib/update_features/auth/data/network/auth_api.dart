@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../../../core/networks/retrofit/model/base_response.dart';
-import 'auth_model.dart';
+import '../../../../core/networks/retrofit/model/base_response.dart';
+import '../../model/auth_model.dart';
 
 part 'auth_api.g.dart';
 

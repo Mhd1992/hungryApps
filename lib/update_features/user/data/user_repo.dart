@@ -1,7 +1,7 @@
 import 'package:hungry/core/base/base_repo.dart';
 import 'package:hungry/update_features/user/data/user_api.dart';
 
-import 'package:hungry/update_features/user/data/user_model.dart';
+import 'package:hungry/update_features/user/model/user_model.dart';
 
 import '../../../core/networks/retrofit/model/base_response.dart';
 

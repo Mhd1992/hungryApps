@@ -1,7 +1,7 @@
 import 'package:hungry/core/base/base_repo.dart';
 
-import 'auth_api.dart';
-import 'auth_model.dart';
+import '../network/auth_api.dart';
+import '../../model/auth_model.dart';
 
 class AuthRepo extends BaseRepo {
   final AuthApi api;

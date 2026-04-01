@@ -1,6 +1,6 @@
 import 'package:hungry/core/base/base_repo.dart';
 
-import '../../data/checkout_api.dart';
+import '../../data/network/checkout_api.dart';
 import '../../model/orders/order_model.dart';
 
 class OrderHistoryRepo extends BaseRepo {

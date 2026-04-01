@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/base/base_controller.dart';
 import 'package:hungry/features/auth/view/controller/user_ui_state.dart';
 
-import '../../../../update_features/user/data/user_model.dart';
+import '../../../../update_features/user/model/user_model.dart';
 import '../../../../update_features/user/data/user_provider.dart';
 
 final userControllerProvider =

@@ -6,7 +6,7 @@ import 'package:hungry/update_features/auth/controller/auth_controller.dart';
 
 import '../../../core/utils/exported_file.dart' hide UserModel;
 import '../../../shared/custom_load_image_button.dart';
-import '../../../update_features/user/data/user_model.dart';
+import '../../../update_features/user/model/user_model.dart';
 import 'package:hungry/features/settings/views/settings_view.dart';
 
 import '../widgets/visa_card_widget.dart';

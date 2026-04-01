@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/networks/dio_provider.dart';
-import 'package:hungry/update_features/cart/data/cart_api.dart';
-import 'package:hungry/update_features/cart/data/cart_repo.dart';
+import 'package:hungry/update_features/cart/data/repo/cart_repo.dart';
+
+import '../network/cart_api.dart';
 
 final cartApiProvider = Provider<CartApi>((ref) {
   final dio = ref.read(dioProvider);

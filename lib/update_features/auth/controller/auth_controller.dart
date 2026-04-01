@@ -2,11 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hungry/core/utils/exported_file.dart';
-import 'package:hungry/update_features/auth/data/auth_model.dart';
+import 'package:hungry/update_features/auth/model/auth_model.dart';
 import 'package:hungry/update_features/auth/pref_helper_provider.dart';
 
 import '../../../core/base/base_controller.dart';
-import '../data/auth_provider.dart';
+import '../data/provider/auth_provider.dart';
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, AsyncValue<AuthModel?>>(
