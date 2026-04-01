@@ -1,7 +1,7 @@
 import 'package:hungry/core/networks/retrofit/model/cart/cart_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'model/order_item/order_item_model.dart';
+import '../model/order_item/order_item_model.dart';
 part 'checkout_model.g.dart';
 
 @JsonSerializable()

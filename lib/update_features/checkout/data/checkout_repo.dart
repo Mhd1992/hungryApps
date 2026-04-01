@@ -1,11 +1,11 @@
 import 'package:hungry/core/base/base_repo.dart';
-import 'package:hungry/update_features/checkout/checkout_api.dart';
-import '../cart/cart/items/item_model.dart';
-import '../cart/cart/request_cart/cart_item_model.dart';
+import 'package:hungry/update_features/checkout/data/checkout_api.dart';
+import '../../cart/cart/items/item_model.dart';
+import '../../cart/cart/request_cart/cart_item_model.dart';
 import 'checkout_model.dart';
-import 'model/order_item/item_detail_model.dart';
-import 'model/orders/created_order_model.dart';
-import 'model/orders/order_model.dart';
+import '../model/order_item/item_detail_model.dart';
+import '../model/orders/created_order_model.dart';
+import '../model/orders/order_model.dart';
 
 class CheckoutRepo extends BaseRepo {
   final CheckoutApi _api;
